@@ -3,13 +3,12 @@
 - **Haben wir die Grundidee richtig verstanden?:**  
 Eine cross-platform App, die SchülerInnen (und ihre Eltern) erlaubt, Fehlstunden‑Entschuldigungen an ihre Klassenvorstände zu schicken. Für minderjährige SchülerInnen muss die Entschuldigung digital von den Eltern signiert werden.
 
-- **Soll das ganze eine Simulation sein die hochgeladene Entschuldigungen lokal speichert oder wird ein Server benötigt?**
-    - Datenbank lokal oder Cloud Lösung?
+- **Soll das ganze auf einem lokalem Server laufen oder nutzen wir eine Cloud Lösung?**
 
-- **Ist es Sinnvoll zu zweit auf einem Develop Branch in Github zu arbeiten oder jeder auf einem eigenen?**
+- **Ist es Sinnvoll für jedes Feature einen eigenen branch zu erstellen?**
 
-- **Wie soll die Regestrierung erfolgen?**
-    - Bekommen Eltern eine eigene Email?
+- **Wie soll die Registrierung erfolgen?**
+    - Wird für Eltern eine eigene Email erstellt?
     - Werden Eltern per Email eingeladen?
 
 - **Welche Rollen sollen erstellt/verteilt werden?**
@@ -19,9 +18,12 @@ Eine cross-platform App, die SchülerInnen (und ihre Eltern) erlaubt, Fehlstunde
     - Wer soll benachrichtigt werden?
     - Email, Mobil?
 
-- **Sollen Lehrer über Sichtbarkeit der Entschuldigungen entscheiden können?**
+- **Soll der Login 2FA unterstützen oder ist ein Passwort gut genug**
 
 - **Soll die Hochgeladene Datei ein Bild der Entschuldigung sein oder Text?**
+
+- **Sollen wir Entschuldigungs-Entwürfe gespeichert werden?**
+    - Wo sollen diese gespeichert werden? (Lokal, Server,...)
 
 - **Skalierbarkeit**
     - Wie viele Personen sollen die App gleichzeitig nutzen können?
