@@ -29,6 +29,9 @@ Eine cross-platform App, die SchülerInnen (und ihre Eltern) erlaubt, Fehlstunde
     - Wie viele Personen sollen die App gleichzeitig nutzen können?
     - Soll die App nur Schulintern laufen?
 
+## Links:
+[dbDiagram](https://dbdiagram.io/d/dipl-68c6a0ed841b2935a67a78a9)
+
 # Projekt‑Requirements für „Excuse Me“
 
 > **Titel** Excuse Me  
