@@ -23,6 +23,10 @@ Eine cross-platform App, die SchülerInnen (und ihre Eltern) erlaubt, Fehlstunde
 
 - **Soll die Hochgeladene Datei ein Bild der Entschuldigung sein oder Text?**
 
+- **Skalierbarkeit**
+    - Wie viele Personen sollen die App gleichzeitig nutzen können?
+    - Soll die App nur Schulintern laufen?
+
 # Projekt‑Requirements für „Excuse Me“
 
 > **Titel** Excuse Me  
