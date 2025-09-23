@@ -1,5 +1,7 @@
 # ExcuseMe
 ## Fragen:
+- **Wann ist das nächste Gespräch?**
+
 - **Haben wir die Grundidee richtig verstanden?:**  
 Eine cross-platform App, die SchülerInnen (und ihre Eltern) erlaubt, Fehlstunden‑Entschuldigungen an ihre Klassenvorstände zu schicken. Für minderjährige SchülerInnen muss die Entschuldigung digital von den Eltern signiert werden.
 
