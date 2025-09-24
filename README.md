@@ -34,6 +34,11 @@ Eine cross-platform App, die SchülerInnen (und ihre Eltern) erlaubt, Fehlstunde
 ## Links:
 [dbDiagram](https://dbdiagram.io/d/dipl-68c6a0ed841b2935a67a78a9)
 
+# TODO:
+[ ] DB Diagram update  
+[ ] "Tickets" erstellen  
+[ ] Requiremants erweitern  
+
 # Projekt‑Requirements für „Excuse Me“
 
 > **Titel** Excuse Me  
