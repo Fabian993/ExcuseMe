@@ -35,8 +35,8 @@ Eine cross-platform App, die SchülerInnen (und ihre Eltern) erlaubt, Fehlstunde
 [dbDiagram](https://dbdiagram.io/d/dipl-68c6a0ed841b2935a67a78a9)
 
 # TODO:
-[ ] ABA Portal ausfüllen!  
-[ ] DB Diagram update  
+[x] ABA Portal ausfüllen!  
+[x] DB Diagram update  
 [ ] "Tickets" erstellen  
 [ ] Requiremants erweitern 
 
