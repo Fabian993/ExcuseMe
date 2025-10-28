@@ -1,5 +1,5 @@
 """
-ASGI config for project_name project.
+ASGI config for excuseme project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
@@ -12,6 +12,6 @@ import os
 from django.core.asgi import get_asgi_application
 
 APP_ENV = os.getenv("APP_ENV", "dev")
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", f"project_name.settings.{APP_ENV}")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", f"excuseme.settings.{APP_ENV}")
 
 application = get_asgi_application()

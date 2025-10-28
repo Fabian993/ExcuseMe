@@ -12,7 +12,8 @@ SECRET_KEY = os_getenv(
 APP_ENV = os_getenv("APP_ENV", "dev")
 DEBUG = os_getenv("DEBUG", "true").lower() in ["True", "true", "1", "yes", "y"]
 
-ALLOWED_HOSTS = os_getenv("ALLOWED_HOSTS", "localhost").split(",")
+#ALLOWED_HOSTS = ["localhost"]
+ALLOWED_HOSTS = os_getenv("ALLOWED_HOSTS","localhost").split(",")
 
 
 if DEBUG:
@@ -50,7 +51,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "project_name.urls"
+ROOT_URLCONF = "excuseme.urls"
 
 TEMPLATES = [
     {
@@ -68,7 +69,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "project_name.wsgi.application"
+WSGI_APPLICATION = "excuseme.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases

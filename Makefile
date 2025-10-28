@@ -2,7 +2,7 @@ include .env
 export $(shell sed 's/=.*//' .env)
 
 SHELL := /bin/sh
-PROJECTNAME ?= exgooseme
+PROJECTNAME ?= excuseme
 APP_NAME := $(PROJECTNAME)
 BACKEND_APP_NAME := $(APP_NAME)-backend
 
@@ -61,6 +61,17 @@ stop-dev:
 
 stop-prod:
 	@docker-compose -f docker-compose.prod.yml down
+
+reset:
+	docker system prune -a --volumes
+
+list:
+	@echo "\n"
+	docker images
+	@echo "\n"
+	docker container ls
+	@echo "\n"
+	docker ps
 
 all: help
 
