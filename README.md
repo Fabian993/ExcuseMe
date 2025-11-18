@@ -1,13 +1,5 @@
 # ExcuseMe
 ## Fragen:
-- **Wann ist das nächste Gespräch?**
-
-- **Haben wir die Grundidee richtig verstanden?:**  
-Eine cross-platform App, die SchülerInnen (und ihre Eltern) erlaubt, Fehlstunden‑Entschuldigungen an ihre Klassenvorstände zu schicken. Für minderjährige SchülerInnen muss die Entschuldigung digital von den Eltern signiert werden.
-
-- **Soll das ganze auf einem lokalem Server laufen oder nutzen wir eine Cloud Lösung?**
-
-- **Ist es Sinnvoll für jedes Feature einen eigenen branch zu erstellen?**
 
 - **Wie soll die Registrierung erfolgen?**
     - Wird für Eltern eine eigene Email erstellt?
@@ -22,14 +14,34 @@ Eine cross-platform App, die SchülerInnen (und ihre Eltern) erlaubt, Fehlstunde
 
 - **Soll der Login 2FA unterstützen oder ist ein Passwort gut genug**
 
-- **Soll die Hochgeladene Datei ein Bild der Entschuldigung sein oder Text?**
-
 - **Sollen wir Entschuldigungs-Entwürfe gespeichert werden?**
     - Wo sollen diese gespeichert werden? (Lokal, Server,...)
+    - Vielleicht auch Ärztliche-Bestätigung (Vielleicht reicht es an manchen Schulen nicht, dass Eltern ihre Kinder entschuldigen)
+
+- **Soll die App das Hochladen von händisch geschriebenen Entschuldigungen ermöglichen?**
+    - Falls keine digitale Signatur möglich
+
+- **Sollen einfache Digitale Signaturen erlaubt sein?**
+    - Per Hand geschrieben und eingescant
+
+- **Open Source Signatur-Lösungen?**
+    - OpenSign
+    - Documenso
+    - DocuSeal - Self hosted (free option)
+
+- **Sollen Bilder in der DB gespeichert werden?**
 
 - **Skalierbarkeit**
+    - Soll die App nur minimal laufen?
     - Wie viele Personen sollen die App gleichzeitig nutzen können?
     - Soll die App nur Schulintern laufen?
+
+- **Was kam zuerst, die APP oder die API**
+
+- **Soll das ganze lokal oder per cloud deployed werden?**
+
+- **Wann ist das nächste Gespräch?**
+
 
 ## Links:
 [dbDiagram](https://dbdiagram.io/d/dipl-68c6a0ed841b2935a67a78a9)
