@@ -40,15 +40,15 @@ test:
 
 super-user:
 	docker exec -it $(BACKEND_APP_NAME) sh "-c" \
-	"python manage.py createsuperuser"
+	"uv run python manage.py createsuperuser"
 
 make-migrations:
 	docker exec -it $(BACKEND_APP_NAME) $(SHELL) "-c" \
-	"python manage.py makemigrations"
+	"uv run python manage.py makemigrations"
 
 migrate:
 	docker exec -it $(BACKEND_APP_NAME) $(SHELL) "-c" \
-	"python manage.py migrate"
+	"uv run python manage.py migrate"
 
 build-dev:
 	DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1 docker-compose -f docker-compose.yml up --build -d

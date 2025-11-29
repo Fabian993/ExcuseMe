@@ -12,8 +12,8 @@ SECRET_KEY = os_getenv(
 APP_ENV = os_getenv("APP_ENV", "dev")
 DEBUG = os_getenv("DEBUG", "true").lower() in ["True", "true", "1", "yes", "y"]
 
-#ALLOWED_HOSTS = ["localhost"]
-ALLOWED_HOSTS = os_getenv("ALLOWED_HOSTS","localhost").split(",")
+# ALLOWED_HOSTS = ["localhost"]
+ALLOWED_HOSTS = os_getenv("ALLOWED_HOSTS", "localhost").split(",")
 
 
 if DEBUG:
@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "corsheaders",
     "test_app",
+    "rest_framework",
 ]
 
 MIDDLEWARE = [
@@ -80,7 +81,7 @@ DATABASES = {
         "NAME": os_getenv("POSTGRES_DB", "postgres"),
         "USER": os_getenv("POSTGRES_USER", "postgres"),
         "PASSWORD": os_getenv("POSTGRES_PASSWORD", "postgres"),
-        "HOST": os_getenv("POSTGRES_HOST", "db"),
+        "HOST": 'db',
         "PORT": os_getenv("POSTGRES_PORT", "5432"),
     }
 }

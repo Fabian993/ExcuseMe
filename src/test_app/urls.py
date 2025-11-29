@@ -1,5 +1,5 @@
 from django.urls import path  # noqa
+from rest_framework.routers import DefaultRouter
 
-urlpatterns = [
-    # ... other urls
-]
+router = DefaultRouter()
+urlpatterns = router.urls 
