@@ -1,58 +1,6 @@
 # ExcuseMe
-## Fragen:
-- **Wie soll die Registrierung erfolgen?**
-    - Wird für Eltern eine eigene Email erstellt?
-    - Werden Eltern per Email eingeladen?
 
-- **Welche Rollen sollen erstellt/verteilt werden?**
-    - Wer hat welche permissions?
-
-- **Es wäre Sinnvoll wenn User benachrichtigt werden:**
-    - Wer soll benachrichtigt werden?
-    - Email, Mobil?
-
-- **Soll der Login 2FA unterstützen oder ist ein Passwort gut genug**
-
-- **Sollen wir Entschuldigungs-Entwürfe gespeichert werden?**
-    - Wo sollen diese gespeichert werden? (Lokal, Server,...)
-    - Vielleicht auch Ärztliche-Bestätigung (Vielleicht reicht es an manchen Schulen nicht, dass Eltern ihre Kinder entschuldigen)
-
-- **Soll die App das Hochladen von händisch geschriebenen Entschuldigungen ermöglichen?**
-    - Falls keine digitale Signatur möglich
-
-- **Sollen einfache Digitale Signaturen erlaubt sein?**
-    - Per Hand geschrieben und eingescant
-
-- **Open Source Signatur-Lösungen?**
-    - OpenSign
-    - Documenso
-    - DocuSeal - Self hosted (free option)
-
-- **Sollen Bilder in der DB gespeichert werden?**
-
-- **Skalierbarkeit**
-    - Soll die App nur minimal laufen?
-    - Wie viele Personen sollen die App gleichzeitig nutzen können?
-    - Soll die App nur Schulintern laufen?
-
-- **Was kam zuerst, die APP oder die API**
-
-- **Soll das ganze lokal oder per cloud deployed werden?**
-
-- **Wann ist das nächste Gespräch?**
-
-
-## Links:
-[dbDiagram](https://dbdiagram.io/d/dipl-68c6a0ed841b2935a67a78a9)
-
-# TODO:
-[x] ABA Portal ausfüllen!  
-[x] DB Diagram update  
-[ ] "Tickets" erstellen  
-[ ] Requiremants erweitern 
-
-
-# Projekt‑Requirements für „Excuse Me“
+## Projekt‑Requirements für „Excuse Me“
 
 > **Titel** Excuse Me  
 > **Ziel** Eine cross-platform App, die SchülerInnen (und ihre Eltern) erlaubt, Fehlstunden‑Entschuldigungen an ihre Klassenvorstände zu schicken. Für minderjährige SchülerInnen muss die Entschuldigung digital von den Eltern signiert werden.  
@@ -161,3 +109,7 @@
 | Tests & QA | 40 | Test‑Suite, CI/CD |
 | Deployment & Dokumentation | 30 | Docker, Heroku, Docs |
 | Abschluss & Präsentation | 10 | PPT, Demo |
+
+
+## Links:
+[dbDiagram](https://dbdiagram.io/d/dipl-68c6a0ed841b2935a67a78a9)
