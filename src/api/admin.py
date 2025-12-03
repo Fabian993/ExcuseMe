@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from test_app.models import TestModel
+from api.models import TestModel
 
 
 @admin.register(TestModel)
