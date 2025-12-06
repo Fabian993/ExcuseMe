@@ -41,6 +41,9 @@ reset.help = "Clean up all docker resources"
 list.shell = """docker images && docker ps -a"""
 list.help = "List docker images and containers"
 
+docker-logs.shell = """docker logs excuseme-backend && docker logs excuseme-celery-worker && docker logs excuseme-celery-beat"""
+docker-logs.help = "List docker logs of backend, celery-worker and celery-beat"
+
 
 
 

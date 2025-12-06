@@ -3,7 +3,7 @@ from django.urls import path  # noqa
 from . import views
 
 urlpatterns = [
-    path("api/", views.api, name="API"),
+    path("api/", views.api_get, name="api_get"),
 ]
 
 #from rest_framework.routers import DefaultRouter
