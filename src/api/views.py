@@ -3,9 +3,10 @@
 #from django.http import HttpResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from django.shortcuts import render
 
 @api_view(['GET', 'POST', 'PUT', 'DELETE'])
-def api_get(request):
+def api(request):
     if request.method == 'GET':
         return Response({"message": "Hello from API!"})
     
@@ -20,3 +21,6 @@ def api_get(request):
 
     else:
         return Response({"message": "Error, method doesnt exist!"})
+    
+def frontend(request):
+    return render(request, "frontend/index.html")
