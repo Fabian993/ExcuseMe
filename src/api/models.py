@@ -18,53 +18,77 @@ class TestModel(models.Model):
 
 class School(models.Model):
     name = models.CharField(max_length=255)
-    adress = models.CharField(max_length=255)
+    address = models.CharField(max_length=255)
 
 class User(models.Model):
-    school_id = models.ForeignKey(School, on_delete=models.CASCADE)
-    username = models.CharField(max_length=255)
+    username = models.CharField(max_length=255, unique=True)
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
-    email = models.CharField(max_length=255)
+    email = models.EmailField(max_length=255)
     password_hash = models.BinaryField(max_length=32) #SHA-256
-    created_at = models.DateField
+    created_at = models.DateField(auto_now_add=True)
+    school = models.ForeignKey(
+        School,
+        related_name="users",
+        on_delete=models.CASCADE,
+    )
 
-class Class(models.Model):
-    teacher_id = models.ForeignKey("Teacher", on_delete=models.CASCADE)
+class Klasse(models.Model):
     name = models.CharField(max_length=255)
+    teachers = models.ManyToManyField(
+        "Teacher",
+        related_name="klassen",
+    )
 
 class Teacher(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    class_id = models.ForeignKey(Class, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        User,
+        related_name="teachers",
+        on_delete=models.CASCADE
+    )
 
 class Student(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    class_id = models.ForeignKey(Class, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        User,
+        related_name="students",
+        on_delete=models.CASCADE
+    )
+    klasse = models.ForeignKey(
+        Klasse,
+        related_name="students",
+        on_delete=models.CASCADE
+    )
 
 class Parent(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    children = models.ManyToManyField(Student)
-
-class Status(models.Model):
-    name = models.CharField(max_length=255)
+    user = models.ForeignKey(
+        User,
+        related_name="parents",
+        on_delete=models.CASCADE,
+     )
+    children = models.ManyToManyField(
+        Student,
+        related_name="parents",
+    )
 
 class Status(models.Model):
     name = models.CharField(max_length=255, default="Pending")
 
-class Docuemnt(models.Model):
+class Excuse(models.Model):
     title = models.CharField(max_length=255)
-    description = models.CharField(max_length=255)
-    file_url = models.CharField(max_length=255)
-    uploaded_by_user_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    created_at = models.DateTimeField
+    content = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+    uploaded_by_user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE
+    )
     teachers = models.ManyToManyField(
         Teacher,
-        through="DocumentTeacher",
-        related_name="documents",
+        through="ExcuseTeacher",
+        related_name="excuses",
     )
 
-class DocumentTeacher(models.Model):
-    document_id = models.ForeignKey(Docuemnt, on_delete=models.CASCADE)
-    teacher_id = models.ForeignKey(Teacher, on_delete=models.CASCADE)
-    status_id = models.ForeignKey(Status, on_delete=models.CASCADE)
-    read_at = models.DateTimeField(null=True, blank=True)
+class ExcuseTeacher(models.Model):
+    read_at = models.DateTimeField(null=True, blank=True, default=None)
+    excuse = models.ForeignKey(Excuse, on_delete=models.CASCADE)
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
+    status = models.ForeignKey(Status, on_delete=models.CASCADE)
