@@ -45,3 +45,26 @@ class Parent(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     children = models.ManyToManyField(Student)
 
+class Status(models.Model):
+    name = models.CharField(max_length=255)
+
+class Status(models.Model):
+    name = models.CharField(max_length=255, default="Pending")
+
+class Docuemnt(models.Model):
+    title = models.CharField(max_length=255)
+    description = models.CharField(max_length=255)
+    file_url = models.CharField(max_length=255)
+    uploaded_by_user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField
+    teachers = models.ManyToManyField(
+        Teacher,
+        through="DocumentTeacher",
+        related_name="documents",
+    )
+
+class DocumentTeacher(models.Model):
+    document_id = models.ForeignKey(Docuemnt, on_delete=models.CASCADE)
+    teacher_id = models.ForeignKey(Teacher, on_delete=models.CASCADE)
+    status_id = models.ForeignKey(Status, on_delete=models.CASCADE)
+    read_at = models.DateTimeField(null=True, blank=True)
