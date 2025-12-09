@@ -25,7 +25,7 @@ class User(models.Model):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     email = models.EmailField(max_length=255)
-    password_hash = models.BinaryField(max_length=32) #SHA-256
+    password_hash = models.BinaryField(max_length=64) #SHA-256
     created_at = models.DateField(auto_now_add=True)
     school = models.ForeignKey(
         School,
