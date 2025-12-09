@@ -14,13 +14,13 @@ format.help = "Run formatter"
 test.cmd = "bash ./scripts/test.sh"
 test.help = "Run tests"
 
-super-user.shell = """docker exec -it ${BACKEND_APP_NAME} sh -c "uv run python manage.py createsuperuser" """
+super-user.shell = """docker exec excuseme-backend sh -c "uv run python manage.py createsuperuser" """
 super-user.help = "Create super user"
 
-make-migrations.shell = """docker exec -it ${BACKEND_APP_NAME} sh -c "uv run python manage.py makemigrations" """
+make-migrations.shell = """docker exec excuseme-backend sh -c "uv run python manage.py makemigrations" """
 make-migrations.help = "Make migrations"
 
-migrate.shell = """docker exec -it ${BACKEND_APP_NAME} sh -c "uv run python manage.py migrate" """
+migrate.shell = """docker exec excuseme-backend sh -c "uv run python manage.py migrate" """
 migrate.help = "Migrate"
 
 build-dev.cmd = "docker-compose -f docker-compose.yml up --build -d"
@@ -38,8 +38,10 @@ stop-prod.help = "Stop prod environment"
 reset.shell = """docker system prune -a --volumes"""
 reset.help = "Clean up all docker resources"
 
-list.cmd = """docker images && docker ps -a"""
+list.shell = """docker images && docker ps -a"""
 list.help = "List docker images and containers"
+
+
 
 
 [project]

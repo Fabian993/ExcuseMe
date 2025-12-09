@@ -1,5 +1,11 @@
+#We use URLs to execute views
 from django.urls import path  # noqa
-from rest_framework.routers import DefaultRouter
+from . import views
 
-router = DefaultRouter()
-urlpatterns = router.urls 
+urlpatterns = [
+    path("api/", views.api, name="API"),
+]
+
+#from rest_framework.routers import DefaultRouter
+#router = DefaultRouter()
+#urlpatterns = router.urls 
