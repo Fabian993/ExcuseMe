@@ -6,6 +6,7 @@ urlpatterns = [
     #path("api/", views.api, name="api"),
     #path("frontend/", views.frontend), #test
     path('schools/', SchoolView, name = 'schools'),
+    path('schools/<int:pk_r>/', SchoolView, name = 'schools'),
 ]
 #from rest_framework.routers import DefaultRouter
 #router = DefaultRouter()
