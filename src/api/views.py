@@ -4,6 +4,7 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.shortcuts import render
+from .serializer import *
 
 @api_view(['GET', 'POST', 'PUT', 'DELETE'])
 def api(request):
