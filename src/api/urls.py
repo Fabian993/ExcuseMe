@@ -1,13 +1,19 @@
 #We use URLs to execute views
-from django.urls import path  # noqa
+from django.urls import path, include  # noqa
+from rest_framework.routers import DefaultRouter
 from .views import *
 
+router = DefaultRouter()
+router.register(r"schools", SchoolViewSet, basename = "school")
+router.register(r"users", UserViewSet, basename = "user")
+router.register(r"klasses", KlasseViewSet, basename = "klasse")
+router.register(r"teachers", TeacherViewSet, basename = "teacher")
+router.register(r"students", StudentViewSet, basename = "student")
+router.register(r"parents", ParentViewSet, basename = "parent")
+router.register(r"status", StatusViewSet, basename = "status")
+router.register(r"excuses", ExcuseViewSet, basename = "excuse")
+router.register(r"excuseteacher", ExcuseTeacherViewSet, basename = "excuseteacher")
+
 urlpatterns = [
-    #path("api/", views.api, name="api"),
-    #path("frontend/", views.frontend), #test
-    path('schools/', SchoolView, name = 'schools'),
-    path('schools/<int:pk_r>/', SchoolView, name = 'schools'),
-]
-#from rest_framework.routers import DefaultRouter
-#router = DefaultRouter()
-#urlpatterns = router.urls 
+    path("api/", include(router.urls))
+] 

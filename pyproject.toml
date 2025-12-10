@@ -29,6 +29,9 @@ build-dev.help = "Build and run dev environment"
 stop-dev.cmd = "docker compose -f docker-compose.yml down"
 stop-dev.help = "Stop dev environment"
 
+sardb.cmd = "docker compose -f docker-compose.yml down -v"
+sardb.help = "Stops and Resets Database, ONLY FOR DEVELOPING!!"
+
 build-prod.cmd = "docker compose -f docker-compose.prod.yml up --build -d"
 build-prod.help = "Build and run prod environment"
 
