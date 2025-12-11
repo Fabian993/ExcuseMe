@@ -23,23 +23,29 @@ make-migrations.help = "Make migrations"
 migrate.shell = """docker exec excuseme-backend sh -c "uv run python manage.py migrate" """
 migrate.help = "Migrate"
 
-build-dev.cmd = "docker-compose -f docker-compose.yml up --build -d"
+build-dev.cmd = "docker compose -f docker-compose.yml up --build -d"
 build-dev.help = "Build and run dev environment"
 
-stop-dev.cmd = "docker-compose -f docker-compose.yml down"
+stop-dev.cmd = "docker compose -f docker-compose.yml down"
 stop-dev.help = "Stop dev environment"
 
-build-prod.cmd = "docker-compose -f docker-compose.prod.yml up --build -d"
+sardb.cmd = "docker compose -f docker-compose.yml down -v"
+sardb.help = "Stops and Resets Database, ONLY FOR DEVELOPING!!"
+
+build-prod.cmd = "docker compose -f docker-compose.prod.yml up --build -d"
 build-prod.help = "Build and run prod environment"
 
-stop-prod.cmd = "docker-compose -f docker-compose.prod.yml down"
+stop-prod.cmd = "docker compose -f docker-compose.prod.yml down"
 stop-prod.help = "Stop prod environment"
 
-reset.shell = """docker system prune -a --volumes"""
+reset.shell = """docker system prune -a --volumes -f"""
 reset.help = "Clean up all docker resources"
 
 list.shell = """docker images && docker ps -a"""
 list.help = "List docker images and containers"
+
+docker-logs.shell = """docker logs excuseme-backend && docker logs excuseme-celery-worker && docker logs excuseme-celery-beat"""
+docker-logs.help = "List docker logs of backend, celery-worker and celery-beat"
 
 
 
@@ -67,6 +73,7 @@ dependencies = [
     "poethepoet>=0.38.0",
     "prompt-toolkit==3.0.38",
     "psycopg==3.1.9",
+    "psycopg2-binary>=2.9.11",
     "pytest==7.3.1",
     "pytest-django==4.5.2",
     "pytest-sugar==0.9.7",
