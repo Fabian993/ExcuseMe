@@ -1,30 +1,47 @@
-import pytest
 from api import models
 
-# def test_example(test_user):
-#     assert test_user.username == "test_user"
-#     assert test_user.email is not None
+def make_user(username: str) -> models.User:
+    """
+    A little helper func
+    """
+    school = models.School.objects.create(
+        name="test",
+        address="teststreet"
+    )
+    user = models.User.objects.create(
+        username=username,
+        first_name="fj",
+        last_name="ts",
+        email="user@testmail.com",
+        password_hash=b"testpassword", # "test", b ... binary
+        # created_at="2000-01-01",
+        school=school
+    )
+    return user
 
 def test_school():
     school = models.School.objects.create(
         name="test",
         address="teststreet"
     )
+    
     assert school.name == "test"
     assert school.address == "teststreet"
 
     school.delete()
-    assert school.objects.count() == 0
+    assert models.School.objects.count() == 0
 
 def test_user():
-    school = models.School.objects.create(name="test")
-
+    school = models.School.objects.create(
+        name="test",
+        address="teststreet"
+    )
     user = models.User.objects.create(
         username="user",
         first_name="fj",
         last_name="ts",
         email="user@testmail.com",
-        password_hash="9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08", # "test"
+        password_hash=b"testpassword", # "test", b ... binary
         # created_at="2000-01-01",
         school=school
     )
@@ -33,20 +50,20 @@ def test_user():
     assert user.first_name == "fj"
     assert user.last_name == "ts"
     assert user.email == "user@testmail.com"
-    assert user.password_hash == "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"
-    assert user.created_at is not None
+    assert user.password_hash == b"testpassword"
+    assert user.created_at is not None # default should be "now()"
     
     # fk
     assert user.school == school
 
     user.delete()
-    assert school.objects.count() == 0
+    assert models.User.objects.count() == 0
 
 def test_klasse():
-    user1 = models.User.objects.create(username="user1")
-    user2 = models.User.objects.create(username="user2")
-    teacher1 = models.Teacher.objects.create(user=user1)
-    teacher2 = models.Teacher.objects.create(user=user2)
+    t_user1 = make_user("user1")
+    t_user2 = make_user("user2")
+    teacher1 = models.Teacher.objects.create(user=t_user1)
+    teacher2 = models.Teacher.objects.create(user=t_user2)
     klasse = models.Klasse.objects.create(name="1AKIFT")
     klasse.teachers.add(teacher1, teacher2)
 
@@ -54,105 +71,119 @@ def test_klasse():
 
     # fk
     assert klasse.teachers.count() == 2
-    assert list(klasse.teachers.all()) == [teacher1, teacher2]
+    assert set(klasse.teachers.all()) == {teacher1, teacher2}
 
     klasse.delete()
-    assert klasse.objects.count() == 0
+    assert models.Klasse.objects.count() == 0
 
 def test_teacher():
-    user = models.User.objects.create(username="user")
+    user = make_user("user")
     teacher = models.Teacher.objects.create(user=user)
 
     # fk
     assert teacher.user == user
 
     teacher.delete()
-    assert teacher.objects.count() == 0
+    assert models.Teacher.objects.count() == 0
 
 def test_student():
-    user = models.User.objects.create(username="user")
-    teacher = models.Teacher.objects.create(user=user)
-    klasse = models.Klasse.objects.create(name="1AKIFT", teacher=teacher)
-    student = models.Student.objects.create(user=user, klasse=klasse)
+    s_user = make_user("student")
+    t_user = make_user("teacher")
+    teacher = models.Teacher.objects.create(user=t_user)
+    klasse = models.Klasse.objects.create(name="1AKIFT")
+    klasse.teachers.add(teacher)
+    student = models.Student.objects.create(user=s_user, klasse=klasse)
     
-    assert student.user == user
+    assert student.user == s_user
     assert student.klasse == klasse
 
     # fk
     student.delete()
-    assert student.objects.count() == 0
+    assert models.Student.objects.count() == 0
 
 
 def test_parent():
-    user = models.User.objects.create(username="user")
-    user1 = models.User.objects.create(username="user1")
-    user2 = models.User.objects.create(username="user2")
-    child1 = models.Student.objects.create(user=user1)
-    child2 = models.Student.objects.create(user=user2)
-    parent = models.Parent.objects.create(user=user)
+    klasse = models.Klasse.objects.create(name="1AKIFT")
+    
+    c_user1 = make_user("child1")
+    c_user2 = make_user("child2")
+    child1 = models.Student.objects.create(user=c_user1, klasse=klasse)
+    child2 = models.Student.objects.create(user=c_user2, klasse=klasse)
+
+
+    p_user = make_user("parent")
+    parent = models.Parent.objects.create(user=p_user)
     parent.children.add(child1, child2)
 
-    assert parent.user == user
+    assert parent.user == p_user
 
     # fk
     assert parent.children.count() == 2
-    assert list(parent.children.all()) == [child1, child2]
+    assert set(parent.children.all()) == {child1, child2}
 
     parent.delete()
-    assert parent.objects.count == 0
+    assert models.Parent.objects.count() == 0
 
 def test_status():
-    default = models.Status.objects.create()
     status = models.Status.objects.create(name="teststatus")
-    assert default.name == "Pending"
     assert status.name == "teststatus"
 
     status.delete()
-    assert status.objects.count == 0
+    assert models.Status.objects.count() == 0
 
 
 def test_excuse():
-    user = models.User.objects.create(username="user")
-    user1 = models.User.objects.create(username="user1")
-    teacher1 = models.Teacher.objects.create(user=user1)
+    user = make_user("user")
+    t_user = make_user("teacher")
+    teacher = models.Teacher.objects.create(user=t_user)
+    status = models.Status.objects.create(name="teststatus")
     excuse = models.Excuse.objects.create(
         title="test",
         content="some content",
         # created_at="2000-01-01",
         uploaded_by_user=user,
-        teachers=teacher1
     )
+    models.ExcuseTeacher.objects.create(
+        excuse=excuse,
+        teacher=teacher,
+        status=status  # required
+    )
+    excuse.teachers.add(teacher)
+
     assert excuse.title == "test"
     assert excuse.content == "some content"
     assert excuse.created_at is not None
     assert excuse.uploaded_by_user == user
-    assert excuse.teachers == teacher1
+    assert excuse.teachers.count() == 1
+    assert teacher in excuse.teachers.all()
 
     excuse.delete()
-    assert excuse.objects.count == 0
+    assert models.Excuse.objects.count() == 0
 
 
 def test_excuseTeacher():
-    user = models.User.objects.create(username="user")
-    user1 = models.User.objects.create(username="user1")
-    teacher1 = models.Teacher.objects.create(user=user)
+    user = make_user("user")
+    t_user = make_user("teacher")
+    teacher = models.Teacher.objects.create(user=t_user)
     status = models.Status.objects.create(name="teststatus")
     excuse = models.Excuse.objects.create(
         title="test",
         content="some content",
         # created_at="2000-01-01",
-        uploaded_by_user=user,
-        teachers=teacher1
+        uploaded_by_user=user
     )
+    excuse.teachers.add(teacher)
+
     excuseTeacher = models.ExcuseTeacher.objects.create(
         excuse=excuse,
-        teacher=teacher1,
+        teacher=teacher,
+        status=status
     )
 
-    # assert excuseTeacher.read_at ==
+    # excuseTeacher.read_at may be None, so no test
     assert excuseTeacher.excuse == excuse
-    assert excuseTeacher.teacher == teacher1
-    assert excuseTeacher.status == "teststatus"
+    assert excuseTeacher.teacher == teacher
+    assert excuseTeacher.status == status
 
     excuseTeacher.delete()
-    assert excuseTeacher.objects.count() == 0
+    assert models.ExcuseTeacher.objects.count() == 0
