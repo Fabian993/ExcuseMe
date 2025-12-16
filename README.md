@@ -10,7 +10,71 @@
 > - Frontend: Flutter 3.x (alternativ Ionic)  
 > - Datenbank: MySQL 8.x oder PostgreSQL  (PostgreSQL: Opensource, bessere Community, bessere Skalierbarkeit, unterstützt jsonb (json binary))
 > - Auth: OAuth2 / JWT + Django‑Auth  
-> - Hosting: Heroku / DigitalOcean (zwei separate Services: API & Mobile)  
+> - Hosting: Heroku / DigitalOcean (zwei separate Services: API & Mobile)
+
+> **Projekt-Struktur**
+
+```
+.
+├── ABA.md
+├── deployment
+│   ├── Dockerfile
+│   └── scripts
+│       ├── backend
+│       │   ├── start.sh
+│       │   └── wait-for-it.sh
+│       ├── celery
+│       │   ├── start-beat.sh
+│       │   └── start-worker.sh
+│       └── nginx
+│           └── nginx.conf
+├── docker-compose.prod.yml
+├── docker-compose.yml
+├── env.example
+├── LICENSE
+├── pyproject.toml
+├── README.md
+├── scripts
+│   ├── format.sh
+│   ├── lint.sh
+│   └── test.sh
+├── src
+│   ├── api
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── __init__.py
+│   │   ├── migrations/
+│   │   ├── models.py
+│   │   ├── serializer.py
+│   │   ├── tasks.py
+│   │   ├── urls.py
+│   │   └── views.py
+│   ├── celerybeat-schedule
+│   ├── excuseme
+│   │   ├── asgi.py
+│   │   ├── celery.py
+│   │   ├── __init__.py
+│   │   ├── settings
+│   │   │   ├── base.py
+│   │   │   ├── dev.py
+│   │   │   ├── __init__.py
+│   │   │   ├── prod.py
+│   │   │   └── test.py
+│   │   ├── urls.py
+│   │   └── wsgi.py
+│   ├── manage.py
+│   ├── requirements.dev.txt
+│   ├── requirements.txt
+│   └── tests
+│       ├── api
+│       ├── conftest.py
+│       ├── __init__.py
+│       ├── models
+│       │   ├── __init__.py
+│       │   └── test_models.py
+│       └── test_app_1
+└── uv.lock
+```
 
 ## 1. Überblick Rollen
 
