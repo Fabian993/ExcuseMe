@@ -14,10 +14,10 @@
 
 > **Projekt-Struktur**
 
-```
+```bash
 .
-├── ABA.md
-├── deployment
+├── ABA.md                        # Diplomarbeit Infos für ABA
+├── deployment                    # "noch gar nix" - Fabian
 │   ├── Dockerfile
 │   └── scripts
 │       ├── backend
@@ -28,51 +28,50 @@
 │       │   └── start-worker.sh
 │       └── nginx
 │           └── nginx.conf
-├── docker-compose.prod.yml
-├── docker-compose.yml
-├── env.example
+├── docker-compose.prod.yml       # Docker Compose (production)
+├── docker-compose.yml            # Docker Compose (development)
+├── env.example                   # Template -> .env
 ├── LICENSE
-├── pyproject.toml
-├── README.md
-├── scripts
+├── pyproject.toml                # Project Config - Poe, Pytest, Ruff, ...
+├── README.md                     # Project Infos
+├── scripts                       # Helper (optional)
 │   ├── format.sh
 │   ├── lint.sh
 │   └── test.sh
-├── src
-│   ├── api
-│   │   ├── admin.py
-│   │   ├── apps.py
-│   │   ├── __init__.py
+├── src                           # Source Code
+│   ├── api                       # API-related Code (Django-App)
+│   │   ├── admin.py              # Django Admin
+│   │   ├── apps.py               # Apps that belong to api
+│   │   ├── __init__.py       
 │   │   ├── migrations/
-│   │   ├── models.py
-│   │   ├── serializer.py
-│   │   ├── tasks.py
+│   │   ├── models.py             # DB Model
+│   │   ├── serializer.py         # Model -> JSON
+│   │   ├── tasks.py              # Django Tasks
 │   │   ├── urls.py
 │   │   └── views.py
 │   ├── celerybeat-schedule
-│   ├── excuseme
-│   │   ├── asgi.py
-│   │   ├── celery.py
+│   ├── excuseme                  # Django Main App
+│   │   ├── asgi.py               # Async Web Server Gateway Interface
+│   │   ├── celery.py             # Task Distribution
 │   │   ├── __init__.py
-│   │   ├── settings
+│   │   ├── settings              # Django Project Settings
 │   │   │   ├── base.py
 │   │   │   ├── dev.py
 │   │   │   ├── __init__.py
 │   │   │   ├── prod.py
 │   │   │   └── test.py
-│   │   ├── urls.py
-│   │   └── wsgi.py
-│   ├── manage.py
-│   ├── requirements.dev.txt
-│   ├── requirements.txt
-│   └── tests
-│       ├── api
+│   │   ├── urls.py               # Routing
+│   │   └── wsgi.py               # Web Server Gateway Interface
+│   ├── manage.py                 # Django - Runs administrative tasks
+│   ├── requirements.dev.txt      # Requirements (Dev)
+│   ├── requirements.txt          # Requirements
+│   └── tests                     # Test
+│       ├── api                   # Tests for API App
 │       ├── conftest.py
 │       ├── __init__.py
-│       ├── models
-│       │   ├── __init__.py
-│       │   └── test_models.py
-│       └── test_app_1
+│       └── models                # Tests for Models
+│           ├── __init__.py
+│           └── test_models.py
 └── uv.lock
 ```
 
