@@ -2,17 +2,10 @@
 ## Links:
 [dbDiagram](https://dbdiagram.io/d/dipl-68c6a0ed841b2935a67a78a9)
 
-# TODO:
-[x] ABA Portal ausfüllen!  
-[x] DB Diagram update  
-[ ] "Tickets" erstellen  
-[ ] Requiremants erweitern 
-
-
 # Projekt‑Requirements für „Excuse Me“
 
 > **Titel** Excuse Me  
-> **Ziel** Eine cross-platform App, die SchülerInnen (und ihre Eltern) erlaubt, Fehlstunden‑Entschuldigungen an ihre Klassenvorstände zu schicken. Für minderjährige SchülerInnen muss die Entschuldigung digital von den Eltern signiert werden.  
+> **Ziel** Eine cross-platform App, die SchülerInnen (und ihre Eltern) erlaubt, Fehlstunden‑Entschuldigungen an ihre Klassenvorstände zu schicken. Für minderjährige SchülerInnen muss die Entschuldigung digital von den Eltern signiert werden. Statistiken und Graphen schaffen Übersicht für Schule und Schüler.
 
 > **Technologie‑Stack**  
 > - Backend: Django 5.x  
