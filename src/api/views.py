@@ -2,9 +2,13 @@
 Docstring for api.views
 """
 #We use Views to get web requests and send responses
-from rest_framework import viewsets
+from rest_framework import viewsets, filters, permissions
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from django_filters.rest_framework import DjangoFilterBackend
 from .serializer import *
 from .models import *
+from .permissions import * # Custom permission
 
 class SchoolViewSet(viewsets.ModelViewSet):
     queryset = School.objects.all()
