@@ -1,5 +1,4 @@
 from rest_framework import permissions
-from .models import Teacher, Student, Parent, School
 
 class SchoolUserPermission(permissions.BasePermission): # Lehrer/Eltern/Schüler sehen nur ihre eigenen Daten
 
@@ -16,7 +15,7 @@ class SchoolUserPermission(permissions.BasePermission): # Lehrer/Eltern/Schüler
                 hasattr(obj, 'school') and obj.school == teacher_school 
                 or
                 (
-                hasattr(obj, 'klasse') and obj.school == teacher_school
+                hasattr(obj, 'klasse') and obj.klasse.school == teacher_school
                 )
             )
         
