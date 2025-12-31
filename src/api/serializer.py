@@ -5,12 +5,14 @@ from .models import *
 class SchoolSerializer(serializers.ModelSerializer):
     class Meta:
         model = School
-        fields = '__all__'
+        fields = ['id', 'name', 'address', 'created_at']
+        read_only_fields = ['id', 'created_at']
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = '__all__'
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'date_joined']
+        read_only_fields = ['id', 'date_joined']
 
 class KlasseSerializer(serializers.ModelSerializer):
     class Meta:
