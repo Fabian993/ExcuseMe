@@ -21,11 +21,15 @@ class User(models.Model):
     school = models.ForeignKey(
         School,
         related_name="users",
-        on_delete=models.CASCADE, # this deletes school?
+        on_delete=models.CASCADE,
     )
 
 class Klasse(models.Model):
     name = models.CharField(max_length=255)
+    school = models.ForeignKey(
+        School, 
+        on_delete=models.CASCADE
+    )
     teachers = models.ManyToManyField(
         "Teacher",
         related_name="klassen",
@@ -47,7 +51,7 @@ class Student(models.Model):
     klasse = models.ForeignKey(
         Klasse,
         related_name="students",
-        on_delete=models.CASCADE # this deletes klasse?
+        on_delete=models.CASCADE
     )
 
 class Parent(models.Model):
@@ -70,11 +74,11 @@ class Excuse(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     uploaded_by_user = models.ForeignKey(
         User,
-        on_delete=models.CASCADE # this deletes user?
+        on_delete=models.CASCADE
     )
     teachers = models.ManyToManyField(
         Teacher,
-        # through="ExcuseTeacher", # not sure if we want this...
+        through="ExcuseTeacher",
         related_name="excuses",
     )
 
