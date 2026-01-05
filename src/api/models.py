@@ -25,6 +25,10 @@ class User(DjangoAuthUser):
 
 class Klasse(models.Model):
     name = models.CharField(max_length=255)
+    school = models.ForeignKey(
+        School, 
+        on_delete=models.CASCADE
+    )
     teachers = models.ManyToManyField(
         "Teacher",
         related_name="klassen",

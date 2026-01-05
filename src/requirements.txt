@@ -21,3 +21,4 @@ wcwidth==0.2.6
 redis==4.5.5
 whitenoise==6.4.0
 djangorestframework==3.16.1
+django-filter>=25.1
