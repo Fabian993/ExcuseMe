@@ -6,18 +6,17 @@ https://docs.djangoproject.com/en/6.0/ref/models/fields/
 """
 
 from django.db import models  # noqa
+from django.contrib.auth.models import User as DjangoAuthUser
 
 class School(models.Model):
     name = models.CharField(max_length=255)
     address = models.CharField(max_length=255)
 
-class User(models.Model):
-    username = models.CharField(max_length=255, unique=True)
-    first_name = models.CharField(max_length=255)
-    last_name = models.CharField(max_length=255)
-    email = models.EmailField(max_length=255)
-    password_hash = models.BinaryField(max_length=64) #SHA-256
-    created_at = models.DateTimeField(auto_now_add=True)
+class User(DjangoAuthUser):
+    # username,
+    # password and
+    # email are required in parent (auth.models.User)
+    # date_joined (created_at) is also already logged in parent
     school = models.ForeignKey(
         School,
         related_name="users",
@@ -78,7 +77,6 @@ class Excuse(models.Model):
     )
     teachers = models.ManyToManyField(
         Teacher,
-        through="ExcuseTeacher",
         related_name="excuses",
     )
 

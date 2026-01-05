@@ -13,8 +13,8 @@ def make_user(username: str) -> models.User:
         first_name="fj",
         last_name="ts",
         email="user@testmail.com",
-        password_hash=b"testpassword", # "test", b ... binary
-        # created_at="2000-01-01",
+        password="testpassword",
+        # date_joined="2000-01-01",
         school=school
     )
     return user
@@ -41,8 +41,8 @@ def test_user():
         first_name="fj",
         last_name="ts",
         email="user@testmail.com",
-        password_hash=b"testpassword", # "test", b ... binary
-        # created_at="2000-01-01",
+        password="testpassword",
+        # date_joined="2000-01-01",
         school=school
     )
 
@@ -50,8 +50,8 @@ def test_user():
     assert user.first_name == "fj"
     assert user.last_name == "ts"
     assert user.email == "user@testmail.com"
-    assert user.password_hash == b"testpassword"
-    assert user.created_at is not None # default should be "now()"
+    assert user.password == "testpassword"
+    assert user.date_joined is not None # default should be "now()"
     
     # fk
     assert user.school == school
@@ -140,7 +140,7 @@ def test_excuse():
     excuse = models.Excuse.objects.create(
         title="test",
         content="some content",
-        # created_at="2000-01-01",
+        # date_joined="2000-01-01",
         uploaded_by_user=user,
     )
     models.ExcuseTeacher.objects.create(
@@ -169,7 +169,7 @@ def test_excuseTeacher():
     excuse = models.Excuse.objects.create(
         title="test",
         content="some content",
-        # created_at="2000-01-01",
+        # date_joined="2000-01-01",
         uploaded_by_user=user
     )
     excuse.teachers.add(teacher)
