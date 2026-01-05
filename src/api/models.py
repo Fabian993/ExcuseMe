@@ -6,22 +6,21 @@ https://docs.djangoproject.com/en/6.0/ref/models/fields/
 """
 
 from django.db import models  # noqa
+from django.contrib.auth.models import User as DjangoAuthUser
 
 class School(models.Model):
     name = models.CharField(max_length=255)
     address = models.CharField(max_length=255)
 
-class User(models.Model):
-    username = models.CharField(max_length=255, unique=True)
-    first_name = models.CharField(max_length=255)
-    last_name = models.CharField(max_length=255)
-    email = models.EmailField(max_length=255)
-    password_hash = models.BinaryField(max_length=64) #SHA-256
-    created_at = models.DateTimeField(auto_now_add=True)
+class User(DjangoAuthUser):
+    # username,
+    # password and
+    # email are required in parent (auth.models.User)
+    # date_joined (created_at) is also already logged in parent
     school = models.ForeignKey(
         School,
         related_name="users",
-        on_delete=models.CASCADE, # this deletes school?
+        on_delete=models.CASCADE,
     )
 
 class Klasse(models.Model):
@@ -47,7 +46,7 @@ class Student(models.Model):
     klasse = models.ForeignKey(
         Klasse,
         related_name="students",
-        on_delete=models.CASCADE # this deletes klasse?
+        on_delete=models.CASCADE
     )
 
 class Parent(models.Model):
@@ -70,11 +69,10 @@ class Excuse(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     uploaded_by_user = models.ForeignKey(
         User,
-        on_delete=models.CASCADE # this deletes user?
+        on_delete=models.CASCADE
     )
     teachers = models.ManyToManyField(
         Teacher,
-        # through="ExcuseTeacher", # not sure if we want this...
         related_name="excuses",
     )
 
