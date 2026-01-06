@@ -19,6 +19,17 @@ def make_user(username: str) -> models.User:
     )
     return user
 
+def make_klasse(name: str) -> models.Klasse:
+    school = models.School.objects.create(
+        name="test",
+        address="teststreet"
+    )
+    klasse = models.Klasse.objects.create(
+        name=name,
+        school=school
+    )
+    return klasse
+
 def test_school():
     school = models.School.objects.create(
         name="test",
@@ -64,7 +75,8 @@ def test_klasse():
     t_user2 = make_user("user2")
     teacher1 = models.Teacher.objects.create(user=t_user1)
     teacher2 = models.Teacher.objects.create(user=t_user2)
-    klasse = models.Klasse.objects.create(name="1AKIFT")
+    
+    klasse = make_klasse("1AKIFT")
     klasse.teachers.add(teacher1, teacher2)
 
     assert klasse.name == "1AKIFT"
@@ -90,7 +102,7 @@ def test_student():
     s_user = make_user("student")
     t_user = make_user("teacher")
     teacher = models.Teacher.objects.create(user=t_user)
-    klasse = models.Klasse.objects.create(name="1AKIFT")
+    klasse = make_klasse(name="1AKIFT")
     klasse.teachers.add(teacher)
     student = models.Student.objects.create(user=s_user, klasse=klasse)
     
@@ -103,7 +115,7 @@ def test_student():
 
 
 def test_parent():
-    klasse = models.Klasse.objects.create(name="1AKIFT")
+    klasse = make_klasse(name="1AKIFT")
     
     c_user1 = make_user("child1")
     c_user2 = make_user("child2")
