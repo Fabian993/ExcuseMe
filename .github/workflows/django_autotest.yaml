@@ -23,6 +23,7 @@ jobs:
     - uses: astral-sh/setup-uv@v7.1.6
     - name: Install Dependencies
       run: |
+        cd backend/
         uv sync
     - name: Run Tests
       run: |
