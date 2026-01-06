@@ -7,7 +7,7 @@
 
 > **Technologie‑Stack**  
 > - Backend: Django 5.x  
-> - Frontend: Flutter 3.x (alternativ Ionic)  
+> - Frontend: Flutter 3.x
 > - Datenbank: MySQL 8.x oder PostgreSQL  (PostgreSQL: Opensource, bessere Community, bessere Skalierbarkeit, unterstützt jsonb (json binary))
 > - Auth: OAuth2 / JWT + Django‑Auth  
 > - Hosting: Heroku / DigitalOcean (zwei separate Services: API & Mobile)  
