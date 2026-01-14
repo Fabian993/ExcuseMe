@@ -53,6 +53,7 @@ docker-logs.help = "List docker logs of backend, celery-worker and celery-beat"
 [project]
 name = "excuseme"
 version = "0.1.0"
+requires-python = ">=3.11"
 authors = ["Atlas-Zero", "Fabian993"]
 dependencies = [
     "amqp==5.1.1",
@@ -74,7 +75,7 @@ dependencies = [
     "kombu==5.2.4",
     "poethepoet>=0.38.0",
     "prompt-toolkit==3.0.38",
-    "psycopg==3.1.9",
+    "psycopg==3.1.18",
     "psycopg2-binary>=2.9.11",
     "pytest==7.3.1",
     "pytest-django==4.5.2",
@@ -84,7 +85,7 @@ dependencies = [
     "ruff==0.0.265",
     "six==1.16.0",
     "sqlparse==0.4.4",
-    "typing-extensions==4.5.0",
+    "typing-extensions>=4.6.0",
     "vine==5.0.0",
     "wcwidth==0.2.6",
     "whitenoise==6.4.0",
