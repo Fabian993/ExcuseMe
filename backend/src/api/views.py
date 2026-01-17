@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from .serializer import *
 from .models import *
-from .permissions import * # Custom permission
+from .permissions import *
 
 #Public
 class SchoolViewSet(viewsets.ModelViewSet):
@@ -21,13 +21,16 @@ class SchoolViewSet(viewsets.ModelViewSet):
         if self.action in ['create', 'update', 'partial_update']:
             return SchoolInputSerializer
         return SchoolOutputSerializer
+    
+    def get_permissions(self):
+        if self.action in ['create', 'update', 'destroy']:
+            return [permissions.IsAdminUser()]
+        return [SchoolUserPermission()]
 #Schulbezogen
 
 
 class KlasseViewSet(viewsets.ModelViewSet):
     queryset = Klasse.objects.all()
-    #permission_classes = [SchoolUserPermission]
-    permission_classes = [permissions.AllowAny] # nur für Testing
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['school']
 
@@ -36,11 +39,13 @@ class KlasseViewSet(viewsets.ModelViewSet):
             return KlasseInputSerializer
         return KlasseOutputSerializer
 
+    def get_permissions(self):
+        if self.action == 'create':
+            return [permissions.IsAdminUser()]
+        return [SchoolUserPermission()]
 
 class TeacherViewSet(viewsets.ModelViewSet):
     queryset = Teacher.objects.all()
-    #permission_classes = [SchoolUserPermission]
-    permission_classes = [permissions.AllowAny] # nur für Testing
     filter_backends = [DjangoFilterBackend]
     filterset_fields = []
 
@@ -48,12 +53,13 @@ class TeacherViewSet(viewsets.ModelViewSet):
         if self.action in ['create', 'update', 'partial_update']:
             return TeacherInputSerializer
         return TeacherOutputSerializer
+    
+    def get_permissions(self):
+        return [permissions.IsAdminUser()]
 
 #Student
 class StudentViewSet(viewsets.ModelViewSet):
     queryset = Student.objects.all()
-    #permission_classes = [StudentPermission]
-    permission_classes = [permissions.AllowAny] # nur für Testing
 
     def get_queryset(self):
         user = self.request.user
@@ -65,11 +71,12 @@ class StudentViewSet(viewsets.ModelViewSet):
         if self.action in ['create', 'update', 'partial_update']:
             return StudentInputSerializer
         return StudentOutputSerializer
+    
+    def get_permissions(self):
+        return [StudentPermission()]
 #Eltern
 class ParentViewSet(viewsets.ModelViewSet):
     queryset = Parent.objects.all()
-    #permission_classes = [ParentPermission]
-    permission_classes = [permissions.AllowAny] # nur für Testing
 
     def get_queryset(self):
         user = self.request.user
@@ -81,6 +88,9 @@ class ParentViewSet(viewsets.ModelViewSet):
         if self.action in ['create', 'update', 'partial_update']:
             return ParentInputSerializer
         return ParentOutputSerializer
+    
+    def get_permissions(self):
+        return [ParentPermission()]
 
 class StatusViewSet(viewsets.ModelViewSet):
     queryset = Status.objects.all()
@@ -88,12 +98,13 @@ class StatusViewSet(viewsets.ModelViewSet):
         if self.action in ['create', 'update', 'partial_update']:
             return StatusInputSerializer
         return StatusOutputSerializer
+    
+    def get_permissions(self):
+        return [permissions.IsAdminUser()]
 
 #Excuses
 class ExcuseViewSet(viewsets.ModelViewSet):
     queryset = Excuse.objects.all()
-    #permission_classes = [ExcusePermission]
-    permission_classes = [permissions.AllowAny] # nur für Testing
     filter_backends = [DjangoFilterBackend]
     #filterset_fields = ['student__klasse', 'teacher', 'status', 'date']
 
@@ -130,15 +141,18 @@ class ExcuseViewSet(viewsets.ModelViewSet):
         serializer = ExcuseOutputSerializer(excuse)
         return Response(serializer.data)
 
-
+    def get_permissions(self):
+        return [ExcusePermission()]
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserOutputSerializer
-    #permission_classes = [permissions.IsAdminUser]
-    permission_classes = [permissions.AllowAny] # nur für Testing
+    
+    def get_permissions(self):
+        return [permissions.IsAdminUser()]
 
 class ExcuseTeacherViewSet(viewsets.ModelViewSet):
     queryset = ExcuseTeacher.objects.all()
     serializer_class = ExcuseTeacherSerializer
-    #permission_classes = [permissions.IsAdminUser]
-    permission_classes = [permissions.AllowAny] # nur für Testing
+
+    def get_permissions(self):
+        return [permissions.IsAdminUser()]

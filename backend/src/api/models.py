@@ -35,14 +35,14 @@ class Klasse(models.Model):
     )
 
 class Teacher(models.Model):
-    user = models.ForeignKey(
+    user = models.OneToOneField(
         User,
         related_name="teachers",
         on_delete=models.CASCADE
     )
 
 class Student(models.Model):
-    user = models.ForeignKey(
+    user = models.OneToOneField(
         User,
         related_name="students",
         on_delete=models.CASCADE
@@ -54,7 +54,7 @@ class Student(models.Model):
     )
 
 class Parent(models.Model):
-    user = models.ForeignKey(
+    user = models.OneToOneField(
         User,
         related_name="parents",
         on_delete=models.CASCADE,
