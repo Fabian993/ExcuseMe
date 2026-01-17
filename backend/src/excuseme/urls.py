@@ -13,6 +13,7 @@ urlpatterns = [
     path("", include('api.urls')),
     path('api/token/', TokenObtainPairView.as_view()),
     path('api/token/refresh/', TokenRefreshView.as_view()),
+    path('', include('rest_framework.urls')),
 #   path("admin/", admin.site.urls),
 #   path("api/", include("api.urls")),
 #   path('api', include('api.urls')),
