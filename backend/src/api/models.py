@@ -12,6 +12,16 @@ class School(models.Model):
     name = models.CharField(max_length=255)
     address = models.CharField(max_length=255)
 
+class Klasse(models.Model):
+    name = models.CharField(max_length=255)
+    school = models.ForeignKey(
+        School, 
+        on_delete=models.CASCADE
+    )
+    teachers = models.ManyToManyField(
+        "Teacher",
+        related_name="klassen",
+    )
 class User(DjangoAuthUser):
     # username,
     # password and
@@ -22,16 +32,16 @@ class User(DjangoAuthUser):
         related_name="users",
         on_delete=models.CASCADE,
     )
-
-class Klasse(models.Model):
-    name = models.CharField(max_length=255)
-    school = models.ForeignKey(
-        School, 
-        on_delete=models.CASCADE
+    role = models.CharField(
+        max_length=20,
+        choices=[('teacher', 'Teacher'), ('student', 'Student'), ('parent', 'Parent')],
+        default='student'
     )
-    teachers = models.ManyToManyField(
-        "Teacher",
-        related_name="klassen",
+    klasse = models.ForeignKey(
+        Klasse,
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True
     )
 
 class Teacher(models.Model):

@@ -28,7 +28,6 @@ class SchoolViewSet(viewsets.ModelViewSet):
         return [SchoolUserPermission()]
 #Schulbezogen
 
-
 class KlasseViewSet(viewsets.ModelViewSet):
     queryset = Klasse.objects.all()
     filter_backends = [DjangoFilterBackend]
@@ -63,8 +62,10 @@ class StudentViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
+        if user.is_staff:
+            return Student.objects.all()
         if hasattr(user, 'student'):
-            return Student.objects.filter(id=user.student.id)
+            return Student.objects.filter(user=user.student.user)
         return Student.objects.none()
     
     def get_serializer_class(self):
@@ -73,7 +74,7 @@ class StudentViewSet(viewsets.ModelViewSet):
         return StudentOutputSerializer
     
     def get_permissions(self):
-        return [StudentPermission()]
+        return [permissions.IsAdminUser()]
 #Eltern
 class ParentViewSet(viewsets.ModelViewSet):
     queryset = Parent.objects.all()
@@ -85,11 +86,13 @@ class ParentViewSet(viewsets.ModelViewSet):
         return Parent.objects.none()
 
     def get_serializer_class(self):
-        if self.action in ['create', 'update', 'partial_update']:
+        if self.action in ['create', 'update']:
             return ParentInputSerializer
         return ParentOutputSerializer
     
     def get_permissions(self):
+        if self.action in ['create']:
+            return [permissions.IsAdminUser()]
         return [ParentPermission()]
 
 class StatusViewSet(viewsets.ModelViewSet):
@@ -105,15 +108,15 @@ class StatusViewSet(viewsets.ModelViewSet):
 #Excuses
 class ExcuseViewSet(viewsets.ModelViewSet):
     queryset = Excuse.objects.all()
-    filter_backends = [DjangoFilterBackend]
-    #filterset_fields = ['student__klasse', 'teacher', 'status', 'date']
+    #filter_backends = [DjangoFilterBackend]
+    #filterset_fields = ['status']
 
     def get_queryset(self):
         user = self.request.user
         if hasattr(user, 'student'):
             return Excuse.objects.filter(student=user.student)
         elif hasattr(user, 'teacher'):
-            return Excuse.objects.filter(student__klasse = user.teacher.klasse)
+            return Excuse.objects.filter(student__klasse = user.teacher.klassen.all())
         elif hasattr(user, 'parent'):
             return Excuse.objects.filter(student__parent = user.parent)
         return Excuse.objects.none()
@@ -122,6 +125,7 @@ class ExcuseViewSet(viewsets.ModelViewSet):
         if self.action in ['create', 'update', 'partial_update']:
             return ExcuseInputSerializer
         return ExcuseOutputSerializer
+    
     #Quasi Platzhalter für richtige signatur
     @action(detail=True, methods=['post'])
     def approve(self, request, pk=None):
@@ -143,10 +147,14 @@ class ExcuseViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         return [ExcusePermission()]
-class UserViewSet(viewsets.ReadOnlyModelViewSet):
+class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
-    serializer_class = UserOutputSerializer
     
+    def get_serializer_class(self):
+        if self.action == 'create':
+            return UserInputSerializer
+        return UserOutputSerializer
+
     def get_permissions(self):
         return [permissions.IsAdminUser()]
 
