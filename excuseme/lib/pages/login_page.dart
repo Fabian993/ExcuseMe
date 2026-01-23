@@ -9,6 +9,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  bool _isObscured = true;
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -29,10 +31,18 @@ class _LoginPageState extends State<LoginPage> {
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 64, vertical: 16),
           child: TextFormField(
-            decoration: const InputDecoration(
-              icon: Icon(Icons.key_outlined),
+            obscureText: _isObscured,
+            decoration: InputDecoration(
+              icon: Icon(Icons.lock_outline),
               border: OutlineInputBorder(),
               hintText: 'Password',
+              suffixIcon: IconButton(
+                onPressed: () => setState(() {
+                  _isObscured = !_isObscured;
+                }),
+                padding: EdgeInsetsDirectional.symmetric(horizontal: 20),
+                icon: Icon(Icons.remove_red_eye_outlined),
+              ),
             ),
           ),
         ),
@@ -40,7 +50,7 @@ class _LoginPageState extends State<LoginPage> {
           onPressed: () => {},
           child: Text(
             "Login",
-            style: TextStyle(color: Theme.of(context).colorScheme.outline),
+            style: TextStyle(color: Theme.of(context).colorScheme.secondary),
           ),
         ),
       ],
