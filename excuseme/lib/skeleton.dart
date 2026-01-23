@@ -22,9 +22,15 @@ class _SkeletonState extends State<Skeleton> {
         if (isMobile) {
           return Scaffold(
             appBar: AppBar(
-              title: Text(
-                "ExcuseMe",
-                style: TextStyle(fontSize: 32, color: Colors.deepOrange),
+              title: Row(
+                spacing: 10,
+                children: [
+                  const Image(image: AssetImage("assets/icon.png"), height: 32),
+                  Text(
+                    "ExcuseMe",
+                    style: TextStyle(fontSize: 32, color: Colors.deepOrange),
+                  ),
+                ],
               ),
               centerTitle: true,
               backgroundColor: .from(
@@ -60,9 +66,15 @@ class _SkeletonState extends State<Skeleton> {
           // desktop
           return Scaffold(
             appBar: AppBar(
-              title: Text(
-                "ExcuseMe",
-                style: TextStyle(fontSize: 32, color: Colors.deepOrange),
+              title: Row(
+                spacing: 10,
+                children: [
+                  const Image(image: AssetImage("assets/icon.png"), height: 32),
+                  Text(
+                    "ExcuseMe",
+                    style: TextStyle(fontSize: 32, color: Colors.deepOrange),
+                  ),
+                ],
               ),
               centerTitle: true,
               backgroundColor: .from(
