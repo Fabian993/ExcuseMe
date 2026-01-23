@@ -6,9 +6,9 @@
 > **Ziel** Eine cross-platform App, die SchülerInnen (und ihre Eltern) erlaubt, Fehlstunden‑Entschuldigungen an ihre Klassenvorstände zu schicken. Für minderjährige SchülerInnen muss die Entschuldigung digital von den Eltern signiert werden.  
 
 > **Technologie‑Stack**  
-> - Backend: Django 5.x  
-> - Frontend: Flutter 3.x
-> - Datenbank: MySQL 8.x oder PostgreSQL  (PostgreSQL: Opensource, bessere Community, bessere Skalierbarkeit, unterstützt jsonb (json binary))
+> - Backend: Django 4.2.1
+> - Frontend: Flutter 3.10.4
+> - Datenbank: PostgreSQL (PostgreSQL: Opensource, bessere Community, bessere Skalierbarkeit, unterstützt jsonb (json binary))
 > - Auth: OAuth2 / JWT + Django‑Auth  
 > - Hosting: Heroku / DigitalOcean (zwei separate Services: API & Mobile)  
 
