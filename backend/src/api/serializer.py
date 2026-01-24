@@ -16,24 +16,45 @@ class SchoolOutputSerializer(serializers.ModelSerializer):
         read_only_fields = ['id']
 
 class UserOutputSerializer(serializers.ModelSerializer):
+    role = serializers.SerializerMethodField()
+
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'first_name', 'last_name']
+        fields = ['username', 'email', 'first_name', 'last_name', 'school', 'role']
         read_only_fields = ['id']
 
+    def get_role(self, obj):
+        if hasattr(obj, 'student'): return 'student'
+        if hasattr(obj, 'teacher'): return 'teacher'
+        if hasattr(obj, 'parent'): return 'parent'
+        return obj.role
+
 class UserInputSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True, required=True)
+    password = serializers.CharField(write_only=True, min_length = 8)
     class Meta:
         model = User
-        fields = ['username', 'email', 'password', 'first_name', 'last_name', 'school']
-        extra_kwargs = {
-            'password': {'write_only': True}
-        }
+        fields = ['username', 'email', 'first_name', 'last_name', 'school', 'password', 'role', 'klasse']
+
+    def create(self, validated_data):
+        password = validated_data.pop('password') #reihenfolge wichtig, pop muss zuerst sein
+        role = validated_data.pop('role')
+
+        validated_data['role'] = role
+        user = User.objects.create_user(password=password, **validated_data)
+        if role == 'teacher':
+            Teacher.objects.create(user=user)
+        elif role == 'student':
+            klasse = validated_data.pop('klasse', None)
+            Student.objects.create(user=user, klasse=klasse)
+        elif role == 'parent':
+            Parent.objects.create(user=user)
+        return user
 
 class KlasseInputSerializer(serializers.ModelSerializer):
+    teachers = serializers.PrimaryKeyRelatedField(queryset=Teacher.objects.all(), many=True)
     class Meta:
         model = Klasse
-        fields = ['name', 'school']
+        fields = '__all__'
 
 class KlasseOutputSerializer(serializers.ModelSerializer):
     class Meta:
@@ -57,7 +78,7 @@ class StudentOutputSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
         fields = ['id', 'user', 'klasse']
-        read_only_fields = []
+        read_only_fields = ['id']
 
 class StudentInputSerializer(serializers.ModelSerializer):
     class Meta:
@@ -66,16 +87,21 @@ class StudentInputSerializer(serializers.ModelSerializer):
         extra_kwargs = {'user': {'write_only': True}}
 
 class ParentInputSerializer(serializers.ModelSerializer):
+    children = serializers.PrimaryKeyRelatedField(queryset=Student.objects.all(), many=True)
     class Meta:
         model = Parent
-        fields = ['user']
+        fields = '__all__'
         extra_kwargs = {'user': {'write_only': True}}
 
 class ParentOutputSerializer(serializers.ModelSerializer):
+    children_count = serializers.SerializerMethodField()
     class Meta:
         model = Parent
-        fields = ['id', 'user']
+        fields = ['id', 'user', 'children_count']
         read_only_fields = ['id']
+    
+    def get_children_count(self, obj):
+        return obj.children.count()
 
 class StatusInputSerializer(serializers.ModelSerializer):
     class Meta:
