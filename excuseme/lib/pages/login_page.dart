@@ -1,5 +1,7 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
+import 'package:dio/dio.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -9,7 +11,29 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  bool _isObscured = true;
+  // ui
+  bool _isObscured = true; // for password
+  TextEditingController usernameController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+  // response
+  String accessToken = "";
+  String refreshToken = "";
+
+  final Dio dio = Dio();
+
+  Future<Map<String, dynamic>> login(String username, String password) async {
+    final response = await dio.post(
+      'http://localhost:8000/api/token/',
+      data: {"username": username, "password": password},
+      options: Options(headers: {'Content-Type': 'application/json'}),
+    );
+    if (response.statusCode == 200) {
+      return response.data; // refresh token
+    } else {
+      throw Exception('Failed to log in.');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,8 +42,9 @@ class _LoginPageState extends State<LoginPage> {
       children: <Widget>[
         Text("Login", style: TextStyle(fontSize: 64, color: Colors.deepOrange)),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 64, vertical: 16),
+          padding: EdgeInsets.symmetric(horizontal: 80, vertical: 16),
           child: TextFormField(
+            controller: usernameController, // stores current value
             autofocus: true,
             decoration: InputDecoration(
               icon: Icon(Icons.person_outline),
@@ -29,8 +54,9 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 64, vertical: 16),
+          padding: EdgeInsets.symmetric(horizontal: 80, vertical: 16),
           child: TextFormField(
+            controller: passwordController,
             obscureText: _isObscured,
             decoration: InputDecoration(
               icon: Icon(Icons.lock_outline),
@@ -47,7 +73,16 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
         FloatingActionButton(
-          onPressed: () => {},
+          onPressed: () async {
+            final response = await login(
+              usernameController.text,
+              passwordController.text,
+            );
+            refreshToken = response['refresh'];
+            accessToken = response['access'];
+            // print('refreshToken: $refreshToken');
+            // print('accessToken: $accessToken');
+          },
           child: Text(
             "Login",
             style: TextStyle(color: Theme.of(context).colorScheme.secondary),
