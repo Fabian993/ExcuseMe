@@ -5,18 +5,18 @@ class SchoolUserPermission(permissions.BasePermission): # Lehrer/Eltern/Schüler
     def has_permission(self, request, view):
         return request.user.is_authenticated
     
-    def has_object_permission(self, request, view, obj):
+    def has_object_permission(self, request, _, obj):
         if request.user.is_superuser:
             return True
         
         elif hasattr(request.user, 'teacher'):
             teacher_school = request.user.teacher.school
+            model_name = obj._meta.model_name
+
             return (
                 hasattr(obj, 'school') and obj.school == teacher_school 
-                or
-                (
-                hasattr(obj, 'klasse') and obj.klasse.school == teacher_school
-                )
+                or hasattr(obj, 'klasse') and obj.klasse.school == teacher_school
+                or model_name in ['teacher', 'student', 'parent'] and obj.school == teacher_school
             )
         
         elif hasattr(request.user, 'student'):
@@ -32,12 +32,12 @@ class SchoolUserPermission(permissions.BasePermission): # Lehrer/Eltern/Schüler
         return False
     
 class StudentPermission(permissions.BasePermission):
-    def has_permission(self, request, view):
+    def has_permission(self, request, _):
         if request.method in permissions.SAFE_METHODS or request.method == 'POST':
             return request.user.is_authenticated
         return request.user.is_authenticated
     
-    def has_object_permission(self, request, view, obj):
+    def has_object_permission(self, request, _, obj):
         if request.user.is_superuser:
             return True
         if hasattr(request.user, 'student'):
@@ -45,12 +45,12 @@ class StudentPermission(permissions.BasePermission):
         return False
     
 class ParentPermission(permissions.BasePermission):
-    def has_permission(self, request, view):
+    def has_permission(self, request, _):
         if request.method in permissions.SAFE_METHODS or request.method == 'POST':
             return request.user.is_authenticated
         return request.user.is_authenticated
 
-    def has_object_permission(self, request, view, obj):
+    def has_object_permission(self, request, _, obj):
         if request.user.is_superuser:
             return True
         elif hasattr(request.user, 'parent'):
@@ -58,17 +58,18 @@ class ParentPermission(permissions.BasePermission):
         return False
 
 class ExcusePermission(permissions.BasePermission):
-    def has_permission(self, request, view):
+    def has_permission(self, request, _):
         if request.method in permissions.SAFE_METHODS or request.method == 'POST':
             return request.user.is_authenticated
         return request.user.is_authenticated
 
-    def has_object_permission(self, request, view, obj):
+    def has_object_permission(self, request, _, obj):
         if request.user.is_superuser:
             return True
         
         if request.method == 'DELETE':
-            if(hasattr(request.user, 'student') and obj.student == request.user.student) or (hasattr(request.user, 'parent') and obj.student.parent == request.user.parent):
+            if(hasattr(request.user, 'parent') and obj.student.parent == request.user.parent):
+            #or (hasattr(request.user, 'student') and obj.student == request.user.student):
                 return True 
             return False
 
