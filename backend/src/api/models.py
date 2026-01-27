@@ -12,17 +12,6 @@ class School(models.Model):
     name = models.CharField(max_length=255)
     address = models.CharField(max_length=255)
 
-class User(DjangoAuthUser):
-    # username,
-    # password and
-    # email are required in parent (auth.models.User)
-    # date_joined (created_at) is also already logged in parent
-    school = models.ForeignKey(
-        School,
-        related_name="users",
-        on_delete=models.CASCADE,
-    )
-
 class Klasse(models.Model):
     name = models.CharField(max_length=255)
     school = models.ForeignKey(
@@ -33,16 +22,37 @@ class Klasse(models.Model):
         "Teacher",
         related_name="klassen",
     )
+class User(DjangoAuthUser):
+    # username,
+    # password and
+    # email are required in parent (auth.models.User)
+    # date_joined (created_at) is also already logged in parent
+    school = models.ForeignKey(
+        School,
+        related_name="users",
+        on_delete=models.CASCADE,
+    )
+    role = models.CharField(
+        max_length=20,
+        choices=[('teacher', 'Teacher'), ('student', 'Student'), ('parent', 'Parent')],
+        default='student'
+    )
+    klasse = models.ForeignKey(
+        Klasse,
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True
+    )
 
 class Teacher(models.Model):
-    user = models.ForeignKey(
+    user = models.OneToOneField(
         User,
         related_name="teachers",
         on_delete=models.CASCADE
     )
 
 class Student(models.Model):
-    user = models.ForeignKey(
+    user = models.OneToOneField(
         User,
         related_name="students",
         on_delete=models.CASCADE
@@ -54,7 +64,7 @@ class Student(models.Model):
     )
 
 class Parent(models.Model):
-    user = models.ForeignKey(
+    user = models.OneToOneField(
         User,
         related_name="parents",
         on_delete=models.CASCADE,

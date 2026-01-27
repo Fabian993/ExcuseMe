@@ -15,6 +15,20 @@ For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 
+
+
+# Dependencies
+
+## Linux
+
+First, get either `gnome-keyring` or `kwalletmanager`, depending desktop manager
+
+
+```sh
+#flutter_secure_storage
+sudo apt install libsecret-1-dev  clang lld llvm-18
+```
+
 # Icons
 
 To generate app icons...
