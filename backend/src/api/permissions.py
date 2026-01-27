@@ -1,6 +1,27 @@
 from rest_framework import permissions
 
-class SchoolUserPermission(permissions.BasePermission): # Lehrer/Eltern/Schüler sehen nur ihre eigenen Daten
+def isTeacher(user):
+    return hasattr(user, "teacher")
+
+def isStudent(user):
+    return hasattr(user, "student")
+
+def isParent(user):
+    return hasattr(user, "parent")
+
+def teacherKlasses(user): 
+    """
+    Returned alle Klassen des Lehrers 
+    """
+    return user.teacher.klasse.all()
+
+class SchoolUserPermission(permissions.BasePermission):
+    """
+    - SU: alles
+    - Teacher: nur Obj aus seinen Klassen
+    - Student: nur eigene Daten
+    - Parent: nur eigene Kinder
+    """
 
     def has_permission(self, request, view):
         return request.user.is_authenticated
@@ -58,6 +79,11 @@ class ParentPermission(permissions.BasePermission):
         return False
 
 class ExcusePermission(permissions.BasePermission):
+    """
+    - POST: Parent oder Studen
+    - GET: Parent/Student nur eigene, Teacher nur per Klasse, SU alles?
+    - DELETE: Parent/Studen eigene, SU alles
+    """
     def has_permission(self, request, _):
         if request.method in permissions.SAFE_METHODS or request.method == 'POST':
             return request.user.is_authenticated
