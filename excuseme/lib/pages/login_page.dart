@@ -1,6 +1,6 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
+// import 'package:flutter/foundation.dart' show defaultTargetPlatform, kIsWeb;
+import 'package:excuseme/models/storage.dart';
 import 'package:dio/dio.dart';
 
 class LoginPage extends StatefulWidget {
@@ -12,14 +12,15 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   // ui
-  bool _isObscured = true; // for password
-  TextEditingController usernameController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  bool _isObscured = true; // obscure formfield
+  bool _stayAuthenticated = false; // checkbox
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
-  // response
-  String accessToken = "";
-  String refreshToken = "";
+  // secure storage
+  final StorageManager sm = StorageManager();
 
+  // request
   final Dio dio = Dio();
 
   Future<Map<String, dynamic>> login(String username, String password) async {
@@ -31,7 +32,7 @@ class _LoginPageState extends State<LoginPage> {
     if (response.statusCode == 200) {
       return response.data; // refresh token
     } else {
-      throw Exception('Failed to log in.');
+      throw Exception('Failed to log in: $response');
     }
   }
 
@@ -44,7 +45,7 @@ class _LoginPageState extends State<LoginPage> {
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 80, vertical: 16),
           child: TextFormField(
-            controller: usernameController, // stores current value
+            controller: _usernameController, // stores current value
             autofocus: true,
             decoration: InputDecoration(
               icon: Icon(Icons.person_outline),
@@ -56,7 +57,7 @@ class _LoginPageState extends State<LoginPage> {
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 80, vertical: 16),
           child: TextFormField(
-            controller: passwordController,
+            controller: _passwordController,
             obscureText: _isObscured,
             decoration: InputDecoration(
               icon: Icon(Icons.lock_outline),
@@ -72,20 +73,46 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
         ),
-        FloatingActionButton(
-          onPressed: () async {
-            final response = await login(
-              usernameController.text,
-              passwordController.text,
-            );
-            refreshToken = response['refresh'];
-            accessToken = response['access'];
-            // print('refreshToken: $refreshToken');
-            // print('accessToken: $accessToken');
-          },
-          child: Text(
-            "Login",
-            style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 80, vertical: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            spacing: 20,
+            children: [
+              CheckboxMenuButton(
+                value: _stayAuthenticated,
+                onChanged: (value) => setState(() {
+                  _stayAuthenticated = !_stayAuthenticated;
+                }),
+                child: Text("Remember Me"),
+              ),
+              FloatingActionButton(
+                onPressed: () async {
+                  final response = await login(
+                    _usernameController.text,
+                    _passwordController.text,
+                  );
+                  if (_stayAuthenticated) {
+                    sm.storage.write(
+                      key: "username",
+                      value: _usernameController.text,
+                    );
+                    sm.storage.write(
+                      key: "password",
+                      value: _passwordController.text,
+                    );
+                  }
+                  sm.storage.write(key: "access", value: response["access"]);
+                  sm.storage.write(key: "refresh", value: response["refresh"]);
+                },
+                child: Text(
+                  "Login",
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ],

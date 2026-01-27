@@ -21,8 +21,12 @@ samples, guidance on mobile development, and a full API reference.
 
 ## Linux
 
+First, get either `gnome-keyring` or `kwalletmanager`, depending desktop manager
+
+
 ```sh
-sudo apt install libsecret-1-0 and libjsoncpp1 # flutter_secure_storage
+#flutter_secure_storage
+sudo apt install libsecret-1-dev  clang lld llvm-18
 ```
 
 # Icons
