@@ -197,7 +197,7 @@ class UserViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         return [permissions.IsAdminUser()]
 
-class ExcuseTeacherViewSet(viewsets.ModelViewSet):
+class ExcuseTeacherViewSet(viewsets.ModelViewSet): #vlt entfernen und nur intern nutzen
     queryset = ExcuseTeacher.objects.all()
     serializer_class = ExcuseTeacherSerializer
     def get_queryset(self):

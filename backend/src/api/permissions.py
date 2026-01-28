@@ -24,10 +24,10 @@ class userAdminOnly(permissions.BasePermission):
     Damit nur SU in User endpoint arbeiten können
     """
     def has_permission(self, request, view):
-        return bool(request.user and request.user_is_superuser)
+        return bool(request.user and request.user.is_superuser)
 
     def has_object_permission(self, request, view, obj):
-        return bool(request.user and request.user_is_superuser)
+        return bool(request.user and request.user.is_superuser)
 class SchoolUserPermission(permissions.BasePermission):
     """
     - SU: alles
@@ -53,10 +53,10 @@ class SchoolUserPermission(permissions.BasePermission):
                 return tc.filter(pk=obj.pk).exists()
             
             elif hasattr(obj, "klasse_id"):
-                return tc.filter(pl=obj.klasse_id).exists()
+                return tc.filter(pk=obj.klasse_id).exists()
 
             elif hasattr(obj, "student_id"):
-                return tc.filter(pk=obj.student_klasse_id).exists()
+                return tc.filter(pk=obj.student.klasse_id).exists()
             
             elif hasattr(obj, "school_id"):
                 return obj.school_id == request.user.teacher.school_id
@@ -64,16 +64,16 @@ class SchoolUserPermission(permissions.BasePermission):
             return False
         
         elif isStudent(request.user):
-            if obj.meta.model_name == "student":
+            if obj._meta.model_name == "student":
                 return obj.pk == request.user.student.pk
 
-            elif hasattr(obj, "student"):
+            elif hasattr(obj, "student_id"):
                 return obj.student_id == request.user.student.pk
             return False
         
         elif isParent(request.user):
             if obj._meta.model_name == "parent":
-                return obj.pk == request.user.pk
+                return obj.pk == request.user.parent.pk
             
             elif obj._meta.model_name == "student":
                 return obj.parent_id == request.user.parent.pk
@@ -119,7 +119,7 @@ class ExcusePermission(permissions.BasePermission):
         if not (request.user and request.user.is_authenticated):
             return False
         
-        elif request.method in permissions.SAFE_METHODS or request.method == 'POST':
+        elif request.method == 'POST':
             return isParent(request.user) or isStudent(request.user)
         return True
 
