@@ -13,7 +13,7 @@ def teacherClasses(user):
     """
     Returned alle Klassen des Lehrers 
     """
-    return user.teacher.klasse.all()
+    return user.teacher.klassen.all()
 
 class isAuthOnly(permissions.BasePermission):
     def has_permission(self, request, view):
