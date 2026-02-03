@@ -33,7 +33,7 @@ class UserInputSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, min_length = 8)
     class Meta:
         model = User
-        fields = ['username', 'email', 'first_name', 'last_name', 'school', 'password', 'role', 'klasse']
+        fields = ['username', 'password', 'email', 'first_name', 'last_name', 'school', 'role', 'klasse']
 
     def create(self, validated_data):
         password = validated_data.pop('password') #reihenfolge wichtig, pop muss zuerst sein
