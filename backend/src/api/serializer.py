@@ -33,7 +33,7 @@ class UserInputSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, min_length = 8)
     class Meta:
         model = User
-        fields = ['username', 'password', 'email', 'first_name', 'last_name', 'school', 'role', 'klasse']
+        fields = ['username', 'email', 'first_name', 'last_name', 'school', 'password', 'role', 'klasse']
 
     def create(self, validated_data):
         password = validated_data.pop('password') #reihenfolge wichtig, pop muss zuerst sein
@@ -87,21 +87,21 @@ class StudentInputSerializer(serializers.ModelSerializer):
         extra_kwargs = {'user': {'write_only': True}}
 
 class ParentInputSerializer(serializers.ModelSerializer):
-    children = serializers.PrimaryKeyRelatedField(queryset=Student.objects.all(), many=True)
+    students = serializers.PrimaryKeyRelatedField(queryset=Student.objects.all(), many=True)
     class Meta:
         model = Parent
         fields = '__all__'
         extra_kwargs = {'user': {'write_only': True}}
 
 class ParentOutputSerializer(serializers.ModelSerializer):
-    children_count = serializers.SerializerMethodField()
+    students_count = serializers.SerializerMethodField()
     class Meta:
         model = Parent
-        fields = ['id', 'user', 'children_count']
+        fields = ['id', 'user', 'students_count']
         read_only_fields = ['id']
     
-    def get_children_count(self, obj):
-        return obj.children.count()
+    def get_students_count(self, obj):
+        return obj.students.count()
 
 class StatusInputSerializer(serializers.ModelSerializer):
     class Meta:
@@ -117,13 +117,12 @@ class StatusOutputSerializer(serializers.ModelSerializer):
 class ExcuseOutputSerializer(serializers.ModelSerializer):
     class Meta:
         model = Excuse
-        fields = ['id', 'title', 'content', 'created_at', 'uploaded_by_user']
+        fields = ['id', 'title', 'content', 'created_at', 'uploaded_by_user', 'student']
         read_only_fields = ['id', 'created_at']
 class ExcuseInputSerializer(serializers.ModelSerializer):
     class Meta:
         model = Excuse
-        fields = ['title', 'content', 'uploaded_by_user']  # Keine status/teacher Manipulation
-        extra_kwargs = {'uploaded_by_user': {'write_only': True}}
+        fields = ['title', 'content', 'student']
 class ExcuseTeacherSerializer(serializers.ModelSerializer):
     class Meta:
         model = ExcuseTeacher  # Fix: korrektes Model

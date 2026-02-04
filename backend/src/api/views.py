@@ -56,11 +56,11 @@ class TeacherViewSet(viewsets.ModelViewSet):
             return Teacher.objects.all()
         
         elif hasattr(user, 'teacher'):
-            return Teacher.objects.filter(school=user.teacher.school)
+            return Teacher.objects.filter(user__school=user.school)
         elif hasattr(user, 'student'):
             return Teacher.objects.filter(klassen=user.student.klasse).distinct()
         elif  hasattr(user, 'parent'):
-            return Teacher.objects.filter(klassen=user.parent.student.klasse).distinct()
+            return Teacher.objects.filter(klassen__in=user.parent.students.values("klasse")).distinct()
         return Teacher.objects.none()
 
     def get_serializer_class(self):
@@ -89,7 +89,7 @@ class StudentViewSet(viewsets.ModelViewSet):
         elif hasattr(user, 'student'):
             return Student.objects.filter(pk=user.student.pk)
         elif hasattr(user, 'parent'):
-            return Student.objects.filter(parent=user.parent)
+            return user.parent.students.all()
         return Student.objects.none()
     
     def get_serializer_class(self):
@@ -113,7 +113,7 @@ class ParentViewSet(viewsets.ModelViewSet):
             return Parent.objects.all()
         
         elif hasattr(user, 'teacher'):
-            return Parent.objects.filter(student__klasse__in=user.teacher.klassen.all()).distinct()
+            return Parent.objects.filter(students__klasse__in=user.teacher.klassen.all()).distinct()
         elif hasattr(user, 'parent'):
             return Parent.objects.filter(pk=user.parent.pk)
         return Parent.objects.none()
@@ -157,7 +157,7 @@ class ExcuseViewSet(viewsets.ModelViewSet):
         elif hasattr(user, 'teacher'):
             return Excuse.objects.filter(student__klasse__in = user.teacher.klassen.all())
         elif hasattr(user, 'parent'):
-            return Excuse.objects.filter(student__parent = user.parent)
+            return Excuse.objects.filter(student__parents = user.parent)
         return Excuse.objects.none()
     
     def get_serializer_class(self):
@@ -165,6 +165,9 @@ class ExcuseViewSet(viewsets.ModelViewSet):
             return ExcuseInputSerializer
         return ExcuseOutputSerializer
     
+    def perform_create(self, serializer):
+        serializer.save(uploaded_by_user=self.request.user)
+
     #Quasi Platzhalter für richtige signatur
     @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
     def approve(self, request, pk=None):
@@ -212,7 +215,7 @@ class ExcuseTeacherViewSet(viewsets.ModelViewSet): #vlt entfernen und nur intern
         elif hasattr(user, 'student'):
             return ExcuseTeacher.objects.filter(excuse__student=user.student)
         elif hasattr(user, 'parent'):
-            return ExcuseTeacher.objects.filter(excuse__student__parent=user.parent)
+            return ExcuseTeacher.objects.filter(excuse__student__parents=user.parent)
         return ExcuseTeacher.objects.none()
     
     def get_permissions(self):

@@ -59,8 +59,7 @@ class SchoolUserPermission(permissions.BasePermission):
                 return tc.filter(pk=obj.student.klasse_id).exists()
             
             elif hasattr(obj, "school_id"):
-                return obj.school_id == request.user.teacher.school_id
-            
+                return obj.school_id == request.user.school_id
             return False
         
         elif isStudent(request.user):
@@ -74,12 +73,13 @@ class SchoolUserPermission(permissions.BasePermission):
         elif isParent(request.user):
             if obj._meta.model_name == "parent":
                 return obj.pk == request.user.parent.pk
-            
-            elif obj._meta.model_name == "student":
-                return obj.parent_id == request.user.parent.pk
-            
-            elif hasattr(obj, "student_id"):
-                return obj.student.parent_id == request.user.parent.pk
+
+            if obj._meta.model_name == "student":
+                return request.user.parent.students.contains(obj)
+
+            if hasattr(obj, "student"):
+                return obj.student.parents.contains(request.user.parent)
+
             return False
         return False
     
@@ -116,14 +116,16 @@ class ExcusePermission(permissions.BasePermission):
     - DELETE: Parent/Studen eigene, SU alles
     """
     def has_permission(self, request, view):
+        if request.user.is_superuser:
+            return True
+        
         if not (request.user and request.user.is_authenticated):
             return False
-        elif (request.user.is_superuser):
-            return True
         
         elif request.method == 'POST':
             return isParent(request.user) or isStudent(request.user)
         return True
+
 
     def has_object_permission(self, request, view, obj):
         if request.user.is_superuser:
@@ -138,9 +140,9 @@ class ExcusePermission(permissions.BasePermission):
         if isStudent(request.user):
             return obj.student_id == request.user.student.pk
         
-        if isParent(request.user):
-            return obj.student.parent_id == request.user.parent.pk
-        
+        if hasattr(obj, "excuse"):
+            return obj.excuse.student.parents.contains(request.user.parent)
+
         if isTeacher(request.user):
             return teacherClasses(request.user).filter(pk=obj.student.klasse_id).exists()
         return False
