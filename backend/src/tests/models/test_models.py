@@ -185,11 +185,17 @@ def test_excuseTeacher():
     t_user = make_user("teacher")
     teacher = models.Teacher.objects.create(user=t_user)
     status = models.Status.objects.create(name="teststatus")
+
+    klasse = make_klasse("1AKIFT")
+    s_user = make_user("student")
+    student = models.Student.objects.create(user=s_user, klasse=klasse)
+
     excuse = models.Excuse.objects.create(
         title="test",
         content="some content",
         # date_joined="2000-01-01",
-        uploaded_by_user=user
+        uploaded_by_user=user,
+        student=student,
     )
     excuse.teachers.add(teacher)
 
