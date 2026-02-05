@@ -197,7 +197,6 @@ def test_excuseTeacher():
         uploaded_by_user=user,
         student=student,
     )
-    excuse.teachers.add(teacher)
 
     excuseTeacher = models.ExcuseTeacher.objects.create(
         excuse=excuse,
