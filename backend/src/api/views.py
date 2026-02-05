@@ -21,7 +21,7 @@ class SchoolViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
             return SchoolInputSerializer
-        return SchoolOutputSerializer
+        return SchoolNestedSerializer
     
     def get_permissions(self):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
@@ -37,7 +37,7 @@ class KlasseViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
             return KlasseInputSerializer
-        return KlasseOutputSerializer
+        return KlasseNestedSerializer
 
     def get_permissions(self):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
@@ -66,7 +66,7 @@ class TeacherViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
             return TeacherInputSerializer
-        return TeacherOutputSerializer
+        return TeacherNestedSerializer
     
     def get_permissions(self):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
@@ -95,7 +95,7 @@ class StudentViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
             return StudentInputSerializer
-        return StudentOutputSerializer
+        return StudentNestedSerializer
     
     def get_permissions(self):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
@@ -133,7 +133,7 @@ class StatusViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
             return StatusInputSerializer
-        return StatusOutputSerializer
+        return StatusNestedSerializer
     
     def get_permissions(self):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
@@ -195,14 +195,19 @@ class UserViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == 'create':
             return UserInputSerializer
-        return UserOutputSerializer
+        return UserNestedSerializer
 
     def get_permissions(self):
         return [permissions.IsAdminUser()]
 
 class ExcuseTeacherViewSet(viewsets.ModelViewSet): #vlt entfernen und nur intern nutzen
     queryset = ExcuseTeacher.objects.all()
-    serializer_class = ExcuseTeacherSerializer
+
+    def get_serializer_class(self):
+        if self.action in ['create', 'update', 'partial_update']:
+            return ExcuseTeacherInputSerializer
+        return ExcuseTeacherOutputSerializer
+
     def get_queryset(self):
         user = self.request.user
         if not user.is_authenticated:
