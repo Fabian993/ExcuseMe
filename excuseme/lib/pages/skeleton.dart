@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:excuseme/models/storage.dart';
+import 'package:excuseme/pages/login_page.dart';
 import 'package:excuseme/pages/home_page.dart';
 import 'package:excuseme/pages/settings_page.dart';
 import 'package:excuseme/pages/statistics_page.dart';
@@ -22,23 +24,7 @@ class _SkeletonState extends State<Skeleton> {
 
         if (isMobile) {
           return Scaffold(
-            appBar: AppBar(
-              title: Row(
-                spacing: 10,
-                children: [
-                  const Image(image: AssetImage("assets/icon.png"), height: 32),
-                  Text(
-                    "ExcuseMe",
-                    style: TextStyle(
-                      fontSize: 32,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                  ),
-                ],
-              ),
-              centerTitle: true,
-              backgroundColor: Color(0x000066FF),
-            ),
+            appBar: createAppBar(context),
             body: SafeArea(
               child: Expanded(
                 child: Center(child: _pages.elementAt(_pageIndex)),
@@ -80,22 +66,7 @@ class _SkeletonState extends State<Skeleton> {
         } else {
           // desktop
           return Scaffold(
-            appBar: AppBar(
-              title: Row(
-                spacing: 10,
-                children: [
-                  const Image(image: AssetImage("assets/icon.png"), height: 32),
-                  Text(
-                    "ExcuseMe",
-                    style: TextStyle(
-                      fontSize: 32,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                  ),
-                ],
-              ),
-              centerTitle: true,
-            ),
+            appBar: createAppBar(context),
             body: SafeArea(
               child: Row(
                 children: [
@@ -144,3 +115,47 @@ class _SkeletonState extends State<Skeleton> {
     );
   }
 }
+
+AppBar createAppBar(BuildContext context) => AppBar(
+  title: Row(
+    spacing: 20,
+    children: [
+      const Image(image: AssetImage("assets/icon.png"), height: 32),
+      Text(
+        "ExcuseMe",
+        style: TextStyle(
+          fontSize: 32,
+          color: Theme.of(context).colorScheme.primary,
+        ),
+      ),
+    ],
+  ),
+  actions: [
+    Padding(
+      padding: const EdgeInsets.only(right: 50.0),
+      child: ElevatedButton(
+        onPressed: () async {
+          final navigator = Navigator.of(context);
+          // reset storage
+          final StorageManager sm = StorageManager();
+          await sm.storage.deleteAll();
+          // reset stack and go to login page
+          navigator.pushAndRemoveUntil(
+            MaterialPageRoute(
+              builder: (BuildContext context) => LoginPage(),
+            ), // Your login widget
+            (route) => false, // Clears ALL previous routes
+          );
+        },
+        child: Expanded(
+          child: Row(
+            spacing: 10,
+            children: [Icon(Icons.logout_outlined), Text("Logout")],
+          ),
+        ),
+      ),
+    ),
+  ],
+  centerTitle: true,
+  backgroundColor: Color(0x000066FF),
+);
