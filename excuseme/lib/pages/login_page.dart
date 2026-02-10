@@ -108,16 +108,19 @@ class _LoginPageState extends State<LoginPage> {
             ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 80, vertical: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              child: Wrap(
+                // mainAxisAlignment: MainAxisAlignment.center,
                 spacing: 20,
                 children: [
-                  CheckboxMenuButton(
-                    value: _stayAuthenticated,
-                    onChanged: (value) => setState(() {
-                      _stayAuthenticated = !_stayAuthenticated;
-                    }),
-                    child: Text("Remember Me"),
+                  SizedBox(
+                    width: 138,
+                    child: CheckboxMenuButton(
+                      value: _stayAuthenticated,
+                      onChanged: (value) => setState(() {
+                        _stayAuthenticated = !_stayAuthenticated;
+                      }),
+                      child: Text("Remember Me"),
+                    ),
                   ),
                   ElevatedButton(
                     // backgroundColor: Theme.of(context).colorScheme.tertiary,
@@ -129,11 +132,11 @@ class _LoginPageState extends State<LoginPage> {
 
                       // save user credentials, if they wish
                       if (_stayAuthenticated) {
-                        sm.storage.write(
+                        await sm.storage.write(
                           key: "username",
                           value: _usernameController.text,
                         );
-                        sm.storage.write(
+                        await sm.storage.write(
                           key: "password",
                           value: _passwordController.text,
                         );
@@ -162,5 +165,12 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ); // Column
     }
+  }
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 }
