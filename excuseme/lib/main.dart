@@ -1,4 +1,4 @@
-import 'package:excuseme/skeleton.dart';
+import 'package:excuseme/pages/login_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -18,6 +18,8 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
           seedColor: Color(0x000066FF),
+          primary: Colors.deepOrange,
+          secondary: Color(0x001a0201),
           brightness: Brightness.light,
         ),
       ),
@@ -25,11 +27,13 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
           seedColor: Color(0x000066FF),
+          primary: Colors.deepOrange,
+          secondary: Color(0x001a0201),
           brightness: Brightness.dark,
         ),
       ),
       themeMode: ThemeMode.system,
-      home: const Skeleton(),
+      home: LoginPage(),
     );
   }
 }
