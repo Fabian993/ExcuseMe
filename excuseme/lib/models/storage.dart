@@ -9,11 +9,10 @@ class UserTokens {
 }
 
 class Credentials {
-  const Credentials(this.username, this.password, this.tokens);
+  const Credentials(this.username, this.password);
 
   final String username;
   final String password;
-  final UserTokens tokens;
 }
 
 // Storage Manager
@@ -21,11 +20,11 @@ class StorageManager {
   // ctor
   StorageManager() {
     _initializeFlutterSecureStorage();
-    _readAll();
+    readAll();
   }
 
-  late UserTokens tokens;
-  late Credentials credentials;
+  dynamic tokens;
+  dynamic credentials;
   late final FlutterSecureStorage storage;
 
   void _initializeFlutterSecureStorage() {
@@ -35,7 +34,7 @@ class StorageManager {
     );
   }
 
-  Future<void> _readAll() async {
+  Future<void> readAll() async {
     try {
       final data = await storage.readAll();
 
@@ -62,11 +61,20 @@ class StorageManager {
         final String? password = await storage.read(key: "password");
         final bool notNull = (username != null && password != null);
 
-        if (notNull) credentials = Credentials(username, password, tokens);
+        if (notNull) credentials = Credentials(username, password);
       }
     } catch (e) {
       // _handleInitializationError(e);
       rethrow;
     }
   }
+
+  Future<void> writeAll() async {
+    await storage.write(key: "username", value: credentials.username);
+    await storage.write(key: "password", value: credentials.password);
+    await storage.write(key: "access", value: tokens.access);
+    await storage.write(key: "refresh", value: tokens.refresh);
+  }
+
+  // delete() and deleteAll already exist
 }

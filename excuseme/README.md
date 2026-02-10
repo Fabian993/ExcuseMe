@@ -26,7 +26,7 @@ First, get either `gnome-keyring` or `kwalletmanager`, depending desktop manager
 
 ```sh
 #flutter_secure_storage
-sudo apt install libsecret-1-dev  clang lld llvm-18
+sudo apt install libsecret-1-dev clang lld llvm-18
 ```
 
 # Icons
