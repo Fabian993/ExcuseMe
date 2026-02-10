@@ -1,82 +1,148 @@
 from rest_framework import permissions
 
-class SchoolUserPermission(permissions.BasePermission): # Lehrer/Eltern/Schüler sehen nur ihre eigenen Daten
+def isTeacher(user):
+    return hasattr(user, "teacher")
+
+def isStudent(user):
+    return hasattr(user, "student")
+
+def isParent(user):
+    return hasattr(user, "parent")
+
+def teacherClasses(user): 
+    """
+    Returned alle Klassen des Lehrers 
+    """
+    return user.teacher.klassen.all()
+
+class isAuthOnly(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return bool(request.user and request.user.is_authenticated)
+
+class userAdminOnly(permissions.BasePermission):
+    """
+    Damit nur SU in User endpoint arbeiten können
+    """
+    def has_permission(self, request, view):
+        return bool(request.user and request.user.is_superuser)
+
+    def has_object_permission(self, request, view, obj):
+        return bool(request.user and request.user.is_superuser)
+class SchoolUserPermission(permissions.BasePermission):
+    """
+    - SU: alles
+    - Teacher: nur Obj aus seinen Klassen
+    - Student: nur eigene Daten
+    - Parent: nur eigene Kinder
+    """
 
     def has_permission(self, request, view):
-        return request.user.is_authenticated
+        return bool(request.user and request.user.is_authenticated)
     
     def has_object_permission(self, request, view, obj):
         if request.user.is_superuser:
             return True
-        
-        elif hasattr(request.user, 'teacher'):
-            teacher_school = request.user.teacher.school
-            return (
-                hasattr(obj, 'school') and obj.school == teacher_school 
-                or
-                (
-                hasattr(obj, 'klasse') and obj.klasse.school == teacher_school
-                )
-            )
-        
-        elif hasattr(request.user, 'student'):
-            if hasattr(obj, 'student') and obj.student == request.user.student:
-                return True
+
+        if isTeacher(request.user):
+            tc = teacherClasses(request.user)
+            
+            if obj._meta.model_name == "student":
+                return tc.filter(pk=obj.klasse_id).exists()
+
+            elif obj._meta.model_name == "klasse":
+                return tc.filter(pk=obj.pk).exists()
+            
+            elif hasattr(obj, "klasse_id"):
+                return tc.filter(pk=obj.klasse_id).exists()
+
+            elif hasattr(obj, "student_id"):
+                return tc.filter(pk=obj.student.klasse_id).exists()
+            
+            elif hasattr(obj, "school_id"):
+                return obj.school_id == request.user.school_id
             return False
         
-        elif hasattr(request.user, 'parent'):
-            return (
-                hasattr(obj, 'student') and
-                obj.student.parent == request.user.parent
-            )
-        return False
-    
-class StudentPermission(permissions.BasePermission):
-    def has_permission(self, request, view):
-        if request.method in permissions.SAFE_METHODS or request.method == 'POST':
-            return request.user.is_authenticated
-        return request.user.is_authenticated
-    
-    def has_object_permission(self, request, view, obj):
-        if request.user.is_superuser:
-            return True
-        if hasattr(request.user, 'student'):
-            return obj == request.user.student
-        return False
-    
-class ParentPermission(permissions.BasePermission):
-    def has_permission(self, request, view):
-        if request.method in permissions.SAFE_METHODS or request.method == 'POST':
-            return request.user.is_authenticated
-        return request.user.is_authenticated
+        elif isStudent(request.user):
+            if obj._meta.model_name == "student":
+                return obj.pk == request.user.student.pk
 
-    def has_object_permission(self, request, view, obj):
-        if request.user.is_superuser:
-            return True
-        elif hasattr(request.user, 'parent'):
-            return obj.student.parent == request.user.parent
+            elif hasattr(obj, "student_id"):
+                return obj.student_id == request.user.student.pk
+            return False
+        
+        elif isParent(request.user):
+            if obj._meta.model_name == "parent":
+                return obj.pk == request.user.parent.pk
+
+            if obj._meta.model_name == "student":
+                return request.user.parent.students.contains(obj)
+
+            if hasattr(obj, "student"):
+                return obj.student.parents.contains(request.user.parent)
+
+            return False
         return False
+    
+#class StudentPermission(permissions.BasePermission):
+#    def has_permission(self, request, view):
+#        if request.method in permissions.SAFE_METHODS or request.method == 'POST':
+#            return request.user.is_authenticated
+#        return request.user.is_authenticated
+#    
+#    def has_object_permission(self, request, view, obj):
+#        if request.user.is_superuser:
+#            return True
+#        if hasattr(request.user, 'student'):
+#            return obj == request.user.student
+#        return False
+#    
+#class ParentPermission(permissions.BasePermission):
+#    def has_permission(self, request, view):
+#        if request.method in permissions.SAFE_METHODS or request.method == 'POST':
+#            return request.user.is_authenticated
+#        return request.user.is_authenticated
+#
+#    def has_object_permission(self, request, view, obj):
+#        if request.user.is_superuser:
+#            return True
+#        elif hasattr(request.user, 'parent'):
+#            return obj.student.parent == request.user.parent
+#        return False
 
 class ExcusePermission(permissions.BasePermission):
+    """
+    - POST: Parent oder Studen
+    - GET: Parent/Student nur eigene, Teacher nur per Klasse, SU alles?
+    - DELETE: Parent/Studen eigene, SU alles
+    """
     def has_permission(self, request, view):
-        if request.method in permissions.SAFE_METHODS or request.method == 'POST':
-            return request.user.is_authenticated
-        return request.user.is_authenticated
+        if request.user.is_superuser:
+            return True
+        
+        if not (request.user and request.user.is_authenticated):
+            return False
+        
+        elif request.method == 'POST':
+            return isParent(request.user) or isStudent(request.user)
+        return True
+
 
     def has_object_permission(self, request, view, obj):
         if request.user.is_superuser:
             return True
         
-        if request.method == 'DELETE':
-            if(hasattr(request.user, 'student') and obj.student == request.user.student) or (hasattr(request.user, 'parent') and obj.student.parent == request.user.parent):
-                return True 
-            return False
+#        if request.method == 'DELETE':
+#            if(hasattr(request.user, 'parent') and obj.student.parent == request.user.parent):
+#            #or (hasattr(request.user, 'student') and obj.student == request.user.student):
+#                return True 
+#            return False
 
-        if hasattr(request.user, 'student') and obj.student == request.user.student:
-            return True
-        if hasattr(request.user, 'parent') and obj.student.parent == request.user.parent:
-            return True
+        if isStudent(request.user):
+            return obj.student_id == request.user.student.pk
         
-        if hasattr(request.user, 'teacher'):
-            return obj.student.klasse == request.user.teacher.klasse
+        if hasattr(obj, "excuse"):
+            return obj.excuse.student.parents.contains(request.user.parent)
+
+        if isTeacher(request.user):
+            return teacherClasses(request.user).filter(pk=obj.student.klasse_id).exists()
         return False

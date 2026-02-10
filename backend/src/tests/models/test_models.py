@@ -52,16 +52,16 @@ def test_user():
         first_name="fj",
         last_name="ts",
         email="user@testmail.com",
-        password="testpassword",
         # date_joined="2000-01-01",
         school=school
     )
-
+    user.set_password("testpassword")
+    user.save()
     assert user.username == "user"
     assert user.first_name == "fj"
     assert user.last_name == "ts"
     assert user.email == "user@testmail.com"
-    assert user.password == "testpassword"
+    assert user.check_password("testpassword")
     assert user.date_joined is not None # default should be "now()"
     
     # fk
@@ -125,13 +125,14 @@ def test_parent():
 
     p_user = make_user("parent")
     parent = models.Parent.objects.create(user=p_user)
-    parent.children.add(child1, child2)
+    parent.students.add(child1, child2)
 
-    assert parent.user == p_user
+    assert parent.students.count() == 2
+    assert set(parent.students.all()) == {child1, child2}
 
     # fk
-    assert parent.children.count() == 2
-    assert set(parent.children.all()) == {child1, child2}
+    assert parent.students.count() == 2
+    assert set(parent.students.all()) == {child1, child2}
 
     parent.delete()
     assert models.Parent.objects.count() == 0
@@ -145,6 +146,10 @@ def test_status():
 
 
 def test_excuse():
+    klasse = make_klasse("1AKIFT")
+    s_user = make_user("student")
+    student = models.Student.objects.create(user=s_user, klasse=klasse)
+
     user = make_user("user")
     t_user = make_user("teacher")
     teacher = models.Teacher.objects.create(user=t_user)
@@ -154,6 +159,7 @@ def test_excuse():
         content="some content",
         # date_joined="2000-01-01",
         uploaded_by_user=user,
+        student=student,
     )
     models.ExcuseTeacher.objects.create(
         excuse=excuse,
@@ -167,6 +173,7 @@ def test_excuse():
     assert excuse.created_at is not None
     assert excuse.uploaded_by_user == user
     assert excuse.teachers.count() == 1
+    assert excuse.student==student
     assert teacher in excuse.teachers.all()
 
     excuse.delete()
@@ -178,13 +185,18 @@ def test_excuseTeacher():
     t_user = make_user("teacher")
     teacher = models.Teacher.objects.create(user=t_user)
     status = models.Status.objects.create(name="teststatus")
+
+    klasse = make_klasse("1AKIFT")
+    s_user = make_user("student")
+    student = models.Student.objects.create(user=s_user, klasse=klasse)
+
     excuse = models.Excuse.objects.create(
         title="test",
         content="some content",
         # date_joined="2000-01-01",
-        uploaded_by_user=user
+        uploaded_by_user=user,
+        student=student,
     )
-    excuse.teachers.add(teacher)
 
     excuseTeacher = models.ExcuseTeacher.objects.create(
         excuse=excuse,
