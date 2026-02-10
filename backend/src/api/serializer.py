@@ -9,13 +9,14 @@ class SchoolInputSerializer(serializers.ModelSerializer):
     class Meta:
         model = School
         fields = ['name', 'address']
-class SchoolOutputSerializer(serializers.ModelSerializer):
+class SchoolNestedSerializer(serializers.ModelSerializer):
     class Meta:
         model = School
         fields = ['id', 'name', 'address']
         read_only_fields = ['id']
 
-class UserOutputSerializer(serializers.ModelSerializer):
+class UserNestedSerializer(serializers.ModelSerializer):
+    school = SchoolNestedSerializer(read_only=True)
     role = serializers.SerializerMethodField()
 
     class Meta:
@@ -50,19 +51,8 @@ class UserInputSerializer(serializers.ModelSerializer):
             Parent.objects.create(user=user)
         return user
 
-class KlasseInputSerializer(serializers.ModelSerializer):
-    teachers = serializers.PrimaryKeyRelatedField(queryset=Teacher.objects.all(), many=True)
-    class Meta:
-        model = Klasse
-        fields = '__all__'
-
-class KlasseOutputSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Klasse
-        fields = ['id', 'name', 'school']
-        read_only_fields = ['id']
-
-class TeacherOutputSerializer(serializers.ModelSerializer):
+class TeacherNestedSerializer(serializers.ModelSerializer):
+    user = UserNestedSerializer(read_only=True)
     class Meta:
         model = Teacher
         fields = ['id', 'user']
@@ -74,7 +64,25 @@ class TeacherInputSerializer(serializers.ModelSerializer):
         fields = ['user']
         extra_kwargs = {'user': {'write_only': True}}
 
-class StudentOutputSerializer(serializers.ModelSerializer):
+class KlasseInputSerializer(serializers.ModelSerializer):
+    teachers = serializers.PrimaryKeyRelatedField(queryset=Teacher.objects.all(), many=True)
+    class Meta:
+        model = Klasse
+        fields = '__all__'
+
+class KlasseNestedSerializer(serializers.ModelSerializer):
+    school = SchoolNestedSerializer(read_only=True)
+    teachers = TeacherNestedSerializer(many=True, read_only=True)    
+    class Meta:
+        model = Klasse
+        fields = ['id', 'name', 'school', 'teachers']
+        read_only_fields = ['id']
+
+
+class StudentNestedSerializer(serializers.ModelSerializer):
+    user = UserNestedSerializer(read_only=True)
+    klasse = KlasseNestedSerializer(read_only=True)
+
     class Meta:
         model = Student
         fields = ['id', 'user', 'klasse']
@@ -87,45 +95,59 @@ class StudentInputSerializer(serializers.ModelSerializer):
         extra_kwargs = {'user': {'write_only': True}}
 
 class ParentInputSerializer(serializers.ModelSerializer):
-    children = serializers.PrimaryKeyRelatedField(queryset=Student.objects.all(), many=True)
+    students = serializers.PrimaryKeyRelatedField(queryset=Student.objects.all(), many=True)
     class Meta:
         model = Parent
         fields = '__all__'
         extra_kwargs = {'user': {'write_only': True}}
 
 class ParentOutputSerializer(serializers.ModelSerializer):
-    children_count = serializers.SerializerMethodField()
+    user = UserNestedSerializer(read_only=True)
+    students = StudentNestedSerializer(many=True, read_only=True)
+    students_count = serializers.SerializerMethodField()
     class Meta:
         model = Parent
-        fields = ['id', 'user', 'children_count']
+        fields = ['id', 'user', 'students', 'students_count']
         read_only_fields = ['id']
     
-    def get_children_count(self, obj):
-        return obj.children.count()
+    def get_students_count(self, obj):
+        return obj.students.count()
 
 class StatusInputSerializer(serializers.ModelSerializer):
     class Meta:
         model = Status
         fields = ['name']
 
-class StatusOutputSerializer(serializers.ModelSerializer):
+class StatusNestedSerializer(serializers.ModelSerializer):
     class Meta:
         model = Status
         fields = ['id', 'name']
         read_only_fields = ['id']
 
 class ExcuseOutputSerializer(serializers.ModelSerializer):
+    uploaded_by_user = UserNestedSerializer(read_only=True)
+    student = StudentNestedSerializer(read_only=True)
+
     class Meta:
         model = Excuse
-        fields = ['id', 'title', 'content', 'created_at', 'uploaded_by_user']
+        fields = ['id', 'title', 'content', 'created_at', 'uploaded_by_user', 'student']
         read_only_fields = ['id', 'created_at']
 class ExcuseInputSerializer(serializers.ModelSerializer):
     class Meta:
         model = Excuse
-        fields = ['title', 'content', 'uploaded_by_user']  # Keine status/teacher Manipulation
-        extra_kwargs = {'uploaded_by_user': {'write_only': True}}
-class ExcuseTeacherSerializer(serializers.ModelSerializer):
+        fields = ['title', 'content', 'student']
+class ExcuseTeacherInputSerializer(serializers.ModelSerializer):
     class Meta:
         model = ExcuseTeacher  # Fix: korrektes Model
         fields = ['id', 'excuse', 'teacher', 'status', 'read_at']
+        read_only_fields = ['id']
+
+class ExcuseTeacherOutputSerializer(serializers.ModelSerializer):
+    excuse = ExcuseOutputSerializer(read_only=True)
+    teacher = TeacherNestedSerializer(read_only=True)
+    status = StatusNestedSerializer(read_only=True)
+
+    class Meta:
+        model = ExcuseTeacher
+        fields = ["id", "excuse", "teacher", "status", "read_at"]
         read_only_fields = ['id']

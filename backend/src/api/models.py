@@ -47,29 +47,30 @@ class User(DjangoAuthUser):
 class Teacher(models.Model):
     user = models.OneToOneField(
         User,
-        related_name="teachers",
+        related_name="teacher",
         on_delete=models.CASCADE
     )
 
 class Student(models.Model):
     user = models.OneToOneField(
         User,
-        related_name="students",
+        related_name="student",
         on_delete=models.CASCADE
     )
     klasse = models.ForeignKey(
         Klasse,
         related_name="students",
         on_delete=models.CASCADE
+
     )
 
 class Parent(models.Model):
     user = models.OneToOneField(
         User,
-        related_name="parents",
+        related_name="parent",
         on_delete=models.CASCADE,
      )
-    children = models.ManyToManyField(
+    students = models.ManyToManyField(
         Student,
         related_name="parents",
     )
@@ -81,13 +82,23 @@ class Excuse(models.Model):
     title = models.CharField(max_length=255)
     content = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
+
     uploaded_by_user = models.ForeignKey(
         User,
-        on_delete=models.CASCADE
+        related_name="uploaded_excuses",
+        on_delete=models.CASCADE,
     )
+
     teachers = models.ManyToManyField(
         Teacher,
+        through="ExcuseTeacher",
+        related_name="assigned_excuses",
+    )
+
+    student = models.ForeignKey(
+        Student,
         related_name="excuses",
+        on_delete=models.CASCADE,
     )
 
 class ExcuseTeacher(models.Model):
@@ -95,3 +106,11 @@ class ExcuseTeacher(models.Model):
     excuse = models.ForeignKey(Excuse, on_delete=models.CASCADE)
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
     status = models.ForeignKey(Status, on_delete=models.CASCADE)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["excuse", "teacher"],
+                name="unique_excuse_teacher",
+            )
+        ]
