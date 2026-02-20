@@ -66,6 +66,7 @@ dependencies = [
     "click-plugins==1.1.1",
     "click-repl==0.2.0",
     "coverage[toml]==7.2.5",
+    "cryptography>=46.0.5",
     "django==4.2.1",
     "django-cors-headers==3.14.0",
     "django-filter>=25.1",

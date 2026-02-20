@@ -10,6 +10,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .serializer import *
 from .models import *
 from .permissions import *
+from .signature import *
 
 #Public
 class SchoolViewSet(viewsets.ModelViewSet):

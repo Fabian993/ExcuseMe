@@ -20,3 +20,5 @@ REST_FRAMEWORK = {
         'rest_framework.filters.OrderingFilter',
     ]
 }
+
+SIGNATURE_STRATEGY = 'ed25519'
