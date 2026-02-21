@@ -5,12 +5,14 @@ import base64
 
 class SigningStrategy(ABC): #JSON signing
     @abstractmethod
-    def signJson(self, data: dict) -> str: pass
+    def signJson(self, data: dict) -> str: 
+        pass
     @abstractmethod
-    def verifyJson(self, signed_str: str) -> dict: pass
+    def verifyJson(self, signed_str: str) -> dict: 
+        pass
 
 class DjangoSigningStrategy(SigningStrategy): #Django "BuildIn" Signing
-    def __init__(self, salt='exuse-approval'):
+    def __init__(self, salt='excuses'):
         self.salt = salt
 
     def signJson(self, data: dict) -> str:
@@ -41,6 +43,6 @@ class CryptoSigningStrategy(SigningStrategy):
 def changeStrategy(strategyName='django'):
     strategies = {
         'django': DjangoSigningStrategy(),
-        'crypto': CryptoSigningStrategy()
+        'crypto': CryptoSigningStrategy(),
     }
     return strategies.get(strategyName, DjangoSigningStrategy())
