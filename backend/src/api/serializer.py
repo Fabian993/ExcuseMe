@@ -151,3 +151,29 @@ class ExcuseTeacherOutputSerializer(serializers.ModelSerializer):
         model = ExcuseTeacher
         fields = ["id", "excuse", "teacher", "status", "read_at"]
         read_only_fields = ['id']
+
+class ExcuseFromTemplateInputSerializer(serializers.Serializer):
+    template = serializers.PrimaryKeyRelatedField(
+        queryset=ExcuseTemplate.objects.filter(in_use=True)
+    )
+
+    student = serializers.PrimaryKeyRelatedField(
+        queryset=Student.objects.all()
+    )
+
+    content_override = serializers.CharField(required=False, allow_blank=True)
+
+    def validate(self, attrs):
+        user = self.context["request"].user
+        student = attrs["student"]
+
+        if hasattr(user, "student") and student.user_id != user.id:
+            raise serializers.ValidationError("Du kannst Entschuldigungen nur für dich erstellen!")
+        if hasattr(user, "parent") and not user.parent.students.filter(id=student.id).exists():
+            raise serializers.ValidationError("Du kannst Entschuldigungen nur für eigene Kinder erstellen.")
+        return attrs
+class ExcuseTemplateOutputSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ExcuseTemplate
+        fields = ["id", "reason", "title", "content"]
+        read_only_fields = fields

@@ -14,6 +14,7 @@ router.register(r"parents", views.ParentViewSet)
 router.register(r"status", views.StatusViewSet) 
 router.register(r"excuses", views.ExcuseViewSet) 
 router.register(r"excuseteacher", views.ExcuseTeacherViewSet) 
+router.register(r"templates", views.ExcuseTemplateViewset)
 
 urlpatterns = [
     path("api/", include(router.urls))

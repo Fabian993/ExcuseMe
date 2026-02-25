@@ -168,25 +168,28 @@ class ExcuseViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(uploaded_by_user=self.request.user)
 
-    #Quasi Platzhalter für richtige signatur
-    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
-    def approve(self, request, pk=None):
-        excuse = self.get_object()
-        excuse.status = Status.objects.get(name='genehmigt')
-        excuse.save()
+    @action(detail=False, methods=["post"], permission_classes=
+            [permissions.IsAuthenticated])
+    def from_template(self, request):
+        serial = ExcuseFromTemplateInputSerializer(
+            data=request.data,
+            context={"request": request},
+        )
+        serial.is_valid(raise_exception=True)
 
-        serializer = ExcuseOutputSerializer(excuse)
+        template = serial.validated_data["template"]
+        student = serial.validated_data["student"]
+        content = serial.validated_data.get("content_override") or template.content
+
+        excuse = Excuse.objects.create(
+            title=template.title,
+            content=content,
+            student=student,
+            uploaded_by_user=request.user,
+            template=template,
+        )
         return Response(ExcuseOutputSerializer(excuse).data)
-
-    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
-    def reject(self, request, pk=None):
-        excuse = self.get_object()
-        excuse.status = Status.objects.get(name='abgelehnt')
-        excuse.save()
-
-        serializer = ExcuseOutputSerializer(excuse)
-        return Response(ExcuseOutputSerializer(excuse).data)
-
+        
     def get_permissions(self):
         return [permissions.IsAuthenticated(), ExcusePermission()]
 class UserViewSet(viewsets.ModelViewSet):
@@ -222,8 +225,8 @@ class ExcuseTeacherViewSet(viewsets.ModelViewSet): #vlt entfernen und nur intern
         elif hasattr(user, 'parent'):
             return ExcuseTeacher.objects.filter(excuse__student__parents=user.parent)
         return ExcuseTeacher.objects.none()
-    
-    def get_permissions(self):
-        if self.action in ['destroy']:
-            return [permissions.IsAdminUser()]
-        return [permissions.IsAuthenticated()]
+
+class ExcuseTemplateViewset(viewsets.ReadOnlyModelViewSet):
+    queryset = ExcuseTemplate.objects.filter(in_use=True)
+    serializer_class = ExcuseTemplateOutputSerializer
+    permission_classes = [permissions.IsAuthenticated]

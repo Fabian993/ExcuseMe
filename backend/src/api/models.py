@@ -78,6 +78,15 @@ class Parent(models.Model):
 class Status(models.Model):
     name = models.CharField(max_length=255, default="Pending")
 
+class ExcuseTemplate(models.Model):
+    reason = models.SlugField(unique=True)
+    title = models.CharField(max_length=255)
+    content = models.CharField(max_length=255)
+    in_use = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.reason
+
 class Excuse(models.Model):
     title = models.CharField(max_length=255)
     content = models.CharField(max_length=255)
@@ -99,6 +108,14 @@ class Excuse(models.Model):
         Student,
         related_name="excuses",
         on_delete=models.CASCADE,
+    )
+
+    template = models.ForeignKey(
+        ExcuseTemplate,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="excuses",
     )
 
 class ExcuseTeacher(models.Model):
