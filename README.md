@@ -1,5 +1,7 @@
 # ExcuseMe
 
+![ExGooseMe](./excuseme/assets/icon.png)
+
 ## Projekt‑Requirements für „Excuse Me“
 
 > **Titel** Excuse Me  
