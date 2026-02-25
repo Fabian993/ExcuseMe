@@ -6,10 +6,12 @@ from rest_framework import viewsets, filters, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
+import time
 
 from .serializer import *
 from .models import *
 from .permissions import *
+from .signature import *
 
 #Public
 class SchoolViewSet(viewsets.ModelViewSet):
@@ -168,24 +170,28 @@ class ExcuseViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(uploaded_by_user=self.request.user)
 
-    #Quasi Platzhalter für richtige signatur
     @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
     def approve(self, request, pk=None):
         excuse = self.get_object()
-        excuse.status = Status.objects.get(name='genehmigt')
+        excuse.status = Status.objects.get(name='approved')
+        excuse.approved_by = request.user
+        excuse.approval_timestamp = int(time.time())
         excuse.save()
 
+        strategy = changeStrategy(settings.SIGNING_STRATEGY)
+        confirmation = {
+            'excuse_id': excuse.id,
+            'status': 'approved',
+            'parent_id': request.user.id,
+            'timestamp': excuse.approval_timestamp
+        }
+        
+        signed_json = strategy.sign_json(confirmation)
         serializer = ExcuseOutputSerializer(excuse)
-        return Response(ExcuseOutputSerializer(excuse).data)
-
-    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
-    def reject(self, request, pk=None):
-        excuse = self.get_object()
-        excuse.status = Status.objects.get(name='abgelehnt')
-        excuse.save()
-
-        serializer = ExcuseOutputSerializer(excuse)
-        return Response(ExcuseOutputSerializer(excuse).data)
+        return Response({
+            **serializer.data,
+            'signed_confirmation': signed_json
+        })
 
     def get_permissions(self):
         return [permissions.IsAuthenticated(), ExcusePermission()]
