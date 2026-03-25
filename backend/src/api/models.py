@@ -6,7 +6,7 @@ https://docs.djangoproject.com/en/6.0/ref/models/fields/
 """
 
 from django.db import models  # noqa
-from django.contrib.auth.models import User as DjangoAuthUser
+from django.contrib.auth.models import AbstractUser
 
 class School(models.Model):
     name = models.CharField(max_length=255)
@@ -28,7 +28,7 @@ class Klasse(models.Model):
     
     def __str__(self):
         return f"{self.name} ({self.pk})"
-class User(DjangoAuthUser):
+class User(AbstractUser):
     # username,
     # password and
     # email are required in parent (auth.models.User)
@@ -37,6 +37,8 @@ class User(DjangoAuthUser):
         School,
         related_name="users",
         on_delete=models.CASCADE,
+        null=True,
+        blank=True
     )
     role = models.CharField(
         max_length=20,
@@ -51,7 +53,7 @@ class User(DjangoAuthUser):
     )
 
     def __str__(self):
-        return f"{self.name} ({self.pk})"
+        return f"{self.username} ({self.pk})"
 
 
 class Teacher(models.Model):
@@ -60,6 +62,9 @@ class Teacher(models.Model):
         related_name="teacher",
         on_delete=models.CASCADE
     )
+
+    def __str__(self):
+        return f"{self.user.username} ({self.pk})"
 
 class Student(models.Model):
     user = models.OneToOneField(
@@ -75,7 +80,7 @@ class Student(models.Model):
     )
     
     def __str__(self):
-        return f"{self.name} ({self.pk})"
+        return f"{self.user.username} ({self.pk})"
 
 class Parent(models.Model):
     user = models.OneToOneField(
@@ -89,7 +94,7 @@ class Parent(models.Model):
     )
         
     def __str__(self):
-        return f"{self.name} ({self.pk})"
+        return f"{self.user.username} ({self.pk})"
 
 class Status(models.Model):
     name = models.CharField(max_length=255, default="Pending")
@@ -121,7 +126,7 @@ class Excuse(models.Model):
     )
 
     def __str__(self):
-        return f"{self.name} ({self.pk})"
+        return f"{self.title} ({self.pk})"
 class ExcuseTeacher(models.Model):
     read_at = models.DateTimeField(null=True, blank=True, default=None)
     excuse = models.ForeignKey(Excuse, on_delete=models.CASCADE)
@@ -137,4 +142,4 @@ class ExcuseTeacher(models.Model):
         ]
         
     def __str__(self):
-        return f"{self.name} ({self.pk})"
+        return f"{self.excuse} - {self.teacher} ({self.pk})"

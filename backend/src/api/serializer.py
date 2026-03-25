@@ -1,6 +1,7 @@
 """
 Docstring for api.serializer
 class Meta - eine art Konfigurationsbox
+Objects <--> JSON
 """
 from rest_framework import serializers
 from .models import *

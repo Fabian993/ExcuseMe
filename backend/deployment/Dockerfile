@@ -12,9 +12,9 @@ RUN --mount=type=cache,target=/var/cache/apt \
 ENV PATH="/root/.cargo/bin:/root/.local/bin:$PATH"
 
 #Direct install from requirements.txt
-COPY src/requirements.txt ./
+COPY pyproject.toml uv.lock ./
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv pip install --system -r requirements.txt --no-cache
+    uv pip install --system --no-cache -r pyproject.toml
 
 COPY deployment/scripts /app/deployment/scripts
 RUN chmod -R +x /app/deployment/scripts/*
