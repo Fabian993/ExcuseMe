@@ -6,6 +6,7 @@ from abc import ABC, abstractmethod
 import json
 import base64
 from cryptography.exceptions import InvalidSignature
+from .models import ParentKey
 
 class SigningStrategy(ABC): #JSON signing
     @abstractmethod
@@ -29,19 +30,25 @@ class DjangoSigningStrategy(SigningStrategy): #Django "BuildIn" Signing
         except:
             raise ValueError("Invalid")
 class CryptoSigningStrategy(SigningStrategy):
-    _keys = {} #just for testing
 
     def __init__(self, user=None):
         from cryptography.hazmat.primitives.asymmetric import ed25519
+        from cryptography.hazmat.primitives.serialization import(
+            Encoding, PrivateFormat, NoEncryption, PublicFormat
+        )
         self.user = user
-
         if user.role != "parent":
             raise PermissionError(f"{user.role} cant sign")
+        
+        key_obj = ParentKey.objects.filter(user=user).first()
+        if key_obj:
+            self.privateKey = ed25519.Ed25519PrivateKey.from_private_bytes(bytes(key_obj.private_key))
 
-        if user.id not in CryptoSigningStrategy._keys:
-            CryptoSigningStrategy._keys[user.id] = ed25519.Ed25519PrivateKey.generate()
+        else:
+            self.privateKey = ed25519.Ed25519PrivateKey.generate()
+            raw = self.privateKey.private_bytes(Encoding.Raw, PrivateFormat.Raw, NoEncryption())
+            ParentKey.objects.create(user=user, private_key=raw)
 
-        self.privateKey = CryptoSigningStrategy._keys[user.id]
         self.publicKey = self.privateKey.public_key()
 
     def signJson(self, data: dict) -> str:
@@ -55,23 +62,23 @@ class CryptoSigningStrategy(SigningStrategy):
         return f"{json.dumps(payload)}|BASE64:{base64.b64encode(signature).decode()}"
     
     def verifyJson(self, signed_str: str) -> dict:
+        from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
+
         data_str, signPart = signed_str.split('|BASE64:', 1)
         payload = json.loads(data_str)
 
         user_id = payload["user_id"]
-
-        private = CryptoSigningStrategy._keys.get(user_id)
-        if not private:
+        
+        key_obj = ParentKey.objects.filter(user_id=user_id).first()
+        if not key_obj:
             raise ValueError("Unknown user")
         
-        publicKey = private.public_key()
+        privateKey = Ed25519PrivateKey.from_private_bytes(bytes(key_obj.private_key))
+        publicKey = privateKey.public_key()
 
         message = json.dumps(payload, sort_keys=True).encode('utf-8')
         signature = base64.b64decode(signPart)
-        try:
-            publicKey.verify(signature, message)
-        except InvalidSignature:
-            raise ValueError("Invalid")
+        publicKey.verify(signature, message)
         return payload
     
 def changeStrategy(strategyName='django', user=None):
