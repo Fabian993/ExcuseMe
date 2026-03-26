@@ -3,57 +3,22 @@ import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
-
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  dynamic absences;
-  bool loading = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: loading
-          ? null
-          : () async {
-              setState(() => loading = true);
-              try {
-                final response = await getAbsences();
-                if (!mounted) return;
-                setState(() {
-                  absences = response;
-                });
-              } catch (e) {
-                if (!mounted) return;
-                setState(() {
-                  absences = {"error": e.toString()};
-                });
-              } finally {
-                if (mounted) {
-                  setState(() => loading = false);
-                }
-              }
-            },
-      child: Text(loading ? "Loading..." : "Get Absences"),
-    );
-  }
-}
-
 // :params: username, password, school
 // *optional: start, end, studentId, tenantId
-Future<Map<String, dynamic>> getAbsences() async {
+Future<List<dynamic>> getAbsences() async {
   final Dio dio = Dio(
-    BaseOptions(validateStatus: (status) => status != null && status < 500),
+    BaseOptions(
+      followRedirects: true,
+      validateStatus: (status) => status != null && status < 500,
+      connectTimeout: const Duration(seconds: 15),
+      receiveTimeout: const Duration(seconds: 15),
+    ),
   );
 
   final cookieJar = CookieJar();
   dio.interceptors.add(CookieManager(cookieJar));
 
-  final login = await dio.post(
+  await dio.post(
     "https://bulme.webuntis.com/WebUntis/j_spring_security_check",
     data: {
       "j_username": "xxx",
@@ -63,7 +28,6 @@ Future<Map<String, dynamic>> getAbsences() async {
     },
     options: Options(contentType: Headers.formUrlEncodedContentType),
   );
-  // print(login.headers);
 
   final response = await dio.get(
     "https://bulme.webuntis.com/WebUntis/api/classreg/absences/students",
@@ -75,9 +39,65 @@ Future<Map<String, dynamic>> getAbsences() async {
     },
     options: Options(headers: {"Accept": "application/json"}),
   );
-  // print(response.data);
+  List<dynamic> absences = response.data['data']['absences'];
 
-  await dio.get("https://bulme.webuntis.com/WebUntis/j_spring_security_logout");
+  // print(absences);
 
-  return response.data;
+  // await dio.get("https://bulme.webuntis.com/WebUntis/j_spring_security_logout");
+  // returns "Server error - the server failed to fulfil an apparently valid request"
+
+  return absences;
+}
+
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<List<dynamic>>(
+      future: getAbsences(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const CircularProgressIndicator();
+        }
+
+        if (snapshot.hasError) {
+          return SelectableText("Error: ${snapshot.error}");
+        }
+
+        if (!snapshot.hasData) {
+          return const Text("No data.\nNo, that's a good thing.");
+        }
+
+        return ListView.builder(
+          itemCount: snapshot.data!.length,
+          itemBuilder: (context, index) {
+            final absence = snapshot.data![index];
+            return Card(
+              margin: const EdgeInsets.all(10),
+              child: ListTile(
+                contentPadding: const EdgeInsets.all(10),
+                title: Text(
+                  "Absence ID: ${absence['id']} - ${absence['studentName']}",
+                ),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Date: ${absence['startDate']}"),
+                    Text("Reason: ${absence['reason']}"),
+                    SelectableText(absence.toString()),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
 }
