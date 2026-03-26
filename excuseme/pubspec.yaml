@@ -36,6 +36,8 @@ dependencies:
   cupertino_icons: ^1.0.8
   dio: ^5.9.0
   flutter_secure_storage: ^10.0.0
+  cookie_jar: ^4.0.9
+  dio_cookie_manager: ^3.4.0
 
 dev_dependencies:
   flutter_test:
