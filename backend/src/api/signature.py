@@ -4,9 +4,10 @@ Signatur
 from django.core import signing
 from abc import ABC, abstractmethod
 import json
-import base64
-from cryptography.exceptions import InvalidSignature
+import base64, hashlib
 from .models import ParentKey
+from cryptography.fernet import Fernet
+from django.conf import settings
 
 class SigningStrategy(ABC): #JSON signing
     @abstractmethod
@@ -42,12 +43,14 @@ class CryptoSigningStrategy(SigningStrategy):
         
         key_obj = ParentKey.objects.filter(user=user).first()
         if key_obj:
-            self.privateKey = ed25519.Ed25519PrivateKey.from_private_bytes(bytes(key_obj.private_key))
+            decrypted = get_fernet().decrypt(bytes(key_obj.private_key))
+            self.privateKey = ed25519.Ed25519PrivateKey.from_private_bytes(decrypted)
 
         else:
             self.privateKey = ed25519.Ed25519PrivateKey.generate()
             raw = self.privateKey.private_bytes(Encoding.Raw, PrivateFormat.Raw, NoEncryption())
-            ParentKey.objects.create(user=user, private_key=raw)
+            encrypted = get_fernet().encrypt(raw)
+            ParentKey.objects.create(user=user, private_key=encrypted)
 
         self.publicKey = self.privateKey.public_key()
 
@@ -73,7 +76,8 @@ class CryptoSigningStrategy(SigningStrategy):
         if not key_obj:
             raise ValueError("Unknown user")
         
-        privateKey = Ed25519PrivateKey.from_private_bytes(bytes(key_obj.private_key))
+        decrypted = get_fernet().decrypt(bytes(key_obj.private_key))
+        privateKey = Ed25519PrivateKey.from_private_bytes(decrypted)
         publicKey = privateKey.public_key()
 
         message = json.dumps(payload, sort_keys=True).encode('utf-8')
@@ -81,9 +85,14 @@ class CryptoSigningStrategy(SigningStrategy):
         publicKey.verify(signature, message)
         return payload
     
+    
 def changeStrategy(strategyName='django', user=None):
     strategies = {
         'django': DjangoSigningStrategy,
         'crypto': CryptoSigningStrategy,
     }
     return strategies.get(strategyName, DjangoSigningStrategy)(user=user)
+
+def get_fernet():
+    key = hashlib.sha256(settings.SECRET_KEY.encode()).digest()
+    return Fernet(base64.urlsafe_b64encode(key))
