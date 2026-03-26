@@ -47,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
     String? pw = await sm.storage.read(key: "password");
     bool hasSavedCredentials = us != null && pw != null;
 
-    if (hasSavedCredentials) {
+    if (hasSavedCredentials && !_isAuthenticated) {
       _isAuthenticated = await authenticate(us, pw);
 
       setState(() {
@@ -59,7 +59,6 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     updateTokens();
-
     if (_isAuthenticated) {
       return Skeleton();
     } else {
