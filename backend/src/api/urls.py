@@ -1,4 +1,6 @@
-#We use URLs to execute views
+"""
+Endpoints
+"""
 from django.urls import path, include  # noqa
 from rest_framework.routers import DefaultRouter
 from . import views

@@ -1,5 +1,7 @@
 # ExcuseMe
 
+![ExGooseMe](./excuseme/assets/icon.png)
+
 ## Projekt‑Requirements für „Excuse Me“
 
 > **Titel** Excuse Me  
@@ -10,7 +12,97 @@
 > - Frontend: Flutter 3.10.4
 > - Datenbank: PostgreSQL (PostgreSQL: Opensource, bessere Community, bessere Skalierbarkeit, unterstützt jsonb (json binary))
 > - Auth: OAuth2 / JWT + Django‑Auth  
-> - Hosting: Heroku / DigitalOcean (zwei separate Services: API & Mobile)  
+> - Hosting: Heroku / DigitalOcean (zwei separate Services: API & Mobile)
+
+## Projekt Struktur
+
+### Backend
+
+```
+.
+├── ABA.md
+├── backend                         # Server 
+│   ├── deployment                      
+│   │   ├── Dockerfile
+│   │   └── scripts
+│   ├── docker-compose.prod.yml         # Docker Compose (production)
+│   ├── docker-compose.yml              # Docker Compose (development)
+│   ├── env.example                     # Template -> .env
+│   ├── pyproject.toml                  # Package Manifest
+│   ├── scripts/                        # Helper (optional)
+│   ├── src                             # Source Code
+│   │   ├── api                             # API-related Code (Django-App)
+│   │   │   ├── admin.py                        # Django Admin
+│   │   │   ├── apps.py                         # Apps that belong to api
+│   │   │   ├── __init__.py
+│   │   │   ├── migrations      
+│   │   │   ├── models.py                       # DB Model
+│   │   │   ├── permissions.py                  # Permission classes (admin, teacher, parent, student)
+│   │   │   ├── serializer.py                   # Objects <---> JSON
+│   │   │   ├── tasks.py                        # Django Tasks
+│   │   │   ├── urls.py                         # API-Endpoints (routing)
+│   │   │   └── views.py                        # Request/Response (controller)
+│   │   ├── celerybeat-schedule
+│   │   ├── excuseme                        # Django Main App
+│   │   │   ├── asgi.py                         # Async Web Server Gateway Interface
+│   │   │   ├── celery.py                       # Task Distribution
+│   │   │   ├── __init__.py
+│   │   │   ├── settings                        # Django Project Settings
+│   │   │   │   ├── base.py
+│   │   │   │   ├── dev.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── prod.py
+│   │   │   │   └── test.py
+│   │   │   ├── urls.py                         # Main App routing
+│   │   │   └── wsgi.py                         # Web Server Gateway Interface
+│   │   ├── manage.py                       # Django - Runs administrative tasks
+│   │   ├── media/                          # all assets
+│   │   ├── requirements.dev.txt            # Requirements (dev)
+│   │   ├── requirements.txt                # Requirements
+│   │   ├── static/                         # all static files
+│   │   └── tests                           # all tests
+│   │       ├── conftest.py
+│   │       ├── __init__.py
+│   │       └── models                          # Tests for Models
+│   │           ├── __init__.py
+│   │           └── test_models.py
+│   └── uv.lock
+.
+```
+
+### Frontend
+
+```
+.
+├── excuseme                        # App
+│   ├── analysis_options.yaml
+│   ├── android/                        # Android build
+│   ├── assets                          # all assets
+│   │   └── icon.png
+│   ├── ios/                            # IOS build
+│   ├── lib                             # Source Code
+│   │   ├── main.dart                       # Main, Entrypoint
+│   │   ├── models                          # Dataclasses
+│   │   │   ├── storage.dart
+│   │   │   └── user.dart
+│   │   └── pages                           # all pages
+│   │       ├── home_page.dart
+│   │       ├── login_page.dart
+│   │       ├── settings_page.dart
+│   │       ├── skeleton.dart               # Responsive Layer (AppBar, BottomNavBar/NavigationRailing, Appstein)
+│   │       └── statistics_page.dart
+│   ├── linux/                          # Linux build
+│   ├── macos/                          # MACOS build
+│   ├── pubspec.lock
+│   ├── pubspec.yaml                    # Package Manifest
+│   ├── README.md
+│   ├── test                            # all tests
+│   │   └── widget_test.dart
+│   ├── web/                            # web build
+│   └── windows/                        # windows build
+├── LICENSE
+└── README.md
+```
 
 ## 1. Überblick Rollen
 
