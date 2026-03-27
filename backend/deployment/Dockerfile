@@ -3,7 +3,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 WORKDIR /usr/src/app
 
-RUN --mount=type=cache,target=/var/cache/apt \
+RUN --mount=type=cache,id=apt-cache,target=/var/cache/apt \
     apt-get update && \
     apt-get install --no-install-recommends -y build-essential libpq-dev curl \
     && curl -LsSf https://astral.sh/uv/install.sh | sh \
@@ -13,7 +13,7 @@ ENV PATH="/root/.cargo/bin:/root/.local/bin:$PATH"
 
 #Direct install from requirements.txt
 COPY pyproject.toml uv.lock ./
-RUN --mount=type=cache,target=/root/.cache/uv \
+RUN --mount=type=cache,id=uv-cache,target=/root/.cache/uv \
     uv pip install --system --no-cache -r pyproject.toml
 
 COPY deployment/scripts /app/deployment/scripts
