@@ -1,5 +1,6 @@
 """
 Docstring for api.views
+Controller
 """
 #We use Views to get web requests and send responses
 from rest_framework import viewsets, filters, permissions
@@ -168,25 +169,27 @@ class ExcuseViewSet(viewsets.ModelViewSet):
         return ExcuseOutputSerializer
     
     def perform_create(self, serializer):
-        serializer.save(uploaded_by_user=self.request.user)
+        custom_user = User.objects.get(pk=self.request.user.pk)
+        serializer.save(uploaded_by_user=custom_user)
 
-    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
-    def approve(self, request, pk=None):
+    @action(detail=True, methods=['patch'], permission_classes=[permissions.IsAuthenticated, ExcusePermission])
+    def sign(self, request, pk=None):
         excuse = self.get_object()
         excuse.status = Status.objects.get(name='approved')
         excuse.approved_by = request.user
         excuse.approval_timestamp = int(time.time())
         excuse.save()
 
-        strategy = changeStrategy(settings.SIGNING_STRATEGY)
+        strategy_name = request.data.get('strategy', 'django') #django = default
+        strategy = changeStrategy(strategy_name, user=request.user)
         confirmation = {
             'excuse_id': excuse.id,
             'status': 'approved',
             'parent_id': request.user.id,
-            'timestamp': excuse.approval_timestamp
+            'timestamp': excuse.approval_timestamp,
         }
         
-        signed_json = strategy.sign_json(confirmation)
+        signed_json = strategy.signJson(confirmation)
         serializer = ExcuseOutputSerializer(excuse)
         return Response({
             **serializer.data,

@@ -14,7 +14,7 @@ format.help = "Run formatter"
 test.cmd = "bash ./scripts/test.sh"
 test.help = "Run tests"
 
-super-user.shell = """docker exec excuseme-backend sh -c "uv run python manage.py createsuperuser" """
+super-user.shell = """docker exec -it excuseme-backend python manage.py createsuperuser """
 super-user.help = "Create super user"
 
 make-migrations.shell = """docker exec excuseme-backend sh -c "uv run python manage.py makemigrations" """
