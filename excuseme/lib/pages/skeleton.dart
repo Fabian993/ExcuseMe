@@ -3,7 +3,7 @@ import 'package:excuseme/models/storage.dart';
 import 'package:excuseme/pages/login_page.dart';
 import 'package:excuseme/pages/home_page.dart';
 import 'package:excuseme/pages/settings_page.dart';
-import 'package:excuseme/pages/statistics_page.dart';
+import 'package:excuseme/pages/excuses_page.dart';
 
 class Skeleton extends StatefulWidget {
   const Skeleton({super.key});
@@ -14,7 +14,7 @@ class Skeleton extends StatefulWidget {
 
 class _SkeletonState extends State<Skeleton> {
   int _pageIndex = 0;
-  final List _pages = [HomePage(), StatisticsPage(), SettingsPage()];
+  final List _pages = [HomePage(), ExcusesPage(), SettingsPage()];
 
   @override
   Widget build(BuildContext context) {
@@ -48,10 +48,10 @@ class _SkeletonState extends State<Skeleton> {
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(
-                    Icons.auto_graph_outlined,
+                    Icons.edit_document,
                     color: Theme.of(context).colorScheme.primary,
                   ),
-                  label: "Statistics",
+                  label: "Excuses",
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(
@@ -92,10 +92,10 @@ class _SkeletonState extends State<Skeleton> {
                       ),
                       NavigationRailDestination(
                         icon: Icon(
-                          Icons.auto_graph_outlined,
+                          Icons.edit_document,
                           color: Colors.deepOrange,
                         ),
-                        label: Text("Statistics"),
+                        label: Text("Excuses"),
                       ),
                       NavigationRailDestination(
                         icon: Icon(

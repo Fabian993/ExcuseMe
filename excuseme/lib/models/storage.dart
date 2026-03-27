@@ -23,8 +23,8 @@ class StorageManager {
     readAll();
   }
 
-  dynamic tokens;
-  dynamic credentials;
+  UserTokens? tokens;
+  Credentials? credentials;
   late final FlutterSecureStorage storage;
 
   void _initializeFlutterSecureStorage() {
@@ -70,10 +70,15 @@ class StorageManager {
   }
 
   Future<void> writeAll() async {
-    await storage.write(key: "username", value: credentials.username);
-    await storage.write(key: "password", value: credentials.password);
-    await storage.write(key: "access", value: tokens.access);
-    await storage.write(key: "refresh", value: tokens.refresh);
+    try {
+      // !. == null-check
+      await storage.write(key: "username", value: credentials!.username);
+      await storage.write(key: "password", value: credentials!.password);
+      await storage.write(key: "access", value: tokens!.access);
+      await storage.write(key: "refresh", value: tokens!.refresh);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   // delete() and deleteAll already exist
