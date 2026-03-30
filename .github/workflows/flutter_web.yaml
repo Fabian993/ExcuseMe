@@ -1,0 +1,59 @@
+name: Deploy Flutter Web
+
+on:
+  push:
+    branches: [ "main", "dev" ]
+  pull_request:
+    branches: [ "main", "dev" ]
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v3
+        with:
+          flutter-version: "3.38.9"
+          channel: "stable"
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Generate .env from GitHub variables
+        run: |
+          echo "BACKEND_SERVER=${{ vars.BACKEND_SERVER }}" > .env
+          echo "UNTIS_SCHOOL=${{ vars.UNTIS_SCHOOL }}" >> .env
+          echo "UNTIS_SERVER=${{ vars.UNTIS_SERVER }}" >> .env
+
+      # Optional: enable web if not already done
+      - name: Enable Flutter web
+        run: flutter config --enable-web
+
+      - name: Build Flutter Web
+        run: flutter build web --release
+        
+      - name: Deploy to GitHub Pages # change this to Firebase, if needed
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build/web
+          publish_branch: gh-pages
+          force_orphan: true
+
+      # - name: Set up Node.js for Firebase CLI
+      #   uses: actions/setup-node@v4
+      #   with:
+      #     node-version: "18"
+
+      # - name: Install Firebase CLI
+      #   run: npm install -g firebase-tools
+
+      # - name: Deploy to Firebase Hosting
+      #   run: |
+      #     firebase deploy --only hosting --project ${{ secrets.FIREBASE_PROJECT_ID }}
+      #   env:
+      #     FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
