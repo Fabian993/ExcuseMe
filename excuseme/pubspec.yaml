@@ -38,6 +38,7 @@ dependencies:
   flutter_secure_storage: ^10.0.0
   cookie_jar: ^4.0.9
   dio_cookie_manager: ^3.4.0
+  dart_untis_mobile: ^1.1.0
 
 dev_dependencies:
   flutter_test:
