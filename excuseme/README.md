@@ -2,27 +2,11 @@
 
 The ExcuseMe App 
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-
-
-
 # Dependencies
 
 ## Linux
 
 First, get either `gnome-keyring` or `kwalletmanager`, depending desktop manager
-
 
 ```sh
 #flutter_secure_storage
@@ -39,4 +23,27 @@ To generate app icons...
 
 ```sh
 flutter pub run flutter_launcher_icons:main
+```
+
+# Flowchart
+
+```mermaid
+---
+title: ExcuseMe Frontend
+---
+flowchart
+    main[main.dart]
+    excuses[excuses_page.dart] 
+    home[home_page.dart] 
+    login[login_page.dart] 
+    settings[settings_page.dart] 
+    skeleton[skeleton.dart]
+    statistics[statistics_page.dart]
+
+    main --> login
+    login --> skeleton
+    skeleton --> home
+    skeleton --> excuses
+    skeleton --> statistics
+    skeleton --> settings
 ```

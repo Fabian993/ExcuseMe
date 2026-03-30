@@ -82,7 +82,7 @@ DATABASES = {
         "NAME": os_getenv("POSTGRES_DB", "postgres"),
         "USER": os_getenv("POSTGRES_USER", "postgres"),
         "PASSWORD": os_getenv("POSTGRES_PASSWORD", "postgres"),
-        "HOST": 'db',
+        "HOST": os_getenv("POSTGRES_HOST", "db",),
         "PORT": os_getenv("POSTGRES_PORT", "5432"),
     }
 }
@@ -142,8 +142,10 @@ REDIS_DB_KEYS = {
 REDIS_HOST = os_getenv("REDIS_HOST", "redis")
 REDIS_PORT = os_getenv("REDIS_PORT", 6379)
 
+redis_base_url = os_getenv("REDIS_URL", "redis://redis:6379")
 REDIS_DB = REDIS_DB_KEYS.get(APP_ENV, 0)
-REDIS_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}"
+REDIS_URL = f"{redis_base_url}/{REDIS_DB}" 
+#REDIS_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}"
 
 # Celery settings
 
