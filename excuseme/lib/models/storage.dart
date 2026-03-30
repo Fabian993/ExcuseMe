@@ -25,6 +25,7 @@ class StorageManager {
 
   UserTokens? tokens;
   Credentials? credentials;
+  String? stayAuthenticated;
   late final FlutterSecureStorage storage;
 
   void _initializeFlutterSecureStorage() {
@@ -38,6 +39,8 @@ class StorageManager {
     try {
       final data = await storage.readAll();
 
+      final bool stayAuthenticatedSaved = data.containsKey("stayAuthenticated");
+
       final bool tokensSaved =
           data.isNotEmpty &&
           data.containsKey("access") &&
@@ -47,6 +50,10 @@ class StorageManager {
           data.isNotEmpty &&
           data.containsKey("username") &&
           data.containsKey("password");
+
+      if (stayAuthenticatedSaved) {
+        stayAuthenticated = await storage.read(key: "stayAuthenticated");
+      }
 
       if (tokensSaved) {
         final String? accessToken = await storage.read(key: "access");
