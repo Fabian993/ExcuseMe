@@ -21,6 +21,7 @@ jobs:
           channel: "stable"
 
       - name: Install Dependencies
+        working-directory: excuseme
         run: flutter pub get
 
       - name: Generate .env from GitHub variables
@@ -31,16 +32,18 @@ jobs:
 
       # Optional: enable web if not already done
       - name: Enable Flutter web
+        working-directory: excuseme
         run: flutter config --enable-web
 
       - name: Build Flutter Web
+        working-directory: excuseme
         run: flutter build web --release
         
       - name: Deploy to GitHub Pages # change this to Firebase, if needed
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build/web
+          publish_dir: excuseme/build/web
           publish_branch: gh-pages
           force_orphan: true
 
