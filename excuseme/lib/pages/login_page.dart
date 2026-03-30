@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 // import 'package:flutter/foundation.dart' show defaultTargetPlatform, kIsWeb;
+import 'package:dio/dio.dart';
 import 'package:excuseme/pages/skeleton.dart';
 import 'package:excuseme/models/storage.dart';
-import 'package:dio/dio.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -26,8 +27,11 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<bool> authenticate(String username, String password) async {
     try {
+      await dotenv.load(fileName: ".env");
+      String? backendAddress = dotenv.env['BACKEND_SERVER'];
+
       final response = await dio.post(
-        'http://192.168.178.50:8000/api/token/',
+        'http://$backendAddress/api/token/',
         data: {"username": username, "password": password},
         options: Options(headers: {'Content-Type': 'application/json'}),
       );

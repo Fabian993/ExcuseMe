@@ -1,7 +1,7 @@
-import 'package:excuseme/models/storage.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:dio/dio.dart';
+import 'package:excuseme/models/storage.dart';
 
 class ExcusesPage extends StatefulWidget {
   const ExcusesPage({super.key});
@@ -18,10 +18,11 @@ class _ExcusesPageState extends State<ExcusesPage> {
   Future<Map<String, dynamic>> getExcuses() async {
     // print(sm.tokens!.access);
     try {
+      String? backendAddress = dotenv.env['BACKEND_SERVER'];
       String bearer = sm.tokens!.access;
 
       final response = await dio.get(
-        'http://192.168.178.50:8000/api/excuses/',
+        'http://$backendAddress/api/excuses/',
         options: Options(
           headers: {
             'Content-Type': 'application/json',
