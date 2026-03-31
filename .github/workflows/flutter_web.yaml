@@ -29,6 +29,7 @@ jobs:
         run: flutter pub get
 
       - name: Generate .env from GitHub variables
+        working-directory: excuseme
         run: |
           echo "BACKEND_SERVER=${{ vars.BACKEND_SERVER }}" > .env
           echo "UNTIS_SCHOOL=${{ vars.UNTIS_SCHOOL }}" >> .env
@@ -41,7 +42,7 @@ jobs:
 
       - name: Build Flutter Web
         working-directory: excuseme
-        run: flutter build web --release
+        run: flutter build web --release --base-href /ExcuseMe/
         
       - name: Deploy to GitHub Pages # change this to Firebase, if needed
         uses: peaceiris/actions-gh-pages@v4

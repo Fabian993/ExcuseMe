@@ -22,7 +22,7 @@ class _ExcusesPageState extends State<ExcusesPage> {
       String bearer = sm.tokens!.access;
 
       final response = await dio.get(
-        'http://$backendAddress/api/excuses/',
+        'https://$backendAddress/api/excuses/',
         options: Options(
           headers: {
             'Content-Type': 'application/json',

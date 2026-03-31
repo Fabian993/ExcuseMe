@@ -31,7 +31,7 @@ class _LoginPageState extends State<LoginPage> {
       String? backendAddress = dotenv.env['BACKEND_SERVER'];
 
       final response = await dio.post(
-        'http://$backendAddress/api/token/',
+        'https://$backendAddress/api/token/',
         data: {"username": username, "password": password},
         options: Options(headers: {'Content-Type': 'application/json'}),
       );
