@@ -4,12 +4,19 @@ The ExcuseMe App
 
 # Dependencies
 
+## Dotenv
+
+Copy the example, and configure the dotenv.
+
+`cp env.example .env`
+
 ## Linux
 
-First, get either `gnome-keyring` or `kwalletmanager`, depending desktop manager
+### flutter_secure_storage
+
+Depending on your desktop manager, get `gnome-keyring` or `kwalletmanager` or any other credential manager suitable for flutter_secure_storage
 
 ```sh
-#flutter_secure_storage
 sudo apt install libsecret-1-dev clang lld llvm-18
 ```
 
