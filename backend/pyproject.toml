@@ -83,6 +83,7 @@ dependencies = [
     "pytest-sugar==0.9.7",
     "pytz==2023.3",
     "redis==4.5.5",
+    "requests>=2.33.1",
     "ruff==0.0.265",
     "six==1.16.0",
     "sqlparse==0.4.4",

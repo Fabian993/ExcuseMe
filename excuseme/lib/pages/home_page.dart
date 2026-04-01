@@ -32,10 +32,14 @@ Future<String> getStudentId(String username, String password) async {
 // :params: username, password, school
 // *optional: start, end, studentId, tenantId
 Future<List<dynamic>> getAbsences() async {
+  String? backendServer = dotenv.env['BACKEND_SERVER'];
   String? untisServer = dotenv.env['UNTIS_SERVER'];
+  String? untisSchool = dotenv.env['UNTIS_SCHOOL'];
+
   final StorageManager sm = StorageManager();
   String? username = await sm.storage.read(key: "username");
   String? password = await sm.storage.read(key: "password");
+
   final Dio dio = Dio(
     BaseOptions(
       followRedirects: true,
@@ -48,12 +52,13 @@ Future<List<dynamic>> getAbsences() async {
   final cookieJar = CookieJar();
   dio.interceptors.add(CookieManager(cookieJar));
 
+  // login
   await dio.post(
-    "https://$untisServer/WebUntis/j_spring_security_check",
+    "https://$backendServer/api/webuntis/security_check/",
     data: {
       "j_username": username!,
       "j_password": password!,
-      "school": "bulme",
+      "school": untisSchool,
       "token": "",
     },
     options: Options(contentType: Headers.formUrlEncodedContentType),
@@ -61,6 +66,7 @@ Future<List<dynamic>> getAbsences() async {
 
   String studentId = await getStudentId(username, password);
 
+  // get absences
   final response = await dio.get(
     "https://$untisServer/WebUntis/api/classreg/absences/students",
     queryParameters: {

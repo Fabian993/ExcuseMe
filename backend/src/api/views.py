@@ -7,12 +7,52 @@ from rest_framework import viewsets, filters, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 import time
-
+import requests
+from django.http import HttpResponse
 from .serializer import *
 from .models import *
 from .permissions import *
 from .signature import *
+
+# Webuntis Proxy
+@csrf_exempt
+def webuntis_security_check(request):
+
+    """Minimal proxy - forwards form exactly as Flutter sends"""
+    
+    try:
+        response = requests.post(
+            "https://bulme.webuntis.com/WebUntis/security_check",
+            data=request.body,  # frontend sends form data
+            headers={
+                'User-Agent': 'Mozilla/5.0',
+                'Referer': 'https://bulme.webuntis.com/',
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            allow_redirects=False,  # Capture cookies from 302
+            timeout=15
+        )
+
+        django_response = HttpResponse(
+            response.content,
+            status=response.status_code,
+            content_type=response.headers.get('content-type', 'text/html')
+        )
+        
+        # Forward ALL cookies
+        for cookie in response.cookies:
+            django_response.set_cookie(
+                key=cookie.name,
+                value=cookie.value
+            )
+        
+        return django_response
+        
+    except Exception as e:
+        return HttpResponse(f"Error: {str(e)}", status=500)
 
 #Public
 class SchoolViewSet(viewsets.ModelViewSet):
@@ -198,6 +238,7 @@ class ExcuseViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         return [permissions.IsAuthenticated(), ExcusePermission()]
+    
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     
