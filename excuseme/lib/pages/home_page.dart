@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dart_untis_mobile/dart_untis_mobile.dart';
@@ -33,9 +34,12 @@ Future<String> getStudentId(String username, String password) async {
 // *optional: start, end, studentId, tenantId
 Future<List<dynamic>> getAbsences() async {
   String? untisServer = dotenv.env['UNTIS_SERVER'];
+  String? untisSchool = dotenv.env['UNTIS_SCHOOL'];
+
   final StorageManager sm = StorageManager();
   String? username = await sm.storage.read(key: "username");
   String? password = await sm.storage.read(key: "password");
+
   final Dio dio = Dio(
     BaseOptions(
       followRedirects: true,
@@ -48,19 +52,29 @@ Future<List<dynamic>> getAbsences() async {
   final cookieJar = CookieJar();
   dio.interceptors.add(CookieManager(cookieJar));
 
+  if (kIsWeb) {
+    (dio.httpClientAdapter as dynamic).withCredentials = true;
+  }
+
+  // login
   await dio.post(
     "https://$untisServer/WebUntis/j_spring_security_check",
     data: {
       "j_username": username!,
       "j_password": password!,
-      "school": "bulme",
+      "school": untisSchool,
       "token": "",
     },
-    options: Options(contentType: Headers.formUrlEncodedContentType),
+    options: Options(
+      contentType: Headers.formUrlEncodedContentType,
+      followRedirects: false, // disable for web
+      validateStatus: (status) => true, // Accept 302
+    ),
   );
 
   String studentId = await getStudentId(username, password);
 
+  // get absences
   final response = await dio.get(
     "https://$untisServer/WebUntis/api/classreg/absences/students",
     queryParameters: {
