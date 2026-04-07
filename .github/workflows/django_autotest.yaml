@@ -1,0 +1,33 @@
+name: Django CI
+
+on:
+  push:
+    branches: [ "main", "dev" ]
+  pull_request:
+    branches: [ "main", "dev" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.12]
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+    - uses: astral-sh/setup-uv@v7.1.6
+    - name: Install Dependencies
+      run: |
+        cd backend/
+        uv sync
+    - name: Run Tests
+      run: |
+        cd backend/
+        source .venv/bin/activate
+        pytest
+        # python manage.py test
