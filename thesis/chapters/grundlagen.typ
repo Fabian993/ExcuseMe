@@ -18,10 +18,7 @@
 // them here as well. They will be piped to the backend figure function.
 #import "@preview/aero-dhbw:0.1.1": pa-figure
 
-= Grundlagen
 
-#pad(left: 1cm)[==  
-]
 
 #pa-figure(
   table([Hi],[Hallo]),
@@ -30,3 +27,5 @@
     long: [This is under the table!]
   )
 )
+
+

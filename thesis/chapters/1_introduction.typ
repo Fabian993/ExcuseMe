@@ -18,9 +18,28 @@
 // them here as well. They will be piped to the backend figure function.
 #import "@preview/aero-dhbw:0.1.1": pa-figure
 
+
+
 = Einleitung
 
-#pad(left: 1cm)[
-== Beispiel überschrift 1
-Beispieltext
-]
+== Problemdefinition und Relevanz
+
+=== Darstellung des Problems
+
+=== Warum ist dieses Problem relevant?
+
+=== Grenzen bestehender Lösungen: Was funktioniert momentan nicht gut?
+
+
+
+== Zielsetzung der Arbeit
+
+=== Was soll das finale System erreichen?
+
+=== Spezifische, messbare Teilziele
+
+
+
+== Aufbau der Arbeit
+
+Kurzer Überblick über die folgenden Kapitel...

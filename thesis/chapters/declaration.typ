@@ -1,5 +1,5 @@
 #align(center)[
-  = Eidesstattliche Erklärung
+  #heading(level: 1, numbering: none)[Eidesstattliche Erklärung]
 ]
 
 #v(2em)

@@ -33,7 +33,7 @@
 }
 
 // --- 2. VARIABLEN ---
-#let title = "ExcuseMe - \n eine Self-Service-App \n für Schülerentschuldigungen"
+#let title = "  ExcuseMe - Self-Service-App \n für Schülerentschuldigungen"
 #let authors = "Fabian Trummer, Jan Schubert"
 #let class = "4AKIFT"
 #let department = "Abteilung für Elektronik"
@@ -78,10 +78,12 @@
 )
 #counter(page).update(1) 
 
-#outline(title: "Inhaltsverzeichnis", indent: auto)
+#include "chapters/declaration.typ"
+#pagebreak()
+#include "chapters/abstract.typ"
 #pagebreak()
 
-#include "chapters/declaration.typ"
+#outline(title: "Inhaltsverzeichnis", indent: auto)
 #pagebreak()
 
 // --- 5. HAUPTTEIL (Ab hier mit Kopfzeile) ---
@@ -95,24 +97,34 @@
   footer: mein_footer
 )
 
-#include "chapters/introduction.typ"
+#include "chapters/1_introduction.typ"
 #pagebreak()
-#include "chapters/grundlagen.typ"
+#include "chapters/2_grundlagen.typ"
 #pagebreak()
+#include "chapters/3_methodik.typ"
+#pagebreak()
+#include "chapters/4_implementierung.typ"
+#pagebreak()
+#include "chapters/5_ergebnisse.typ"
+#pagebreak()
+
 
 // Hier kannst du weitere Kapitel einfügen:
 // #include "chapters/fundamentals.typ"
 // #pagebreak()
 
-// --- 6. VERZEICHNISSE AM ENDE ---
-#heading(level: 1, numbering: none, outlined: true)[Abbildungsverzeichnis]
+// --- 6. ANHANG ---
+#heading(level: 1, outlined: true)[Anhang]
+
+#heading(level: 2, outlined: true)[Abbildungsverzeichnis]
 #outline(title: none, target: figure.where(kind: image))
 #pagebreak()
 
-#heading(level: 1, numbering: none, outlined: true)[Tabellenverzeichnis]
+#heading(level: 2, outlined: true)[Tabellenverzeichnis]
 #outline(title: none, target: figure.where(kind: table))
 #pagebreak()
 
 // --- 7. LITERATURVERZEICHNIS ---
 // Falls du eine references.bib hast, wird sie hier ausgegeben
-#bibliography("references.bib", title: "Literaturverzeichnis", style: "ieee")
+#heading(level: 2, outlined: true)[Literaturverzeichnis]
+#bibliography("references.bib", title: none, style: "ieee")
