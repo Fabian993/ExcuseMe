@@ -12,8 +12,6 @@
 === Work Breakdown Structure (WBS)
 Zerlegung des Gesamtprojekts in lösbare Teilaufgaben -> GitHub Issues
 
-
-
 == Architektur-Design
 
 === Kontextdiagramm?
@@ -26,7 +24,27 @@ Frontend -> API-Endpoint -> Backend -> Datenbank
 === Definition der Schnittstellen
 Daten zwischen Flutter und Django (JSON-Schema-Definition)
 
+== Technologien
 
+=== Django 
+Warum Django?
+
+=== Django REST Framework
+Warum Django REST?
+
+=== Flutter  
+Warum Flutter?
+- Bereits Erfahrung damit
+- Cross-Platform-Entwicklung
+
+=== PostgreSQL
+Warum PostgreSQL
+
+=== JWT (JSON Web Token)
+Warum JWT?
+
+=== Railway (Cloud Service)
+Warum Railway?
 
 == Rollenverteilung und Zusammenarbeit
 Teamreflexion

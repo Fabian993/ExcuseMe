@@ -24,7 +24,7 @@ Resource-orientierter Stil und HTTP-Methoden
 === Rolle des Django REST Framework (DRF)
 Automatisierung von APIs, browsable API, etc.
 
-
+=== Datenschutz durch Backend-Security
 
 == Theoretische Basis des Frontend-Stacks
 
