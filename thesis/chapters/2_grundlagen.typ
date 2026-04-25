@@ -16,7 +16,8 @@ Scrum, Kanban, etc.
 == Theoretische Basis des Backend-Stacks
 
 === Das ORM (Object-Relational Mapping)
-Funktion und Vorteile von Django
+Als ORM nutzen wir Django, das es uns ermöglicht Datenbankenzugriffe über Python-Modelle umzusetzen statt direkt SQL-Abfragen schreiben zu müssen. Dabei beschreibt ein Django-Modell die Struktur der gespeicherten Daten und entspricht in der Regel einer #linebreak() Datenbanktabelle. Auf dieser Grundlage stellt Django automatisch eine Datenbank-API bereit, mit der Objekte  erstellt, abgerufen, verändert und gelöscht werden können. Dadurch bleibt der Code übersichtlicher und stark Python orientiert, während viele  Datenbankzugriffe über das Framework laufen. 
+@django_models,  @django_queries 
 
 === Prinzipien von RESTful Services
 Resource-orientierter Stil und HTTP-Methoden

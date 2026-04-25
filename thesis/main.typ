@@ -5,7 +5,7 @@
 )
 
 #set text(font: "Inria Serif", lang: "de", size: 11pt) 
-#set heading(numbering: "I.I") 
+#set heading(numbering: "1.1") 
 
 #set par(justify: true)
 #set par(first-line-indent: 0cm) // Einrückung deaktiviert, wie gewünscht
