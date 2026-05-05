@@ -33,7 +33,7 @@
 }
 
 // --- 2. VARIABLEN ---
-#let title = "  ExcuseMe - Self-Service-App \n für Schülerentschuldigungen"
+#let title = [ExcuseMe - Self-Service-App \ für Schülerentschuldigungen]
 #let authors = "Fabian Trummer, Jan Schubert"
 #let class = "4AKIFT"
 #let department = "Abteilung für Elektronik"
