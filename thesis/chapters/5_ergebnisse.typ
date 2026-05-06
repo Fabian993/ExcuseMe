@@ -1,5 +1,3 @@
-#import "@preview/glossy:0.9.0"
-#import "@preview/aero-dhbw:0.1.1": pa-figure
 
 = Diskussion, Limitationen und Ausblick
 
