@@ -1,6 +1,8 @@
+#import "@preview/abbr:0.3.0"
+#show: abbr.show-rule
+#abbr.load("../abbreviations.csv", delimiter: ",")
 
 = Diskussion, Limitationen und Ausblick
-
 
 == Diskussion der Ergebnisse
 Erfolgskontrolle. Änderungen / Abweichungen, warum

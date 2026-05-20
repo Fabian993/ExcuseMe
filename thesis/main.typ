@@ -1,4 +1,8 @@
 // --- 1. GLOBALE EINSTELLUNGEN ---
+
+#import "@preview/abbr:0.3.0"
+#show: abbr.show-rule
+
 #set page(
   paper: "a4",
   margin: (left: 2.5cm, right: 2.5cm, top: 3cm, bottom: 2.5cm),
@@ -38,7 +42,7 @@
 #let class = "4AKIFT"
 #let department = "Abteilung für Elektronik"
 #let branch = "Ausbildungszweig Informatik"
-#let supervisor = "Simon Gunacker" //gehört noch erweitert
+#let supervisor = "Simon Gunacker" 
 
 // --- 3. DECKBLATT (Ohne Kopf- und Fußzeile) ---
 #set page(header: none, footer: none)
@@ -108,23 +112,24 @@
 #include "chapters/5_ergebnisse.typ"
 #pagebreak()
 
-
-// Hier kannst du weitere Kapitel einfügen:
-// #include "chapters/fundamentals.typ"
-// #pagebreak()
-
 // --- 6. ANHANG ---
 #heading(level: 1, outlined: true)[Anhang]
 
+// ABKÜRZUNGEN
+#set heading(level: 2, outlined: true)
+#abbr.list(title: "Abkürzungsverzeichnis")
+#pagebreak()
+
+// ABBILDUNGEN
 #heading(level: 2, outlined: true)[Abbildungsverzeichnis]
 #outline(title: none, target: figure.where(kind: image))
 #pagebreak()
 
+// TABELLEN
 #heading(level: 2, outlined: true)[Tabellenverzeichnis]
 #outline(title: none, target: figure.where(kind: table))
 #pagebreak()
 
 // --- 7. LITERATURVERZEICHNIS ---
-// Falls du eine references.bib hast, wird sie hier ausgegeben
 #heading(level: 2, outlined: true)[Literaturverzeichnis]
 #bibliography("references.bib", title: none, style: "ieee")

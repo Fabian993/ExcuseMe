@@ -1,3 +1,6 @@
+#import "@preview/abbr:0.3.0"
+#show: abbr.show-rule
+#abbr.load("../abbreviations.csv", delimiter: ",")
 
 = Einleitung
 == Problemdefinition und Relevanz //J&F
@@ -10,8 +13,8 @@ Viele Schulen nutzen für Fehlzeiten noch handschriftliche Entschuldigungen, wod
 die Erstellung einer Statistik, welche zeigt, zu welchen Zeiten oder Tagen 
 im Durchschnitt besonders viele Schüler fehlen. Zudem stellt es einen weiteren Schritt in Richtung Digitalisierung im Bildungswesen dar.
 
-=== Grenzen bestehender Lösungen: Was funktioniert momentan nicht gut?
-{Platzhalter}
+=== Grenzen bestehender Lösungen: Was funktioniert momentan nicht gut? // F
+// Was kann die Konkurrenz nicht so gut, was machen wir besser?
 
 #pagebreak()
 == Zielsetzung der Arbeit //J&F
@@ -20,7 +23,7 @@ Ziel unserer Arbeit ist, dass Schüler ihre Entschuldigungen bei Krankheit oder 
 === Was soll das finale System erreichen?
 Ein Schüler soll per App oder Website Entschuldigungen hochladen können. Optional dazu wird jeweils eine Bestätigung zugestellt, sobald diese von den Eltern/Erziehungsberechtigten signiert wurde und beim Lehrer ankommt. Lehrer bekommen automatisch Bescheid und müssen nichts mehr händisch eintragen. Alles ist gespeichert, transparent und jederzeit nachvollziehbar. So ist jederzeit ersichtlich, welche Fehlstunden noch unentschuldigt sind und keiner muss sich sorgen, ob die Entschuldigungen auch wirklich ankommen.
 
-=== Spezifische, messbare Teilziele //J&F
+=== Spezifische, messbare Teilziele
 Zu den spezifischen, messbaren Teilzielen gehören 
 - die Entwicklung eines Backends mit API Schnittstelle,
 - eine direkte, sichere Weiterleitung an Lehrkräfte oder Klassenvorstand,
@@ -31,4 +34,4 @@ Zu den spezifischen, messbaren Teilzielen gehören
 
 == Aufbau der Arbeit //J&F
 
-Im ersten Kapitel befinden sich die Planung, Problemstellung und Relevanz der App. In Kapitel zwei geht es um die theoretischen Grundlagen mit Überblick über relevante Literatur zu Client-Server-Architektur, Backend- und  Frontend-Technologien, sowie Teamstrukturen. Kapitel drei beschreibt das Systemdesign, die eingesetzten Technologien und die Rollenverteilung im Entwicklungsteam. Das vierte Kapitel dokumentiert die Implementierung und präsentiert die erzielten Ergebnisse. Abschließend diskutiert Kapitel 5 die Resultate, benennt Limitationen und gibt einen Ausblick auf mögliche Weiterentwicklungen.
+Im ersten Kapitel befinden sich die Planung, Problemstellung und Relevanz der App. In Kapitel zwei geht es um die theoretischen Grundlagen mit Überblick über relevante Literatur zu Client-Server-Architektur, Backend- und  Frontend-Technologien, sowie Teamstrukturen. Kapitel drei beschreibt das Systemdesign, die eingesetzten Technologien und die Rollenverteilung im Entwicklungsteam. Das vierte Kapitel dokumentiert die Implementierung und präsentiert die erzielten Ergebnisse. Abschließend diskutiert Kapitel fünf die Resultate, benennt Limitationen und gibt einen Ausblick auf mögliche Weiterentwicklungen.
