@@ -12,13 +12,13 @@
   // date = {19.05.2026}
 )
 
-// weitere Abbildungen (drf_*) sind auch da und unbenutzt, falls du sie brauchst...
-
 === Datenbankmodell
 (siehe @Datenbank-Schema)
 
 === Skalierbarkeit 
-Redis, Traefik(?)
+Programmier-Paradigmen wie @OOP bzw. Sprachen, die @OOP ermöglichen, wie Python, Dart, ...
+
+Technologien wie Redis, Traefik(?), 
 
 === CRUD
 (siehe @API_Kapitel API)
@@ -79,21 +79,44 @@ class MyApp extends StatelessWidget {
 ```
 
 === Authentifizierung
-Die Login Page überprüft beim Aufruf zuerst, ob bereits Daten bei einer früheren Anmeldung gespeichert wurden. Falls ja, werden diese gleich weiterverwendet und an die @API geschickt, um einen frischen Token zu erhalten. Der Nutzer wird dabei sofort auf die Homepage weitergeleitet. 
-Anderenfalls wird die Login Page angezeigt, bis sich der Nutzer erfolgreich angemeldet hat. 
+Die folgenden Code-Blocks dienen der vereinfachten Darstellung der Authentifizierungslogik und zeigen ausschließlich die für das Verständnis relevanten Kernschritte.
+
+Die Login Page überprüft beim Aufruf zuerst, ob bereits ein Refresh-Token bei einer früheren Anmeldung gespeichert wurde. Falls ja, wird dieser gleich weiterverwendet und an die @API geschickt, um einen frischen Access-Token zu erhalten. Der Nutzer wird dabei sofort auf die Homepage weitergeleitet. 
+
+```dart
+Future<bool> authenticate(String username, String password) async {
+  try {
+    await dotenv.load(fileName: ".env");
+    String? backendAddress = dotenv.env['BACKEND_SERVER'];
+
+    final response = await dio.post(
+      'https://$backendAddress/api/token/',
+      data: {"username": username, "password": password},
+      options: Options(headers: {'Content-Type': 'application/json'}),
+    );
+    if (response.statusCode == 200) {
+      return true; 
+    }
+    return false;
+  } catch (error) {
+    return false;
+  }
+}
+```
+
+Anderenfalls wird die Login Page angezeigt, bis sich der Nutzer erfolgreich angemeldet hat, was in folgendem Code sichtbar ist. 
 
 ```dart
 @override
 Widget build(BuildContext context) {
-  updateTokens();
   if (_stayAuthenticatedStorage) Skeleton();
   if (_isAuthenticated) {
     return Skeleton(); // Homepage
   } else {
-    return Scaffold(); // Login Page
+    return Scaffold(); // Loginpage
 ```
 
-Beim Markieren der "Remember Me" Checkbox kann umgeschaltet werden, ob man angemeldet bleiben möchte oder nicht, um zukünftige Anmeldungen zu erleichtern. Dabei werden die Nutzerdaten mithilfe der `flutter-secure-storage` Bibliothek auf dem Endgerät des Nutzers verschlüsselt gespeichert,  Eine vereinfachte Darstellung ist im nachfolgenden Code-Block zu sehen.
+Beim Markieren der "Remember Me" Checkbox kann umgeschaltet werden, ob man angemeldet bleiben möchte oder nicht, um zukünftige Anmeldungen zu erleichtern, was im nachfolgenden Code-Block zu sehen ist.
 
 ```dart
 // UI
@@ -106,37 +129,107 @@ CheckboxMenuButton(
 );
 ```
 
+Dabei werden die Nutzerdaten mithilfe der `flutter-secure-storage` Bibliothek auf dem Endgerät des Nutzers verschlüsselt gespeichert.
+
 ```dart
 // logic
 final StorageManager sm = StorageManager();
 
 if (_stayAuthenticated) {
-  await sm.storage.write(key: "username", value: username);
-  await sm.storage.write(key: "password", value: password);
+  await sm.storage.write(key: "access", value: response.data["access"]);
+  await sm.storage.write(key: "refresh", value: response.data["refresh"]);
 }
 ```
 
-Für 
+=== Responsive Layer
+Um die Nutzung der App auf unterschiedlichsten Plattformen und Bildschirmgrößen zu erleichtern, steuert eine responsive Schicht die Anzeige der Seite und die Position der Navigationsleiste bestimmen (siehe @Responsive-Design Responsive Design).
+
+Der nachstehende, gekürzte Code-Block zeigt, wie der Responsive Layer, im folgenden als Skelett bezeichnet, die Grundlage der Home-Seite bildet. \
+Ein LayoutBuilder baut die vom Nutzer ausgewählte Seite. Dabei wird auf die aktuelle Breite der Applikation geschaut. Unterschreitet sie dabei einen bestimmten Wert, wird die Navigationsleiste unterhalb der Seite dargestellt, andernfalls auf der rechten Seite. 
 
 ```dart
-_isAuthenticated = await authenticate(
-  _usernameController.text,
-  _passwordController.text,
-);
+// Responsive Layer
+class Skeleton extends StatefulWidget {
+  const Skeleton({super.key});
+
+  @override
+  State<Skeleton> createState() => _SkeletonState();
+}
+
+class _SkeletonState extends State<Skeleton> {
+  int _pageIndex = 0;
+  final List<dynamic> _pages = [HomePage(), ExcusesPage(), SettingsPage()];
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isMobile = constraints.maxWidth < 650;
+
+        if (isMobile) { 
+          return Scaffold(  
+            // Design with BottomNavigationBar()
+          );
+        }  else { 
+          return Scaffold(
+            // Design with NavigationRail()
+          ); 
+        }
 ```
 
-=== Responsive Layer
-Der Responsive Layer bildet die eigentliche Basis der Homepage.
-
-(siehe @Responsive-Design Responsive Design)
 
 === Homepage
-Entschuldigungen einsehen und hochladen
+Während der Nutzer auf die `Home` Seite weitergeleitet wird, wird im Hintergrund eine Authentifizierunganfrage an die Webuntis-Server gesendet, um aktuelle Tokens und die `studentId` des Nutzers zu erhalten. Die ID wird in der nachfolgenden Abfrage für den Abruf der Fehlstunden benötigt, wie der folgende, vereinfachte Code zeigt.
 
-=== Webuntis
+```dart
+Future<List<dynamic>> getAbsences() async {
+  String? untisServer = dotenv.env['UNTIS_SERVER'];
+  String? untisSchool = dotenv.env['UNTIS_SCHOOL'];
 
+  final StorageManager sm = StorageManager();
+  final Dio dio = Dio();
+
+  final cookieJar = CookieJar();
+  dio.interceptors.add(CookieManager(cookieJar));
+
+  // login
+  await dio.post(
+    "https://$untisServer/WebUntis/j_spring_security_check",
+    data: {
+      "j_username": username!,
+      "j_password": password!,
+      "school": untisSchool,
+      "token": "",
+    },
+    options: Options(
+      contentType: Headers.formUrlEncodedContentType,
+      followRedirects: false, // disable for web
+      validateStatus: (status) => true, // Accept 302
+    ),
+  );
+
+  String studentId = await getStudentId(username, password);
+
+  // get absences
+  final response = await dio.get(
+    "https://$untisServer/WebUntis/api/classreg/absences/students",
+    queryParameters: {
+      "startDate": "20250908",
+      "endDate": "20260712",
+      "studentId": int.parse(studentId),
+      "excuseStatusId": -1,
+    },
+    options: Options(headers: {"Accept": "application/json"}),
+  );
+  
+  List<dynamic> absences = response.data['data']['absences'];
+
+  return absences;
+}
+```
 
 == Systemintegration //F
+// ich kann hier noch ein Mermaid Flowchart erstellen, obwohl bereits eins
 Integration und Gesamtablauf des Systems
 
 Demonstration des erfolgreichen Datenflusses vom UI bis in die Datenbank -> Integrationstest
@@ -146,8 +239,9 @@ Demonstration des erfolgreichen Datenflusses vom UI bis in die Datenbank -> Inte
 Beschreibung durchgeführter Tests
 
 === Integration Tests
-siehe 5.1 Diskussion der Ergebnisse
+(siehe @Diskussion-der-Ergebnisse Diskussion der Ergebnisse)
 
 === E2E Tests
 @E2E Tests
-siehe 5.1 Diskussion der Ergebnisse
+
+(siehe @Diskussion-der-Ergebnisse Diskussion der Ergebnisse)

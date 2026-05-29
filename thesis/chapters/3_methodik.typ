@@ -13,7 +13,7 @@ Im Falle von ExcuseMe nahm der Betreuer der Arbeit die Rolle des Scrum-Masters e
 @scrum_master
   
 === Work Breakdown Structure
-Nachdem ein Sprint geplant wurde, erfolgte die Zerlegung in kleinere, umsetzbare Teilaufgaben in Form von GitHub-Issues. Dabei wurde festgelegt,  wer welche Aufgaben bis zum nächsten Sprint erledigt haben muss, um die gegebenen Ziele zu erreichen. Hieraus entsteht eine nachvollziehbare Aufgabenverteilung. 
+Nachdem ein Sprint geplant wurde, erfolgte die Zerlegung in kleinere, umsetzbare Teilaufgaben in Form von GitHub-Issues. Dabei wurde festgelegt, wer welche Aufgaben bis zum nächsten Sprint erledigt haben muss, um die gegebenen Ziele zu erreichen. Hieraus entsteht eine nachvollziehbare Aufgabenverteilung. 
 
 
 == Architektur-Design // J
@@ -133,7 +133,7 @@ Um ein spezifisches Element als Antwort zu erhalten, kann der @URL die ID des ge
 }
 ```
 
-Die nachstehende Tabelle gibt eine Übersicht über die zentralen API-Endpunkte und deren typische JSON-Responses. Für Listenendpunkte wird dabei die von Django REST Framework verwendete Wrapper-Struktur mit `count`, `next`, `previous` und `results` verwendet. \
+Die nachstehende Tabelle gibt eine Übersicht über die zentralen API-Endpunkte und deren typische JSON-Responses. Für Listenendpunkte wird dabei die von @DRF:lo verwendete Wrapper-Struktur mit `count`, `next`, `previous` und `results` verwendet. \
 Zur besseren Lesbarkeit werden in der Tabelle nur die wesentlichen Felder der jeweiligen Responses dargestellt.
 
 #figure(
@@ -228,21 +228,24 @@ Zur besseren Lesbarkeit werden in der Tabelle nur die wesentlichen Felder der je
 == Technologien //F
 
 === Django 
-//Muss  ich noch anpassen (kürzen)!!!
-Mögliche Optionen für das Backend bestanden aus Flask, FastAPI und Django in Python sowie Node.js und NestJS in @JS. Der Fokus bei der Wahl lag auf Django und Node.js, da diese bereits im Unterricht behandelt wurden. Obwohl der Wissensstand in Richtung Node.js größer war wurde sich für das Django-Backend entschieden und das aus folgenden Gründen:
+Mögliche Optionen für das Backend bestanden aus Flask, FastAPI und Django in Python, sowie Node.js und NestJS in @JS. Der Fokus bei der Wahl lag auf Django und Node.js, da diese bereits im Unterricht behandelt wurden. Obwohl der Wissensstand in Richtung Node.js größer war wurde sich für das Django-Backend entschieden und das aus folgenden Gründen:
 
 Erstens ist der Einstieg in ein neues Projekt sehr einfach. Sobald Django installiert ist, kann man direkt mit einem vorgefertigten Projekt-Template starten und hat ein funktionierendes Grundgerüst. \
+
 Der Hauptgrund für die Wahl von Django ist die schnelle Entwicklung, da wichtige Funktionen wie Authentifizierung, Admin-Oberfläche, @ORM und Migrationen bereits inkludiert sind. Das spart Zeit im Vergleich zu leichteren Frameworks wie Node.js, bei denen man vieles selbst  zusammenbauen muss. Weiters bringt es eine klare, übersichtliche Architektur mit, die sehr hilft den Überblick über das Projekt zu wahren. \
+
 Zusätzlich verfügt Django über bereits vorhandene Sicherheitsfeatures, beispielsweise den eingebauten Schutz vor @XSS, eine Sicherheitslücke bei der Angreifer schädlichen Code in legitime Seiten einschleusen oder @SQLi einer Cyber-Schwachstelle die Angreifern ermöglicht manipulierenden Code in Eingabefelder einzuschleusen. \
-Wichtig ist, dass Entwicklungsgeschwindigkeit und klare Struktur gegenüber einer höheren Performance, beispielsweise durch Node.js, bevorzugt wurden und dabei eine geringere Performance in Kauf genommen wurde.
+
+Wichtig ist, dass Entwicklungsgeschwindigkeit und klare Struktur gegenüber einer höheren Performance, beispielsweise durch Node.js, bevorzugt wurden und dabei eine geringere Performance in Kauf genommen wurde.\
 @django_doc, @django_getting_started, @django_models, @django_security
 
 
 === Django Rest Framework (DRF)
 // Warum Django REST?
 @DRF ist ein Framework zur Erstellung von Rest-APIs auf Basis von Django. Es erweitert Django um Funktionen, die speziell für die Bereitstellung von Schnittstellen zwischen Backend und Frontend wichtig sind, zum Beispiel Serialisierung, Authentifizierung, Berechtigungen und ViewSets. \
+
 Für das Projekt war @DRF eine sinnvolle Ergänzung, da damit die @API strukturiert und mit deutlich weniger Aufwand umgesetzt werden konnte. Zusätzlich bietet @DRF eine Browsable API, welche die direkte Ansicht und Testung von Endpunkten im Browser ermöglicht. Dadurch wurde die Entwicklung vereinfacht und die Wartbarkeit des Backend verbessert.
-@drf_doc, @drf_browsable_api
+@drf_doc, @drf_browsable_api, @drf_serialization, @drf_auth_permissions
 
 
 === Flutter  
@@ -257,17 +260,32 @@ Flutter wurde für ExcuseMe gewählt, da bereits Vorkenntnisse vorhanden sind un
 === PostgreSQL
 //Warum PostgreSQL
 Für das Projekt wurde PostgreSQL als Datenbank gewählt, da es sich um ein leistungsfähiges und zuverlässiges relationales Datenbanksystem handelt, das sich gut in Django integrieren lässt. Besonders bei Anwendungen mit strukturierten Daten und klaren Beziehungen zwischen Entitäten bietet eine relationale Datenbank große Vorteile.
+\
 
-In ExcuseMe müssen Benutzer, Rollen, Abwesenheiten und weitere zugehörige Informationen konsistent gespeichert und miteinander vereknüpft werden. Dafür sind relationale Datenbanken besonders geeignet, da sie mit Tabellen, Schlüsseln und Transaktionen eine hohe Datenintegrität gewährleisten.
+In ExcuseMe müssen Benutzer, Rollen, Abwesenheiten und weitere zugehörige Informationen konsistent gespeichert und miteinander verknüpft werden. Dafür sind relationale Datenbanken besonders geeignet, da sie mit Tabellen, Schlüsseln und Transaktionen eine hohe Datenintegrität gewährleisten.
+\
 
-Als Alternative wäre auch SQLite möglich gewesen, das jedoch in diesem Projekt an seine Grenzen gestoßen wäre. MySQL oder MariaDB wurden ebenfalls in Erwägung gezogen, doch in vielen Fällen bietet PostgreSQL mehr Flexibilität bei komplexen Anfragen und Datenmodellen. NoSQL-Datenbanken wie MongoDB sind vorallem dann sinnvoll, wenn Daten unstrukturiert oder sehr flexibel aufgebaut sind. Da die Daten im Falle von ExcuseMe jedoch klar definiert und eng miteinander verknüpft sind, wäre eine NoSQL-Datenbank hier eher ungeeignet. Genauere Details zum Datenbank-Schema sind im Datenbank-Schema zu finden. 
+Als Alternative wäre auch SQLite möglich gewesen, das jedoch in diesem Projekt an seine Grenzen gestoßen wäre. MySQL oder MariaDB wurden ebenfalls in Erwägung gezogen, doch in vielen Fällen bietet PostgreSQL mehr Flexibilität bei komplexen Anfragen und Datenmodellen. NoSQL-Datenbanken wie MongoDB sind vorallem dann sinnvoll, wenn Daten unstrukturiert oder sehr flexibel aufgebaut sind. Da die Daten im Falle von ExcuseMe jedoch klar definiert und eng miteinander verknüpft sind, wäre eine NoSQL-Datenbank hier eher ungeeignet. Genauere Details zum Datenbank-Schema sind im @Datenbank-Schema zu finden. 
+@django_databases, @postgresql_docs, @ionos_postgresql_vs_mysql, @aws_mongodb_vs_postgresql
+
 
 === JSON Web Token
 //Warum JWT?
-@JWT ist ein Standard zur sicheren Übetragung von Informationen zwischen Client und Server und wird in Webanwendungen zur Authentifizierung eingesetzt. Nach dem Login erhält der Client einen *Token*, der bei weiteren Anfragen
+//gute Grafiken: https://www.geeksforgeeks.org/web-tech/json-web-token-jwt/
+@JWT ist ein Standard zur sicheren Übetragung von Informationen zwischen Client und Server und wird in Webanwendungen zur Authentifizierung eingesetzt. Nach dem Login erhält der Client einen *Token*, der bei weiteren Anfragen mitgesendet wird, wodurch sich User nicht bei jedem Request erneut anmelden müssen. Das macht die Kommunikation zwischen Frontend und Backend effizienter.\
+
+Für das Projekt war @JWT besonders sinnvoll, da eine getrennte Architektur aus Flutter-Frontend und Django-Backend verwendet wird. Dabei wird der Token vom Client gespeichert und bei geschützten Anfragen verwendet werden, wodurch sich der Login einfach verwalten lässt.\
+
+Alternativ wäre auch Authentifizierung per Web-Cookie möglich gewesen, bei der der Server die Sitzung verwaltet. Diese Lösung ist auch weit verbreitet, jedoch passt diese nicht gut zu klar getrennten API-Architekturen.
+@auth0_jwt_intro, @jwtapp_jwt_vs_sessions
 
 === Railway (Cloud Service)
-Warum Railway?
+//Warum Railway?
+Railway ist eine @PaaS Cloud-Plattform, die es Entwicklern ermöglicht, Web-Anwendungen, Server, Datenbanken und Background Services durch automatisierte Deployment-Workflows ohne Server-Management bereitzustellen.\
+
+In der Arbeit wird Railway für die automatisierte CI/CD-Pipeline einer WebApp eingesetzt. Durch die Integration mit GitHub, wird ein Workflow realisiert, der das deployte System bei jedem Push auf den main-Branch automatisch aktualisiert, neu kompiliert und baut. Dadurch erhält man Continous Deployment das heißt, dass jede Code-Änderung, die Tests besteht, direkt in Produktion geht, wodurch man ein nahtloses Updaten der API erhält.\
+
+Alternativ zu Railway wurden auch @PaaS Anbieter wie Render oder Fly.io in Betracht gezogen, wobei Railway durch Usage-based Billing und einer breiteren Datenbank Unterstützung (PostgreSQL, MySQL, MongoDB, Redis) überzeugt. VPS-Lösungen wie Hetzner oder Self-Hosting kamen aufgrund des fehlenden automatisierten CI/CD und des höheren Wartungsaufwandes nicht in Betracht.
 
 == Rollenverteilung und Zusammenarbeit //F
 Teamreflexion
