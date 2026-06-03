@@ -1,5 +1,4 @@
 // --- 1. GLOBALE EINSTELLUNGEN ---
-
 #import "@preview/abbr:0.3.0"
 #show: abbr.show-rule
 
@@ -15,13 +14,16 @@
 #set par(first-line-indent: 0cm) // Einrückung deaktiviert, wie gewünscht
 
 // --- FUSSZEILE DEFINITION (Seite X/Y) ---
+#import "chapters/footer.typ": get_footer_name, set_footer_name
 #let mein_footer = context {
   set text(size: 10pt)
   line(length: 100%, stroke: 0.5pt)
   v(0.2em)
-  let current = counter(page).display()
-  let final = counter(page).final().at(0)
-  align(center)[Seite #current/#final]
+  grid(
+    columns: (1fr, 1fr),
+    [#get_footer_name()],
+    align(right)[Seite #counter(page).display()]
+  )
 }
 
 // --- INHALTSVERZEICHNIS STYLING ---
@@ -113,6 +115,7 @@
 #pagebreak()
 
 // --- 6. ANHANG ---
+#set_footer_name("")
 #heading(level: 1, outlined: true)[Anhang]
 
 // ABKÜRZUNGEN

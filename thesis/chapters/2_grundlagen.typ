@@ -1,9 +1,11 @@
+#import "footer.typ": set_footer_name
 #import "@preview/abbr:0.3.0"
 #show: abbr.show-rule
 #abbr.load("../abbreviations.csv", delimiter: ",")
 
 = Theoretische Fundierung und Literaturüberblick
 
+#set_footer_name("Jan Schubert")
 == Grundlagen der modernen Softwareentwicklung // J
 
 === Definition und Bedeutung des Client-Server-Architekturprinzips <Client-Server-Architekturprinzip>
@@ -60,11 +62,12 @@ Recht ähnlich ist hier auch @XP:l, welches die Dauer der Iterationen auf meist 
 
 In einer frühen Besprechung mit unserem Betreuungslehrer wurde letztendlich festgelegt, dass bis zum Abschluss der Arbeit, alle zwei Wochen ein Meeting zur Besprechung des Fortschritts stattfindet. Da sich die gegebenen Anforderungen und eingeplanten Zeiten leicht verändern können, beispielsweise durch neue, gewünschte Funktionalität oder andere schulische Aktivitäten, fiel die Wahl auf das flexible "Scrum" Modell. Da hier jedoch einzelne Aspekte wie automatische Test oder kontinuierliche Integration aus dem @XP fehlten, wurde der Beschluss gefasst, diese dennoch in unserer Planung zu berücksichtigen.
 
-
+// #pagebreak() 
+#set_footer_name("Fabian Trummer")
 == Theoretische Basis des Backend-Stacks //F
 
 === Object-Relational Mapping
-Das @ORM im Hintergrund nennt sich Django, das es ermöglicht Datenbankzugriffe über Python-Modelle umzusetzen, statt direkt SQL-Abfragen schreiben zu müssen. Dabei beschreibt ein Django-Modell die Struktur der gespeicherten Daten und entspricht in der Regel einer Datenbanktabelle. Auf dieser Grundlage stellt Django automatisch eine Datenbank-@API:s bereit, mit der Objekte  erstellt, abgerufen, verändert und gelöscht werden können. Dadurch bleibt der Code übersichtlicher und stark Python orientiert, während viele Datenbankzugriffe über das Framework laufen. 
+Das @ORM im Hintergrund nennt sich Django, das es ermöglicht Datenbankzugriffe über Python-Modelle umzusetzen, statt direkt SQL-Abfragen schreiben zu müssen. Dabei beschreibt ein Django-Modell die Struktur der gespeicherten Daten und entspricht in der Regel einer Datenbanktabelle. Auf dieser Grundlage stellt Django automatisch eine Datenbank-@API:s bereit, mit der Objekte  erstellt, abgerufen, verändert und gelöscht werden können. Dadurch bleibt der Code übersichtlicher und stark Python orientiert, während viele Datenbankzugriffe über das Framework laufen.
 @django_models,  @django_queries 
 
 === Prinzipien von RESTful Services
@@ -83,6 +86,8 @@ Ein Service wird als RESTful bezeichnet, wenn er die sechs von Roy T. Fielding d
 Ein Ansatz zum Datenschutz besteht in der gezielten Absicherung des Backends einer Webanwendung. Das @OWASP zeigt in seinen 2025 aktualisierten Top 10 die kritischsten Sicherheitsrisiken für Webanwendungen. Zu den relevanten Risiken zählen insbesondere unzureichende oder fehlende Verschlüsselung sensibler Daten wie Passwörter oder personenbezogene Informationen. Ein weiteres Risiko besteht darin, dass Nutzer auf Ressourcen zugreifen können, für die ihnen keine Berechtigung erteilt wurde. Die Umsetzung der von @OWASP empfohlenen Maßnahmen auf Backend-Ebene stellt daher nicht nur eine "Best Practice" dar, sondern ist auch im Sinne der @DSGVO.
 @owasp
 
+#pagebreak()
+#set_footer_name("Jan Schubert")
 == Theoretische Basis des Frontend-Stacks // J
 
 === Vorteile von Cross-Platform-Frameworks
@@ -122,11 +127,3 @@ Responsive Design beschreibt den Designansatz, die Software mit allen möglichen
 @responsive_design
 
 Stateful Widgets ermöglichen das. Der State eines Widgets kann hier mit der Bildschirmgröße verknüpft und bei dessen Änderung neu dargestellt werden.
-
-== Kollaboration und Teamstruktur
-
-=== Theoretische Modelle des Teamworks
-Aufteilung von Verantwortlichkeiten und Schnittstellenmanagement. 
-
-=== Auswahl des Team-Workflows
-Begründung von gewählten Methoden -> Sprints, Issues, Meilensteine, ...

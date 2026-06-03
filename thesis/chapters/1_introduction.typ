@@ -1,8 +1,12 @@
+#import "footer.typ": set_footer_name
+
 #import "@preview/abbr:0.3.0"
 #show: abbr.show-rule
 #abbr.load("../abbreviations.csv", delimiter: ",")
 
 = Einleitung
+
+#set_footer_name("Fabian Trummer & Jan Schubert")
 == Problemdefinition und Relevanz //J&F
 
 === Darstellung des Problems
@@ -15,8 +19,8 @@ im Durchschnitt besonders viele Schüler fehlen. Zudem stellt es einen weiteren 
 
 === Grenzen bestehender Lösungen: Was funktioniert momentan nicht gut? // F
 // Was kann die Konkurrenz nicht so gut, was machen wir besser?
-
 #pagebreak()
+
 == Zielsetzung der Arbeit //J&F
 Ziel unserer Arbeit ist, dass Schüler ihre Entschuldigungen bei Krankheit oder anderen Gründen einfach online hochladen. Diese Entschuldigungen werden von den Eltern/Erziehungsberechtigten digital unterschrieben und automatisch an den zuständigen Lehrer oder Klassenvorstand gesendet. So bekommt die Schule die Infos sicher und ohne Umwege. Alle Beteiligten haben dadurch immer den aktuellen Stand. 
 
