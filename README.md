@@ -11,8 +11,8 @@
 > - Backend: Django 4.2.1
 > - Frontend: Flutter 3.10.4
 > - Datenbank: PostgreSQL (PostgreSQL: Opensource, bessere Community, bessere Skalierbarkeit, unterstützt jsonb (json binary))
-> - Auth: OAuth2 / JWT + Django‑Auth  
-> - Hosting: Heroku / DigitalOcean (zwei separate Services: API & Mobile)
+> - Auth: JWT + Django‑Auth  
+> - Hosting: Railway
 
 ## Projekt Struktur
 
@@ -182,7 +182,7 @@
 | Feature | Akzeptanzkriterium |
 |---------|--------------------|
 | **Digital Signature** | Signatur wird im Backend validiert und mit der Entschuldigung verknüpft. |
-| **Role‑Based UI** | Eltern sehen nur ihre Entschuldigungen, Lehrer ihre Klassen. |
+| **Role‑Based UI** | Eltern sehen nur ihre Entschuldigungen, Lehrer Entschuldigungen ihrer Klassen. |
 | **Notifications** | Push‑Notification innerhalb von 5 s nach Status‑Änderung. |
 | **Data Persistence** | Alle Daten in SQL, Backup alle 24 h. |
 | **Test‑Coverage** | 90 % Unit/Integration‑Tests, 80 % E2E‑Tests (Flutter). |
