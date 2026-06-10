@@ -18,20 +18,25 @@ Bereits vorhandene Erfahrung mit dem @DRF war der ausschlaggebende Grund, es als
 
 Zeitliche Einschränkungen kamen hauptsächlich von schulischer Seite aus und haben die Planung und Entwicklung des Projekts wiederholt verlangsamt und eingeschränkt. SCRUM als Entwicklungsmodell zu verwenden war hier entscheidend, da so die nötige zeitliche Flexibilität durch die zweiwöchigen Sprints gegeben war.
 
-Während der ursprünglichen Recherchen kamen die Themen Authentifizierung und digitale Signatur der Nutzer öfters auf. Da an den meisten funktionierenden Lösungen auf dem Markt ein Preisschild hängt. dass @OAuth:s nicht in Frage käme, wurde auf Absprache mit dem Betreuer der Arbeit festgelegt. Daher fiel die Wahl auf eine eigene Authentifizierungs- und Signatur-Lösung mittels @DRF. Mehr hierzu findet sich im @DRF_Kapitel. \
+Während der ursprünglichen Recherchen kamen die Themen Authentifizierung und digitale Signatur der Nutzer öfters auf. Da an den meisten funktionierenden Lösungen auf dem Markt ein Preisschild hängt. Dass @OAuth:s nicht in Frage käme, wurde auf Absprache mit dem Betreuer der Arbeit festgelegt. Daher fiel die Wahl auf eine eigene Authentifizierungs- und Signatur-Lösung mittels @DRF. Mehr hierzu findet sich im @DRF_Kapitel. \
 Dass die Authentifizierung mittels @LDAP der Schule vergleichsweise einfach gewesen wäre, kam erst zu einem späteren Zeitpunkt nach der Implementierung auf. Die Verwendung dieser Technologie hätte viel Zeit in der Planung und Implementierung des Projekts einsparen können.
 
 Aufgrund verschiedener Faktoren, darunter Datenschutz, Leistung, Qualität und Finanzierung, fiel die Wahl des Deployments auf Railway. Genaueres hierzu findet sich in @Railway_Kapitel.
 
 == Ausblick
 // nächste Schritte. Vorschläge für Erweiterungen. Grenzen bestehender Lösungen: Was funktioniert momentan nicht gut?
-FRONTEND
-  - Entschuldigung hochladen
-  - Eigene Entschuldigungen sehen (statt alle)
-  - Eltern signieren Entschuldigung
-  - Einsehbarer Status der Entschuldigungen
-  - Lehrer sehen Statistik
-  - Lehrer bestätigen Entschuldigung
-  - Anbindung an ELDA App für Auth / Credentials
-
-  
+#figure(
+  table(
+    columns: (50%, 50%),
+    inset: 10pt,
+    align: center,
+    table.header([*Backend*], [*Frontend*]),
+    [Webuntis Anbindung], [Entschuldigung hochladen],
+    [], [Eltern signieren Entschuldigung],
+    [], [Einsehbarer Status der Entschuldigungen],
+    [], [Lehrer sehen Statistik],
+    [], [Lehrer bestätigen Entschuldigungen],
+    table.cell(colspan: 2)[LDAP Anbindung],
+  ),
+  caption: [Verbleibende features]
+)

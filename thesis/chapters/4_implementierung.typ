@@ -4,8 +4,6 @@
 #abbr.load("../abbreviations.csv", delimiter: ",")
 
 = Implementierung
-
-#pagebreak()
 #set_footer_name("Fabian Trummer")
 == Implementierung des Backends //F
 #figure(
@@ -228,10 +226,81 @@ Für Informationen zu API-Endpoints siehe @API_Kapitel API.
 
 === Authentifizierung
 
+Während andere Modelle von `models.Model` erben, basiert das Benutzermodell auf der Django-Klasse `AbstractUser`. Der Unterschied zu den models.Model liegt darin, dass `AbstractUser` bereits eine Grundlage zur Benutzerverwaltung und Authentifizierung bereitstellt. Dazu kommen auch Felder wie Benutzname und Password, wodurch zentrale Funktionen nicht selbst implementiert werden müssen. Das Modell wird dabei jedoch um relevante Felder wie `school`, `role` und `klasse` erweitert.
+
+*models.py*:
+```python
+class User(AbstractUser):
+    school = models.ForeignKey(
+        School,
+        related_name="users",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
+    )
+    role = models.CharField(
+        max_length=20,
+        choices=[('teacher', 'Teacher'), ('student', 'Student'), ('parent', 'Parent')],
+        default='student'
+    )
+    klasse = models.ForeignKey(
+        Klasse,
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True
+    )
+    def __str__(self):
+        return f"{self.username} ({self.pk})"
+```
 
 === Rollenbasierte-Autorisierung
+Für die rollenbasierte Autorisierung werden Benutzer zunächst in klar definierte Rollen eingeteilt. Lehrer, Eltern und Schüler bilden die Grundlage für sämtliche Zugriffsentscheidungen. Da nur überprüft wird ob ein Attribut vorhanden ist, lässt sich während der Laufzeit schnell feststellen, welche Rolle ein User hat.
 
+*permissions.py*:
+```python
+def isTeacher(user):
+    return hasattr(user, "teacher")
 
+def isStudent(user):
+    return hasattr(user, "student")
+
+def isParent(user):
+    return hasattr(user, "parent")
+```
+
+Anhand der ExcusePermission, also der Zugangsliste der Entschuldigungen zeigt sich die Implementierung des genannten Attribut vergleichs. Nach der Rollendefinition übernimmt die Klasse `ExcusePermission` die eigentliche Zugriffskontrolle. Dabei wird zwischen `has_permission` und `has_object_permission` unterschieden. Das erstere prüft, ob ein Benutzer überhaupt berechtigt ist, eine CRUD-Operation durchzuführen. Dabei werden allgemeine Regeln festgelegt. Beispielsweise, dass Lehrer die übermittelten Entschuldigungen nur lesen dürfen. Weiters haben wir die `has_object_permission` die dabei detailreicher vorgeht und prüft ob ein Benutzer auf ein bestimmtes Objekt zugreifen darf. Schüler haben nur das Recht eigene Entschuldigungen zu sehen und Lehrer nur von Klassen für die sie zuständig sind. Dadurch entsteht eine klare Trennung zwischen allgemeiner und objektspezifischer Kontrolle.
+```python
+class ExcusePermission(permissions.BasePermission):
+    """
+    - POST: Parent oder Student, Admin
+    - GET: Parent/Student nur eigene, Teacher nur per Klasse, Admin alle
+    - DELETE: Parent/Student eigene, Admin alle
+    """
+    def has_permission(self, request, view):
+        if request.user.is_superuser:
+            return True
+        elif not (request.user and request.user.is_authenticated):
+            return False
+        elif isTeacher(request.user):
+            return request.method in permissions.SAFE_METHODS
+        elif isParent(request.user):
+            return True
+        elif isStudent(request.user):
+            return request.method != 'PATCH'
+        return False
+        
+    def has_object_permission(self, request, view, obj):
+        if request.user.is_superuser:
+            return True
+        elif isStudent(request.user):
+            return obj.student_id == request.user.student.pk
+        elif isParent(request.user):
+            return obj.student.parents.contains(request.user.parent)
+        elif isTeacher(request.user):
+            return teacherClasses(
+              request.user).filter(pk=obj.student.klasse_id).exists()
+        return False
+```
 
 #pagebreak()
 #set_footer_name("Jan Schubert")
@@ -436,19 +505,25 @@ Future<List<dynamic>> getAbsences() async {
 #pagebreak()
 #set_footer_name("Fabian Trummer")
 == Systemintegration //F
-// ich kann hier noch ein Mermaid Flowchart erstellen, obwohl bereits eins
-Integration und Gesamtablauf des Systems
+Systemintegration von ExcuseMe verbindet Flutter-Frontend, Django REST Backend und die PostgreSQL-Datenbank zu einem Datenfluss. Eingehende HTTP-Requests werden über den URL-Router (`urls.py`) an die API weitergeleitet. Dort werden JWT-Token-Validierung, eine rollenbasierte Berechtigungsprüfung und Datenserialisierung durchlaufen. Erst danach wird ein Datensatz mit Django ORM in der Datenbank gespeichert. Die Authentifizierung erfolgt über die Endpunkte `/api/token` und `/api/token/refresh` mit SimpleJWT. Damit wird zustandslose Kommunikation von Client und Server ermöglicht.
+\
+Das in der folgenden Abbildung xy ersichtliche Flowchart visualisiert diesen Ablauf:
 
-Demonstration des erfolgreichen Datenflusses vom UI bis in die Datenbank -> Integrationstest
-
+#figure(
+  image("../resources/datenfluss-chart.png", width: 85%),
+  caption: [Datenfluss-Flowchart]
+)
+//vlt noch einer erklärung zum Chart?
 == Testverfahren //F
 === Unit Tests
-Beschreibung durchgeführter Tests
+Die Unit-Tests von `ExcuseMe` validieren alle Datenbankmodelle unabhängig von der Anwendungslogik. Dabei werden Objekterstellung, Fremdschlüssel und Manty-to-Many-Beziehungen geprüft. Mittels `django_autotest.yaml` werden die Tests implementiert, die bei jedem Push oder Pull Request auf `main` oder `dev` über GitHub Actions ausgeführt werden.
 
+#figure(
+  image("../resources/Unit-Test.png", height: 75%),
+  caption: [Unit-Tests]
+)
 === Integration Tests
-(siehe @Diskussion-der-Ergebnisse Diskussion der Ergebnisse)
+siehe @Diskussion-der-Ergebnisse Diskussion der Ergebnisse
 
 === E2E Tests
-@E2E Tests
-
-(siehe @Diskussion-der-Ergebnisse Diskussion der Ergebnisse)
+siehe @Diskussion-der-Ergebnisse Diskussion der Ergebnisse
