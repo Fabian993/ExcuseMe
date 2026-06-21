@@ -131,12 +131,12 @@ class ExcuseOutputSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Excuse
-        fields = ['id', 'title', 'content', 'created_at', 'uploaded_by_user', 'student']
+        fields = ['id', 'absence_id', 'title', 'content', 'created_at', 'uploaded_by_user', 'student']
         read_only_fields = ['id', 'created_at']
 class ExcuseInputSerializer(serializers.ModelSerializer):
     class Meta:
         model = Excuse
-        fields = ['title', 'content', 'student']
+        fields = ['absence_id', 'title', 'content', 'student']
 class ExcuseTeacherInputSerializer(serializers.ModelSerializer):
     class Meta:
         model = ExcuseTeacher  # Fix: korrektes Model
