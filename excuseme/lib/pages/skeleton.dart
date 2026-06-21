@@ -120,7 +120,7 @@ AppBar createAppBar(BuildContext context) => AppBar(
   title: Row(
     spacing: 20,
     children: [
-      const Image(image: AssetImage("assets/icon.png"), height: 32),
+      const Image(image: AssetImage("assets/icon-1024.png"), height: 32),
       Text(
         "ExcuseMe",
         style: TextStyle(
