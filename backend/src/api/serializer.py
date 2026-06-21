@@ -143,6 +143,11 @@ class ExcuseTeacherInputSerializer(serializers.ModelSerializer):
         fields = ['id', 'excuse', 'teacher', 'status', 'read_at']
         read_only_fields = ['id']
 
+class WebUntisAbsencesInputSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
+
+
 class ExcuseTeacherOutputSerializer(serializers.ModelSerializer):
     excuse = ExcuseOutputSerializer(read_only=True)
     teacher = TeacherNestedSerializer(read_only=True)

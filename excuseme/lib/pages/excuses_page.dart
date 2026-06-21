@@ -9,10 +9,11 @@ Future<List<dynamic>> getExcuses() async {
   // print(sm.tokens!.access);
   try {
     String? backendAddress = dotenv.env['BACKEND_SERVER'];
+    String protocol = dotenv.env['APP_ENV'] == 'prod' ? 'https' : 'http';
     String? bearer = await sm.storage.read(key: 'access');
 
     final response = await dio.get(
-      'https://$backendAddress/api/excuses/',
+      '$protocol://$backendAddress/api/excuses/',
       options: Options(
         headers: {
           'Content-Type': 'application/json',

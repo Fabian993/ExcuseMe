@@ -1,97 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:cookie_jar/cookie_jar.dart';
-import 'package:dart_untis_mobile/dart_untis_mobile.dart';
 import 'package:dio/dio.dart';
-import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:excuseme/models/storage.dart';
 
-Future<String> getStudentId(String username, String password) async {
-  String? untisServer = dotenv.env['UNTIS_SERVER'];
-  String? untisSchool = dotenv.env['UNTIS_SCHOOL'];
-  final StorageManager sm = StorageManager();
-  String? studentId = await sm.storage.read(key: "studentId");
-
-  if (studentId == null) {
-    final session = await UntisSession.init(
-      untisServer!,
-      untisSchool!,
-      username,
-      password,
-    );
-    UntisStudentData userData = await session.getUserData();
-    // print("UntisSession response: $userData");
-    studentId = userData.id.id.toString();
-    await sm.storage.write(key: "studentId", value: studentId);
-    // print("studentId: $studentId");
-  }
-
-  return studentId;
-}
-
-// :params: username, password, school
-// *optional: start, end, studentId, tenantId
 Future<List<dynamic>> getAbsences() async {
-  String? untisServer = dotenv.env['UNTIS_SERVER'];
-  String? untisSchool = dotenv.env['UNTIS_SCHOOL'];
+  String? backendAddress = dotenv.env['BACKEND_SERVER'];
+  String protocol = dotenv.env['APP_ENV'] == 'prod' ? 'https' : 'http';
 
   final StorageManager sm = StorageManager();
   String? username = await sm.storage.read(key: "username");
   String? password = await sm.storage.read(key: "password");
+  String? accessToken = await sm.storage.read(key: "access");
 
-  final Dio dio = Dio(
-    BaseOptions(
-      followRedirects: true,
-      validateStatus: (status) => status != null && status < 500,
-      connectTimeout: const Duration(seconds: 15),
-      receiveTimeout: const Duration(seconds: 15),
-    ),
-  );
+  final Dio dio = Dio();
 
-  final cookieJar = CookieJar();
-  dio.interceptors.add(CookieManager(cookieJar));
-
-  if (kIsWeb) {
-    (dio.httpClientAdapter as dynamic).withCredentials = true;
-  }
-
-  // login
-  await dio.post(
-    "https://$untisServer/WebUntis/j_spring_security_check",
+  final response = await dio.post(
+    '$protocol://$backendAddress/api/webuntis/absences/',
     data: {
-      "j_username": username!,
-      "j_password": password!,
-      "school": untisSchool,
-      "token": "",
+      "username": username,
+      "password": password,
     },
     options: Options(
-      contentType: Headers.formUrlEncodedContentType,
-      followRedirects: false, // disable for web
-      validateStatus: (status) => true, // Accept 302
+      headers: {
+        'Authorization': 'Bearer $accessToken',
+        'Content-Type': 'application/json',
+      },
     ),
   );
 
-  String studentId = await getStudentId(username, password);
-
-  // get absences
-  final response = await dio.get(
-    "https://$untisServer/WebUntis/api/classreg/absences/students",
-    queryParameters: {
-      "startDate": "20250908",
-      "endDate": "20260712",
-      "studentId": int.parse(studentId),
-      "excuseStatusId": -1,
-    },
-    options: Options(headers: {"Accept": "application/json"}),
-  );
-  List<dynamic> absences = response.data['data']['absences'];
-
-  // print(absences);
-
-  // await dio.get("https://bulme.webuntis.com/WebUntis/j_spring_security_logout");
-  // returns "Server error - the server failed to fulfil an apparently valid request"
-
+  List<dynamic> absences = response.data['absences'];
   return absences;
 }
 

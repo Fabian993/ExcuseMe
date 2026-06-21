@@ -18,5 +18,6 @@ router.register(r"excuses", views.ExcuseViewSet)
 router.register(r"excuseteacher", views.ExcuseTeacherViewSet) 
 
 urlpatterns = [
-    path("api/", include(router.urls))
+    path("api/", include(router.urls)),
+    path("api/webuntis/absences/", views.WebUntisAbsencesView.as_view()),
 ] 
