@@ -16,10 +16,7 @@ Future<List<dynamic>> getAbsences() async {
 
   final response = await dio.post(
     '$protocol://$backendAddress/api/webuntis/absences/',
-    data: {
-      "username": username,
-      "password": password,
-    },
+    data: {"username": username, "password": password},
     options: Options(
       headers: {
         'Authorization': 'Bearer $accessToken',
@@ -32,6 +29,53 @@ Future<List<dynamic>> getAbsences() async {
   return absences;
 }
 
+Future<void> _postExcuse(
+  BuildContext context,
+  int absenceId,
+  String title,
+  String reason,
+) async {
+  final StorageManager sm = StorageManager();
+  final Dio dio = Dio();
+  // print(sm.tokens!.access);
+  try {
+    String? backendAddress = dotenv.env['BACKEND_SERVER'];
+    String protocol = dotenv.env['APP_ENV'] == 'prod' ? 'https' : 'http';
+    String? bearer = await sm.storage.read(key: 'access');
+    String? username = await sm.storage.read(key: 'username');
+
+    dynamic response = await dio.post(
+      '$protocol://$backendAddress/api/excuses/',
+      data: {
+        "absence_id": absenceId,
+        "title": title,
+        "content": reason,
+        "student": username, // if replaced with ID -> status 500
+      },
+      options: Options(
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $bearer',
+        },
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("POST successful!")));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("POST failed: ${response.statusCode}")),
+      );
+    }
+  } catch (e) {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: SelectableText("$e")));
+  }
+}
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -40,6 +84,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final StorageManager sm = StorageManager();
+  final Dio dio = Dio();
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<dynamic>>(
@@ -61,26 +108,74 @@ class _HomePageState extends State<HomePage> {
           itemCount: snapshot.data!.length,
           itemBuilder: (context, index) {
             final absence = snapshot.data![index];
-            return Card(
-              margin: const EdgeInsets.all(10),
-              child: ListTile(
-                contentPadding: const EdgeInsets.all(10),
-                title: Text(
-                  "Absence ID: ${absence['id']} - ${absence['studentName']}",
-                ),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("Date: ${absence['startDate']}"),
-                    Text("Reason: ${absence['reason']}"),
-                    SelectableText(absence.toString()),
-                  ],
+            return GestureDetector(
+              child: Card(
+                margin: const EdgeInsets.all(10),
+                child: ListTile(
+                  contentPadding: const EdgeInsets.all(10),
+                  title: Text("Absence ID: ${absence['id']}"),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("Date: ${absence['startDate']}"),
+                      Text("Start: ${absence['startTime']}"),
+                      Text("End: ${absence['endTime']}"),
+                      Text("Reason: ${absence['reason']}"),
+                      // SelectableText(absence.toString()),
+                    ],
+                  ),
                 ),
               ),
+              onTap: () => _showPopup(context, absence),
             );
           },
         );
       },
     );
   }
+}
+
+void _showPopup(BuildContext context, dynamic absence) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      final TextEditingController inputTitle = TextEditingController();
+      final TextEditingController inputContent = TextEditingController();
+
+      return AlertDialog(
+        title: Text("Upload Excuse"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextFormField(
+              controller: inputTitle,
+              decoration: InputDecoration(labelText: "Title"),
+            ),
+            TextFormField(
+              controller: inputContent,
+              decoration: InputDecoration(labelText: "Reason"),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            child: Text("Cancel"),
+            onPressed: () => Navigator.pop(context),
+          ),
+          TextButton(
+            child: Text("Send"),
+            onPressed: () async {
+              await _postExcuse(
+                context,
+                absence['id'],
+                inputTitle.text,
+                inputContent.text,
+              );
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      );
+    },
+  );
 }
