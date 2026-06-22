@@ -169,8 +169,13 @@ class ExcuseViewSet(viewsets.ModelViewSet):
         return ExcuseOutputSerializer
     
     def perform_create(self, serializer):
-        custom_user = User.objects.get(pk=self.request.user.pk)
-        serializer.save(uploaded_by_user=custom_user)
+        user = User.objects.get(pk=self.request.user.pk)
+        if not hasattr(user, 'student'):
+            from rest_framework.exceptions import ValidationError
+            raise ValidationError(
+                {"student": "User has no student profile. Register as student first."}
+            )
+        serializer.save(uploaded_by_user=user, student=user.student)
 
     @action(detail=True, methods=['patch'], permission_classes=[permissions.IsAuthenticated, ExcusePermission])
     def sign(self, request, pk=None):

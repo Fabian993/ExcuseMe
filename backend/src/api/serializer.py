@@ -136,7 +136,7 @@ class ExcuseOutputSerializer(serializers.ModelSerializer):
 class ExcuseInputSerializer(serializers.ModelSerializer):
     class Meta:
         model = Excuse
-        fields = ['absence_id', 'title', 'content', 'student']
+        fields = ['absence_id', 'title', 'content']
 class ExcuseTeacherInputSerializer(serializers.ModelSerializer):
     class Meta:
         model = ExcuseTeacher  # Fix: korrektes Model
