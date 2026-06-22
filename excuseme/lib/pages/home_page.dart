@@ -120,6 +120,7 @@ class _HomePageState extends State<HomePage> {
                       Text("Date: ${absence['startDate']}"),
                       Text("Start: ${absence['startTime']}"),
                       Text("End: ${absence['endTime']}"),
+                      Text("By: ${absence['createdUser']}"),
                       Text("Reason: ${absence['reason']}"),
                       // SelectableText(absence.toString()),
                     ],

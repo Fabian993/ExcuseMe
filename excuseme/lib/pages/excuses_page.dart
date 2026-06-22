@@ -71,6 +71,7 @@ class _ExcusesPageState extends State<ExcusesPage> {
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Text("AbsenceID: ${excuse['absence_id']}"),
                       Text("Title: ${excuse['title']}"),
                       Text("Content: ${excuse['content']}"),
                       Text("Date: ${excuse['created_at']}"),
