@@ -1,18 +1,18 @@
 # ExcuseMe
 
-![ExGooseMe](./excuseme/assets/icon.png)
+![ExGooseMe](./excuseme/assets/icon-512.png)
 
 ## Projekt‑Requirements für „Excuse Me“
 
 > **Titel** Excuse Me  
-> **Ziel** Eine cross-platform App, die SchülerInnen (und ihre Eltern) erlaubt, Fehlstunden‑Entschuldigungen an ihre Klassenvorstände zu schicken. Für minderjährige SchülerInnen muss die Entschuldigung digital von den Eltern signiert werden.  
+> **Ziel** Eine cross-platform App, die SchülerInnen (und ihre Eltern) erlaubt, Fehlstunden‑Entschuldigungen an ihre Klassenvorstände zu schicken. Für minderjährige SchülerInnen muss die Entschuldigung digital von den Eltern signiert werden. Statistiken und Graphen schaffen Übersicht für Schule und Schüler.
 
 > **Technologie‑Stack**  
 > - Backend: Django 4.2.1
 > - Frontend: Flutter 3.10.4
 > - Datenbank: PostgreSQL (PostgreSQL: Opensource, bessere Community, bessere Skalierbarkeit, unterstützt jsonb (json binary))
-> - Auth: OAuth2 / JWT + Django‑Auth  
-> - Hosting: Heroku / DigitalOcean (zwei separate Services: API & Mobile)
+> - Auth: JWT + Django‑Auth  
+> - Hosting: Railway
 
 ## Projekt Struktur
 
@@ -182,7 +182,7 @@
 | Feature | Akzeptanzkriterium |
 |---------|--------------------|
 | **Digital Signature** | Signatur wird im Backend validiert und mit der Entschuldigung verknüpft. |
-| **Role‑Based UI** | Eltern sehen nur ihre Entschuldigungen, Lehrer ihre Klassen. |
+| **Role‑Based UI** | Eltern sehen nur ihre Entschuldigungen, Lehrer Entschuldigungen ihrer Klassen. |
 | **Notifications** | Push‑Notification innerhalb von 5 s nach Status‑Änderung. |
 | **Data Persistence** | Alle Daten in SQL, Backup alle 24 h. |
 | **Test‑Coverage** | 90 % Unit/Integration‑Tests, 80 % E2E‑Tests (Flutter). |

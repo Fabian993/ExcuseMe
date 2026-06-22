@@ -3,7 +3,7 @@ Docstring for api.views
 Controller
 """
 #We use Views to get web requests and send responses
-from rest_framework import viewsets, filters, permissions
+from rest_framework import viewsets, views, filters, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
@@ -169,8 +169,13 @@ class ExcuseViewSet(viewsets.ModelViewSet):
         return ExcuseOutputSerializer
     
     def perform_create(self, serializer):
-        custom_user = User.objects.get(pk=self.request.user.pk)
-        serializer.save(uploaded_by_user=custom_user)
+        user = User.objects.get(pk=self.request.user.pk)
+        if not hasattr(user, 'student'):
+            from rest_framework.exceptions import ValidationError
+            raise ValidationError(
+                {"student": "User has no student profile. Register as student first."}
+            )
+        serializer.save(uploaded_by_user=user, student=user.student)
 
     @action(detail=True, methods=['patch'], permission_classes=[permissions.IsAuthenticated, ExcusePermission])
     def sign(self, request, pk=None):
@@ -236,3 +241,18 @@ class ExcuseTeacherViewSet(viewsets.ModelViewSet): #vlt entfernen und nur intern
         if self.action in ['destroy']:
             return [permissions.IsAdminUser()]
         return [permissions.IsAuthenticated()]
+    
+class WebUntisAbsencesView(views.APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        from .webuntis import get_absences
+
+        serializer = WebUntisAbsencesInputSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        absences = get_absences(
+            serializer.validated_data["username"],
+            serializer.validated_data["password"],
+        )
+        return Response({"absences": absences})
