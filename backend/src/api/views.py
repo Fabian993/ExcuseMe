@@ -174,12 +174,18 @@ class ExcuseViewSet(viewsets.ModelViewSet):
             serializer.save(uploaded_by_user=user, student=user.student)
         elif hasattr(user, 'parent'):
             serializer.save(uploaded_by_user=user)
+            student = serializer.validated_data.get('student')
+            if not student:
+                from rest_framework.exceptions import ValidationError
+                raise ValidationError(
+                    {"student": "Provide Student ID."}
+                )
+            serializer.save(uploaded_by_user=user)
         else:
             from rest_framework.exceptions import ValidationError
             raise ValidationError(
-                {"student": "Only students or parents can create excuses."}
+                    {"student": "Only students or parents can create excuses."}
             )
-        serializer.save(uploaded_by_user=user, student=user.student)
 
     @action(detail=True, methods=['patch'], permission_classes=[permissions.IsAuthenticated, ExcusePermission])
     def sign(self, request, pk=None):
