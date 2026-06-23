@@ -173,7 +173,6 @@ class ExcuseViewSet(viewsets.ModelViewSet):
         if hasattr(user, 'student'):
             serializer.save(uploaded_by_user=user, student=user.student)
         elif hasattr(user, 'parent'):
-            serializer.save(uploaded_by_user=user)
             student = serializer.validated_data.get('student')
             if not student:
                 from rest_framework.exceptions import ValidationError
