@@ -9,10 +9,11 @@ Future<List<dynamic>> getExcuses() async {
   // print(sm.tokens!.access);
   try {
     String? backendAddress = dotenv.env['BACKEND_SERVER'];
+    String protocol = dotenv.env['APP_ENV'] == 'prod' ? 'https' : 'http';
     String? bearer = await sm.storage.read(key: 'access');
 
     final response = await dio.get(
-      'https://$backendAddress/api/excuses/',
+      '$protocol://$backendAddress/api/excuses/',
       options: Options(
         headers: {
           'Content-Type': 'application/json',
@@ -58,25 +59,31 @@ class _ExcusesPageState extends State<ExcusesPage> {
         return ListView.builder(
           itemCount: snapshot.data!.length,
           itemBuilder: (context, index) {
-            final excuse = snapshot.data![index];
-            return Card(
-              margin: const EdgeInsets.all(10),
-              child: ListTile(
-                contentPadding: const EdgeInsets.all(10),
-                title: Text("Excuse ID: ${excuse['id']} - ${excuse['title']}"),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("Date: ${excuse['created_at']}"),
-                    Text("Content: ${excuse['content']}"),
-                    Text(
-                      "User: ${excuse['uploaded_by_user'].toString().split(':')[1].split(',')[0]}",
-                    ),
-                    SelectableText(excuse.toString()),
-                  ],
+            if (snapshot.data!.isEmpty) {
+              return Text("Nothing here yet");
+            } else {
+              final excuse = snapshot.data![index];
+              return Card(
+                margin: const EdgeInsets.all(10),
+                child: ListTile(
+                  contentPadding: const EdgeInsets.all(10),
+                  title: Text("Excuse ID: ${excuse['id']}"),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("AbsenceID: ${excuse['absence_id']}"),
+                      Text("Title: ${excuse['title']}"),
+                      Text("Content: ${excuse['content']}"),
+                      Text("Date: ${excuse['created_at']}"),
+                      Text(
+                        "Uploaded by User: ${excuse['uploaded_by_user']?.toString().split(':')[1].split(',')[0]}",
+                      ),
+                      // SelectableText(excuse.toString()),
+                    ],
+                  ),
                 ),
-              ),
-            );
+              );
+            }
           },
         );
       },
