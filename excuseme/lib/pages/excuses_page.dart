@@ -1,7 +1,14 @@
+import 'dart:html' show window;
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:dio/dio.dart';
 import 'package:excuseme/models/storage.dart';
+
+String _protocol() {
+  if (kIsWeb) return window.location.protocol == 'https:' ? 'https' : 'http';
+  return dotenv.env['APP_ENV'] == 'prod' ? 'https' : 'http';
+}
 
 Future<List<dynamic>> getExcuses() async {
   final StorageManager sm = StorageManager();
@@ -9,7 +16,7 @@ Future<List<dynamic>> getExcuses() async {
   // print(sm.tokens!.access);
   try {
     String? backendAddress = dotenv.env['BACKEND_SERVER'];
-    String protocol = dotenv.env['APP_ENV'] == 'prod' ? 'https' : 'http';
+    String protocol = _protocol();
     String? bearer = await sm.storage.read(key: 'access');
 
     final response = await dio.get(

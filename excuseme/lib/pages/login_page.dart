@@ -1,9 +1,15 @@
+import 'dart:html' show window;
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-// import 'package:flutter/foundation.dart' show defaultTargetPlatform, kIsWeb;
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:dio/dio.dart';
 import 'package:excuseme/pages/skeleton.dart';
 import 'package:excuseme/models/storage.dart';
+
+String _protocol() {
+  if (kIsWeb) return window.location.protocol == 'https:' ? 'https' : 'http';
+  return dotenv.env['APP_ENV'] == 'prod' ? 'https' : 'http';
+}
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -29,7 +35,7 @@ class _LoginPageState extends State<LoginPage> {
     try {
       await dotenv.load(fileName: ".env");
       String? backendAddress = dotenv.env['BACKEND_SERVER'];
-      String protocol = dotenv.env['APP_ENV'] == 'prod' ? 'https' : 'http';
+      String protocol = _protocol();
 
       final response = await dio.post(
         '$protocol://$backendAddress/api/token/',
