@@ -107,11 +107,20 @@ class Excuse(models.Model):
     title = models.CharField(max_length=255)
     content = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
+    approval_timestamp = models.IntegerField(null=True, blank=True)
 
     uploaded_by_user = models.ForeignKey(
         User,
         related_name="uploaded_excuses",
         on_delete=models.CASCADE,
+    )
+
+    approved_by = models.ForeignKey(
+        User,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="approved_excuses",
     )
 
     teachers = models.ManyToManyField(
@@ -124,6 +133,13 @@ class Excuse(models.Model):
         Student,
         related_name="excuses",
         on_delete=models.CASCADE,
+    )
+
+    status = models.ForeignKey(
+        Status,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
     )
 
     def __str__(self):

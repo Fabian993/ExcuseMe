@@ -128,15 +128,32 @@ class StatusNestedSerializer(serializers.ModelSerializer):
 class ExcuseOutputSerializer(serializers.ModelSerializer):
     uploaded_by_user = UserNestedSerializer(read_only=True)
     student = StudentNestedSerializer(read_only=True)
+    status = StatusNestedSerializer(read_only=True)
+    approved_by = UserNestedSerializer(read_only=True)
 
     class Meta:
         model = Excuse
-        fields = ['id', 'absence_id', 'title', 'content', 'created_at', 'uploaded_by_user', 'student']
-        read_only_fields = ['id', 'created_at']
+        fields = [
+            'id', 'absence_id', 'title', 'content', 'created_at',
+            'uploaded_by_user', 'student', 'status', 'approved_by',
+            'approval_timestamp',
+        ]
+        read_only_fields = ['id', 'created_at', 'approval_timestamp']
 class ExcuseInputSerializer(serializers.ModelSerializer):
     class Meta:
         model = Excuse
-        fields = ['absence_id', 'title', 'content', 'student']
+        fields = ['id', 'absence_id', 'title', 'content', 'student']
+        read_only_fields = ['id']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        request = self.context.get('request')
+        if not request:
+            return
+        if hasattr(request.user, 'student'):
+            self.fields.pop('student')
+        elif hasattr(request.user, 'parent'):
+            self.fields['student'].queryset = request.user.parent.students.all()
 class ExcuseTeacherInputSerializer(serializers.ModelSerializer):
     class Meta:
         model = ExcuseTeacher  # Fix: korrektes Model
