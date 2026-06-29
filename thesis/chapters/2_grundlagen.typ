@@ -86,6 +86,10 @@ Ein Service wird als RESTful bezeichnet, wenn er die sechs von Roy T. Fielding d
 Ein Ansatz zum Datenschutz besteht in der gezielten Absicherung des Backends einer Webanwendung. Das @OWASP zeigt in seinen 2025 aktualisierten Top 10 die kritischsten Sicherheitsrisiken für Webanwendungen. Zu den relevanten Risiken zählen insbesondere unzureichende oder fehlende Verschlüsselung sensibler Daten wie Passwörter oder personenbezogene Informationen. Ein weiteres Risiko besteht darin, dass Nutzer auf Ressourcen zugreifen können, für die ihnen keine Berechtigung erteilt wurde. Die Umsetzung der von @OWASP empfohlenen Maßnahmen auf Backend-Ebene stellt daher nicht nur eine "Best Practice" dar, sondern ist auch im Sinne der @DSGVO.
 @owasp
 
+=== Digitale Signatur
+Digitale Signaturen beruhen auf kryptografischen Verfahren und dienen dazu, die Identität des Absenders sowie die Unverändertheit elektronischer Daten zu prüfen. In diesem Projekt wird dieses Prinzip für die Entschuldigung durch ein asymmetrisches Schlüsselpaar umgesetzt. Dabei wird der private Schlüssel zum Signieren und der öffentliche Schlüssel zur Verifikation verwendet. Der Einsatz ist sinnvoll, da die Signatur nicht nur die Authentizität der Daten unterstützt, sondern auch nachträgliche Änderungen erkennbar macht und damit die Integrität der Entschuldigungen absichert.
+@digitale_signatur @bsi_signaturanwendung
+
 #pagebreak()
 #set_footer_name("Jan Schubert")
 == Theoretische Basis des Frontend-Stacks // J

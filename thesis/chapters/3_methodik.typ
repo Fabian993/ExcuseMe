@@ -10,7 +10,7 @@
 == Software-Entwicklungszyklus // J
 
 === Beschreibung des angewandten Zyklus
-Die Planung und Umsetzung von ExcuseMe wurde anhand des Scrum-Modells durchgeführt. Scrum ist ein agiles Vorgehensmodell, das das Projekt in kurze Sprints von zwei bis vier Wochen unterteilt. Jeder Sprint beginnt mit der Planung und endet mit einer Retrospektive, in der der vorherige Sprint bewertet und der nächste angepasst wird. Die Planung, Testing, Refactoring, Strategie und Abarbeitung verschiedener @AP orientieren sich am V-Modell, weil dort jeder Entwicklungs- und Analysephase eine passende Testaktivität zugeordnet ist. Dadurch werden die Softwarequalität erhöht und Projektrisiken reduziert. 
+Die Planung und Umsetzung von ExcuseMe wurde anhand des Scrum-Modells durchgeführt. Scrum ist ein agiles Vorgehensmodell, das das Projekt in kurze Sprints von zwei bis vier Wochen unterteilt. Jeder Sprint beginnt mit der Planung und endet mit einer Retrospektive, in der der vorherige Sprint bewertet und der nächste angepasst wird. Die Planung, Testing, *Refactoring,* Strategie und Abarbeitung verschiedener @AP orientieren sich am V-Modell, weil dort jeder Entwicklungs- und Analysephase eine passende Testaktivität zugeordnet ist. Dadurch werden die Softwarequalität erhöht und Projektrisiken reduziert. 
 
 Im Falle von ExcuseMe nahm der Betreuer der Arbeit die Rolle des Scrum-Masters ein, indem er für die Kontrolle bzw. Besprechung des Fortschritts und die Einhaltung von gegebenen Zeiten sorgte, sowie die Priorisierung der einzelnen Arbeitspakete überprüfte.  
 @scrum_master
@@ -294,6 +294,9 @@ Railway ist eine @PaaS Cloud-Plattform, die es Entwicklern ermöglicht, Web-Anwe
 In der Arbeit wird Railway für die automatisierte CI/CD-Pipeline einer WebApp eingesetzt. Durch die Integration mit GitHub, wird ein Workflow realisiert, der das deployte System bei jedem Push auf den main-Branch automatisch aktualisiert, neu kompiliert und baut. Dadurch erhält man Continous Deployment das heißt, dass jede Code-Änderung, die Tests besteht, direkt in Produktion geht, wodurch man ein nahtloses Updaten der API erhält.\
 Alternativ zu Railway gibt es auch @PaaS Anbieter wie Render oder Fly.io, wobei Railway durch Usage-based Billing und einer breiteren Datenbank Unterstützung (PostgreSQL, MySQL, MongoDB, Redis) überzeugt. VPS-Lösungen wie Hetzner oder Self-Hosting kamen aufgrund des fehlenden automatisierten CI/CD und des höheren Wartungsaufwandes nicht in Betracht.
 @railway_features @railway_PaaS_comparison
+
+=== Digitale Signatur
+Die Absicherung der Entschuldigungen erfolgt durch eine digitale Signaturlösung, die sich an der @QES orientiert. Für jeden Elternteil beim ersten Signiervorgang automatisch ein asymmetrisches Schlüsselpaar erzeugt. Dabei wird der private Schlüssel verschlüsselt in der Datenbank gespeichert. Mit dem privaten Schlüssel wird die Entschuldigung signiert und zusammen mit den Nutzerdaten übertragen, sodass anschließend mithilfe des zugehörigen öffentlichen Schlüssels verifiziert werden kann, ob die Daten unverändert sind und tatsächlich vom jeweiligen Benutzer stammen. Eine Zertifizierung durch einen offiziellen Anbieter gibt es dabei nicht, da die Lösung ausschließlich für den internen Gebrauch vorgesehen ist.
 
 == Skalierbarkeit 
 // Programmier-Paradigmen wie @OOP bzw. Sprachen, die @OOP ermöglichen, wie Python, Dart, ...

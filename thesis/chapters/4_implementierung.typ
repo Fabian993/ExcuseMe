@@ -133,7 +133,7 @@ class ExcuseOutputSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'created_at']
 ```
 \
-Anhand des `ViewSet` der Entschuldigung wird nun nicht nur Code, sondern auch die Logik der ViewSets näher gebracht. Ein `ModelViewSet` fasst die Standardoperationen für CRUD in einer einzigen Klasse zusammen. Mit `get_queryset()` wird eine rollenbasierte Zugriffskontrolle implementiert, die dafür sorgt, dass jeder Benutzer nur die für ihn vorgesehenen Entschuldigungen sehen kann. Nicht authentifizierte Benutzer haben keinen Zugriff auf Daten und Administratoren dürfen alles einsehen. Währenddessen erhalten Lehrer, Eltern und Schüler nur ihre eigenen bzw. ihnen zugeordneten Entschuldigungen. Die Methode `get_serializer_class()` wählt anhand der aktuellen Aktion, den richtigen Serializer aus. Für schreibende Operationen wird der `ExcuseInputSerializer` genutzt, während für lesende Operationen der `ExcuseOutputSerializer` genutzt wird. Mit `perform_create()` wird der Benutzer der die Entschuldigung hochlädt, Serverseitig gesetzt, wodurch die Manipulation durch den Client verhindert wird. Weiters sieht man die benutzerdefinierte Aktion `sign()`, die eine Entschuldigung genehmigt und digital signiert. Diese wurde per `@action`-Decorator als zusätzlicher API-Endpoint definiert. Weitere Informationen zur Signatur im Abschnitt X.X.X. Durch die Methode `get_permissions()` wird schließlich noch sichergestellt, dass nur authentifizierte und berechtigte Benutzer auf die Funktionen zugreifen können. Somit verbindet das `ViewSet` die zentrale Geschäftslogik und Security mit der CRUD-Funktionalität. 
+Anhand des `ViewSet` der Entschuldigung wird nun nicht nur Code, sondern auch die Logik der ViewSets näher gebracht. Ein `ModelViewSet` fasst die Standardoperationen für CRUD in einer einzigen Klasse zusammen. Mit `get_queryset()` wird eine rollenbasierte Zugriffskontrolle implementiert, die dafür sorgt, dass jeder Benutzer nur die für ihn vorgesehenen Entschuldigungen sehen kann. Nicht authentifizierte Benutzer haben keinen Zugriff auf Daten und Administratoren dürfen alles einsehen. Währenddessen erhalten Lehrer, Eltern und Schüler nur ihre eigenen bzw. ihnen zugeordneten Entschuldigungen. Die Methode `get_serializer_class()` wählt anhand der aktuellen Aktion, den richtigen Serializer aus. Für schreibende Operationen wird der `ExcuseInputSerializer` genutzt, während für lesende Operationen der `ExcuseOutputSerializer` genutzt wird. Mit `perform_create()` wird der Benutzer der die Entschuldigung hochlädt, Serverseitig gesetzt, wodurch die Manipulation durch den Client verhindert wird. Weiters sieht man die benutzerdefinierte Aktion `sign()`, die eine Entschuldigung genehmigt und digital signiert. Diese wurde per `@action`-Decorator als zusätzlicher API-Endpoint definiert. Weitere Informationen zur Signatur im Abschnitt X.X.X. Durch die Methode `get_permissions()` wird schließlich noch sichergestellt, dass nur authentifizierte und berechtigte Benutzer auf die Funktionen zugreifen können. Somit verbindet das `ViewSet` die zentrale Geschäftslogik und Security mit der CRUD-*Funktionalität.*
 
 *Views.py*:
 ```python
@@ -301,6 +301,45 @@ class ExcusePermission(permissions.BasePermission):
               request.user).filter(pk=obj.student.klasse_id).exists()
         return False
 ```
+
+=== Digitale Signatur
+Die Klasse SigningStrategy enthält zwei Funktionen, *signJson* und *verifyJson*. 
+```python
+def signJson(self, data: dict) -> str:
+  payload = {
+      "user_id": self.user.id,
+      "data": data
+  }
+
+  message = json.dumps(payload, sort_keys=True).encode('utf-8')
+  signature = self.privateKey.sign(message)
+  return f"{json.dumps(payload)}|BASE64:{base64.b64encode(signature).decode()}"
+```
+Beim aufruf von signJson wird zunächst eine Payload erstellt. Diese enthält die Benutzer-ID des signierenden Users sowie die zugehörigen Daten, in diesem Fall die Informationen der zu Entschuldigung. Anschließend wird die Payload in einen JSON-String umgewandelt, damit die Daten immer in derselben Reihenfolge verarbeitet werden. Danach erzeugt der private Schlüssel des Users eine digitale Signatur über diese Daten. Das Ergebnis besteht aus der Payload und der dazugehörigen Signatur.
+
+```python
+def verifyJson(self, signed_str: str) -> dict:
+    from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
+
+    data_str, signPart = signed_str.split('|BASE64:', 1)
+    payload = json.loads(data_str)
+
+    user_id = payload["user_id"]
+    
+    key_obj = ParentKey.objects.filter(user_id=user_id).first()
+    if not key_obj:
+        raise ValueError("Unknown user")
+    
+    decrypted = get_fernet().decrypt(bytes(key_obj.private_key))
+    privateKey = Ed25519PrivateKey.from_private_bytes(decrypted)
+    publicKey = privateKey.public_key()
+
+    message = json.dumps(payload, sort_keys=True).encode('utf-8')
+    signature = base64.b64decode(signPart)
+    publicKey.verify(signature, message)
+    return payload
+```
+Die Funktion verifyJson dient zur Überprüfung der Signatur. Dazu wird der gespeicherte String in zuerst Payload und Signatur getrennt. Anschließend wird die Benutzer-ID aus der Payload ausgelesen und der dazugehörige Schlüssel aus der Datenbank geladen. Mit dem daraus resultierenden öffentlichen Schlüssel wird geprüft, ob die Signatur zur Payload passt. Falls Daten oder Signatur verändert wurden, schlägt die Verifikation fehl.
 
 #pagebreak()
 #set_footer_name("Jan Schubert")
@@ -505,7 +544,7 @@ Future<List<dynamic>> getAbsences() async {
 #pagebreak()
 #set_footer_name("Fabian Trummer")
 == Systemintegration //F
-Systemintegration von ExcuseMe verbindet Flutter-Frontend, Django REST Backend und die PostgreSQL-Datenbank zu einem Datenfluss. Eingehende HTTP-Requests werden über den URL-Router (`urls.py`) an die API weitergeleitet. Dort werden JWT-Token-Validierung, eine rollenbasierte Berechtigungsprüfung und Datenserialisierung durchlaufen. Erst danach wird ein Datensatz mit Django ORM in der Datenbank gespeichert. Die Authentifizierung erfolgt über die Endpunkte `/api/token` und `/api/token/refresh` mit SimpleJWT. Damit wird zustandslose Kommunikation von Client und Server ermöglicht.
+Systemintegration von ExcuseMe verbindet Flutter-Frontend, Django REST Backend und die PostgreSQL-Datenbank zu einem Datenfluss. Eingehende HTTP-Requests werden über den URL-Router (`urls.py`) an die API weitergeleitet. Dort werden JWT-Token-Validierung, eine rollenbasierte Berechtigungsprüfung und Datenserialisierung durchlaufen. Erst danach wird ein Datensatz mit Django ORM in der Datenbank gespeichert. Die Authentifizierung erfolgt über die Endpunkte `/api/token` und `/api/token/refresh` mit SimpleJWT. Damit wird zustandslose Kommunikation von Client und Server ermöglicht. 
 \
 Das in der folgenden Abbildung xy ersichtliche Flowchart visualisiert diesen Ablauf:
 
