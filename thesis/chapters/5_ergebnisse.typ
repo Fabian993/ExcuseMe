@@ -11,9 +11,9 @@
 
 Von den mittlerweile sechs erstellten Sprints verbleiben aktuell noch ein Sprint, sowie ein Backlog in dem @HMI Features gespeichert wurden.
 
-Ein großteil aller geplanten Features wurde vollständig umgesetzt. Hierzu gehören das vollständige Backend, also das @DRF samt Browsable @API, Security und Datenmodell, sowie die CI/CD Pipeline, welche für automatische Tests und Deployment des Projekts zuständig ist.
+Ein Großteil aller geplanten Features wurde vollständig umgesetzt. Hierzu gehören das vollständige Backend, also das @DRF samt Browsable @API, Security und Datenmodell, sowie die CI/CD Pipeline, welche für automatische Tests und Deployment des Projekts zuständig ist.
 
-Zum aktuellen Zeitpunkt enthält das Projekt Unit Tests zur Überprüfung der korrekten Funktionsweise der Datenbankmodelle. Integrationstests für die API sowie das Flutter-Frontend wurden nicht realisiert. Aufgrund des begrenzten Zeitrahmens der Diplomarbeit war dies nicht möglich. Die Erweiterung um Integrations-Tests bleibt dabei eine mögliche Weiterentwicklung für die Zukunft.
+Zum aktuellen Zeitpunkt enthält das Projekt Unit Tests zur Überprüfung der korrekten Funktionsweise der Datenbankmodelle. Integrationstests für die API sowie das Flutter-Frontend wurden aufgrund des begrenzten Zeitrahmens der Diplomarbeit nicht realisiert. Die Erweiterung um Integrations-Tests bleibt dabei eine mögliche Weiterentwicklung für die Zukunft.
 
 == Limitationen // J
 // Zeitliche, technische oder ressourcenbedingte Einschränkungen
@@ -38,15 +38,14 @@ Die nachstehende Tabelle zeigt die ursprünglich geplanten, aber aktuell noch fe
     inset: 10pt,
     align: center,
     table.header([*Backend*], [*Frontend*]),
-    [], [Entschuldigung hochladen],
     [], [Eltern signieren Entschuldigung],
     [], [Lehrer sehen Statistik],
     [], [Lehrer bestätigen Entschuldigungen],
     table.cell(colspan: 2)[LDAP Anbindung],
   ),
-  caption: [Verbleibende features]
+  caption: [Verbleibende Features]
   // author: Fabian Trummer
 )
 
 
-In zukünftigen Expansionen liegt der Fokus primär auf genau diesen Features.
+In zukünftigen Expansionen liegt der Fokus auf der Entwicklung dieser Features. Primär soll somit die Frontend App funktional erweitert werden. Auch die Nutzererfahrung soll verbessert werden, indem mit Filter-Optionen in Form von Buttons die Anzeige von Fehlstunden und Entschuldigungen kontrollieren.
