@@ -76,7 +76,7 @@ Nun können Entschuldigungen aller Art erstellt und ihnen ein Lehrer in der Tabe
 
 Die Tabelle zeigt eine Übersicht über die Namen aller Datenbank-Modelle (links), deren mit "/api/" beginnenden verknüpfte Routen bzw. den Ort der Ressource (mittig), sowie den zugehörigen Controller (rechts).
 
-Eigentlich orientiert sich Django selbst an einer Variation des @MVC-Modells, die sich @MVT-Modell nennt. Der Unterschied beider Design-Architekturen ist, dass Django's Views Aufgaben des Controllers übernehmen und durch Templates ersetzt werden. Diese machen das Erstellen von Websites mithilfe von @DTL Django möglich.
+Eigentlich orientiert sich Django selbst an einer Variation des @MVC Modells, die sich @MVT Modell nennt. Der Unterschied beider Design-Architekturen ist, dass Django's Views Aufgaben des Controllers übernehmen und durch Templates ersetzt werden. Diese machen das Erstellen von Websites mithilfe von @DTL Django möglich.
 @mvt_structure
 
 === Applikation
