@@ -29,13 +29,13 @@ Ein Schüler soll per App oder Website Entschuldigungen hochladen können. Optio
 
 === Spezifische, messbare Teilziele
 Zu den spezifischen, messbaren Teilzielen gehören 
-- die Entwicklung eines Backends mit API Schnittstelle,
+- die Entwicklung eines Backends mit API-Schnittstelle,
 - eine direkte, sichere Weiterleitung an Lehrkräfte oder Klassenvorstand,
-- ein Überblick, über den Status der Entschuldigungen,
+- einen Überblick über den Status der Entschuldigungen,
 - eine benutzerfreundliche App, die das Hochladen und Signieren in wenigen Schritten ermöglicht,
 - eine digitale Signatur der Eltern und
 - eine automatische Erstellung von Statistiken über Fehlzeiten (z.B. durchschnittliche Fehlrate an bestimmten Tagen oder Zeiten)
 
 == Aufbau der Arbeit //J&F
 
-Im ersten Kapitel befinden sich die Planung, Problemstellung und Relevanz der App. In Kapitel zwei geht es um die theoretischen Grundlagen mit Überblick über relevante Literatur zu Client-Server-Architektur, Backend- und  Frontend-Technologien, sowie Teamstrukturen. Kapitel drei beschreibt das Systemdesign, die eingesetzten Technologien und die Rollenverteilung im Entwicklungsteam. Das vierte Kapitel dokumentiert die Implementierung und präsentiert die erzielten Ergebnisse. Abschließend diskutiert Kapitel fünf die Resultate, benennt Limitationen und gibt einen Ausblick auf mögliche Weiterentwicklungen.
+Im ersten Kapitel befinden sich die Planung, Problemstellung und Relevanz der App. In Kapitel zwei geht es um die theoretischen Grundlagen mit Überblick über relevante Literatur zu Client-Server-Architektur, Backend- und Frontend-Technologien, sowie Teamstrukturen. Kapitel drei beschreibt das Systemdesign, die eingesetzten Technologien und die Rollenverteilung im Entwicklungsteam. Das vierte Kapitel dokumentiert die Implementierung und präsentiert die erzielten Ergebnisse. Abschließend diskutiert Kapitel fünf die Resultate, benennt Limitationen und gibt einen Ausblick auf mögliche Weiterentwicklungen.

@@ -14,7 +14,7 @@
 )
 
 === Datenbankmodell
-Die Implementierung der Datenbank findet Grundlegend in der `models.py` statt. Hier werden die Tabellen als Klasse (`class`) definiert, zusammen mit den Spalten, die in der Tabelle sein sollen. Dazu kommen Parameter, die das Datenbankverhalten beeinflussen, wie beispielsweise `on_delete=models.CASCADE` .
+Die Implementierung der Datenbank findet grundlegend in der `models.py` statt. Hier werden die Tabellen als Klasse (`class`) definiert, zusammen mit den Spalten, die in der Tabelle sein sollen. Dazu kommen Parameter, die das Datenbankverhalten beeinflussen, wie beispielsweise `on_delete=models.CASCADE` .
 Als Beispiel findet man im folgenden Code-Block die Tabelle "Excuse". Diese wurde, wie so ziemlich alle anderen Tabellen auch, mit der Basisklasse `models.Model` erstellt, welche aus der Python-Klasse ein Django-Datenbank-Modell erstellt. Django erstellt daraufhin automatisch eine Datenbanktabelle aus diesem Modell.
 ```python
 class Excuse(models.Model):
@@ -41,7 +41,7 @@ class Excuse(models.Model):
 ```
 `title`, `content` und `created_at` werden zu Spalten in der Tabelle. `uploaded_by_user`, `student` und `teachers`, sind Fremdschlüssel (Foreign-Keys), die notwendig sind, um Verbindungen zu anderen Tabellen herzustellen. 
 \
-Während `uploaded_by_user` und `student`, aus Sicht des Users, als One-to-Many-Beziehung (1:n) funktionieren, wird die Beziehung zu Lehrern über eine Many-to-Many(m:n) Beziehung abgebildet.
+Während `uploaded_by_user` und `student`, aus Sicht des Users, als One-to-Many-Beziehung (1:n) funktionieren, wird die Beziehung zu Lehrern über eine Many-to-Many (m:n) Beziehung abgebildet.
 
 #figure(
   table(
@@ -133,7 +133,7 @@ class ExcuseOutputSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'created_at']
 ```
 \
-Anhand des `ViewSet` der Entschuldigung wird nun nicht nur Code, sondern auch die Logik der ViewSets näher gebracht. Ein `ModelViewSet` fasst die Standardoperationen für CRUD in einer einzigen Klasse zusammen. Mit `get_queryset()` wird eine rollenbasierte Zugriffskontrolle implementiert, die dafür sorgt, dass jeder Benutzer nur die für ihn vorgesehenen Entschuldigungen sehen kann. Nicht authentifizierte Benutzer haben keinen Zugriff auf Daten und Administratoren dürfen alles einsehen. Währenddessen erhalten Lehrer, Eltern und Schüler nur ihre eigenen bzw. ihnen zugeordneten Entschuldigungen. Die Methode `get_serializer_class()` wählt anhand der aktuellen Aktion, den richtigen Serializer aus. Für schreibende Operationen wird der `ExcuseInputSerializer` genutzt, während für lesende Operationen der `ExcuseOutputSerializer` genutzt wird. Mit `perform_create()` wird der Benutzer der die Entschuldigung hochlädt, Serverseitig gesetzt, wodurch die Manipulation durch den Client verhindert wird. Weiters sieht man die benutzerdefinierte Aktion `sign()`, die eine Entschuldigung genehmigt und digital signiert. Diese wurde per `@action`-Decorator als zusätzlicher API-Endpoint definiert. Weitere Informationen zur Signatur im Abschnitt X.X.X. Durch die Methode `get_permissions()` wird schließlich noch sichergestellt, dass nur authentifizierte und berechtigte Benutzer auf die Funktionen zugreifen können. Somit verbindet das `ViewSet` die zentrale Geschäftslogik und Security mit der CRUD-*Funktionalität.*
+Anhand des `ViewSet` der Entschuldigung wird nun nicht nur Code, sondern auch die Logik der ViewSets näher gebracht. Ein `ModelViewSet` fasst die Standardoperationen für CRUD in einer einzigen Klasse zusammen. Mit `get_queryset()` wird eine rollenbasierte Zugriffskontrolle implementiert, die dafür sorgt, dass jeder Benutzer nur die für ihn vorgesehenen Entschuldigungen sehen kann. Nicht authentifizierte Benutzer haben keinen Zugriff auf Daten und Administratoren dürfen alles einsehen. Währenddessen erhalten Lehrer, Eltern und Schüler nur ihre eigenen bzw. ihnen zugeordneten Entschuldigungen. Die Methode `get_serializer_class()` wählt anhand der aktuellen Aktion, den richtigen Serializer aus. Für schreibende Operationen wird der `ExcuseInputSerializer` genutzt, während für lesende Operationen der `ExcuseOutputSerializer` genutzt wird. Mit `perform_create()` wird der Benutzer, der die Entschuldigung hochlädt, serverseitig gesetzt, wodurch die Manipulation durch den Client verhindert wird. Weiters sieht man die benutzerdefinierte Aktion `sign()`, die eine Entschuldigung genehmigt und digital signiert. Diese wurde per `@action`-Decorator als zusätzlicher API-Endpoint definiert. Weitere Informationen zur Signatur im Abschnitt 4.1.5. Durch die Methode `get_permissions()` wird schließlich noch sichergestellt, dass nur authentifizierte und berechtigte Benutzer auf die Funktionen zugreifen können. Somit verbindet das `ViewSet` die zentrale Geschäftslogik und Security mit der CRUD-*Funktionalität.*
 
 *Views.py*:
 ```python
@@ -226,7 +226,7 @@ Für Informationen zu API-Endpoints siehe @API_Kapitel API.
 
 === Authentifizierung
 
-Während andere Modelle von `models.Model` erben, basiert das Benutzermodell auf der Django-Klasse `AbstractUser`. Der Unterschied zu den models.Model liegt darin, dass `AbstractUser` bereits eine Grundlage zur Benutzerverwaltung und Authentifizierung bereitstellt. Dazu kommen auch Felder wie Benutzname und Password, wodurch zentrale Funktionen nicht selbst implementiert werden müssen. Das Modell wird dabei jedoch um relevante Felder wie `school`, `role` und `klasse` erweitert.
+Während andere Modelle von `models.Model` erben, basiert das Benutzermodell auf der Django-Klasse `AbstractUser`. Der Unterschied zu den models.Model liegt darin, dass `AbstractUser` bereits eine Grundlage zur Benutzerverwaltung und Authentifizierung bereitstellt. Dazu kommen auch Felder wie Benutzername und Password, wodurch zentrale Funktionen nicht selbst implementiert werden müssen. Das Modell wird dabei jedoch um relevante Felder wie `school`, `role` und `klasse` erweitert.
 
 *models.py*:
 ```python
@@ -253,8 +253,8 @@ class User(AbstractUser):
         return f"{self.username} ({self.pk})"
 ```
 
-=== Rollenbasierte-Autorisierung
-Für die rollenbasierte Autorisierung werden Benutzer zunächst in klar definierte Rollen eingeteilt. Lehrer, Eltern und Schüler bilden die Grundlage für sämtliche Zugriffsentscheidungen. Da nur überprüft wird ob ein Attribut vorhanden ist, lässt sich während der Laufzeit schnell feststellen, welche Rolle ein User hat.
+=== Rollenbasierte Autorisierung
+Für die rollenbasierte Autorisierung werden Benutzer zunächst in klar definierte Rollen eingeteilt. Lehrer, Eltern und Schüler bilden die Grundlage für sämtliche Zugriffsentscheidungen. Da nur überprüft wird, ob ein Attribut vorhanden ist, lässt sich während der Laufzeit schnell feststellen, welche Rolle ein User hat.
 
 *permissions.py*:
 ```python
@@ -268,7 +268,7 @@ def isParent(user):
     return hasattr(user, "parent")
 ```
 
-Anhand der ExcusePermission, also der Zugangsliste der Entschuldigungen zeigt sich die Implementierung des genannten Attribut vergleichs. Nach der Rollendefinition übernimmt die Klasse `ExcusePermission` die eigentliche Zugriffskontrolle. Dabei wird zwischen `has_permission` und `has_object_permission` unterschieden. Das erstere prüft, ob ein Benutzer überhaupt berechtigt ist, eine CRUD-Operation durchzuführen. Dabei werden allgemeine Regeln festgelegt. Beispielsweise, dass Lehrer die übermittelten Entschuldigungen nur lesen dürfen. Weiters haben wir die `has_object_permission` die dabei detailreicher vorgeht und prüft ob ein Benutzer auf ein bestimmtes Objekt zugreifen darf. Schüler haben nur das Recht eigene Entschuldigungen zu sehen und Lehrer nur von Klassen für die sie zuständig sind. Dadurch entsteht eine klare Trennung zwischen allgemeiner und objektspezifischer Kontrolle.
+Anhand der ExcusePermission, also der Zugangsliste der Entschuldigungen zeigt sich die Implementierung des genannten Attributvergleichs. Nach der Rollendefinition übernimmt die Klasse `ExcusePermission` die eigentliche Zugriffskontrolle. Dabei wird zwischen `has_permission` und `has_object_permission` unterschieden. Ersteres prüft, ob ein Benutzer überhaupt berechtigt ist, eine CRUD-Operation durchzuführen. Dabei werden allgemeine Regeln festgelegt. Beispielsweise, dass Lehrer die übermittelten Entschuldigungen nur lesen dürfen. Weiters haben wir die `has_object_permission`, die dabei detailreicher vorgeht und prüft, ob ein Benutzer auf ein bestimmtes Objekt zugreifen darf. Schüler haben nur das Recht eigene Entschuldigungen zu sehen und Lehrer nur von Klassen, für die sie zuständig sind. Dadurch entsteht eine klare Trennung zwischen allgemeiner und objektspezifischer Kontrolle.
 ```python
 class ExcusePermission(permissions.BasePermission):
     """
@@ -315,7 +315,7 @@ def signJson(self, data: dict) -> str:
   signature = self.privateKey.sign(message)
   return f"{json.dumps(payload)}|BASE64:{base64.b64encode(signature).decode()}"
 ```
-Beim aufruf von signJson wird zunächst eine Payload erstellt. Diese enthält die Benutzer-ID des signierenden Users sowie die zugehörigen Daten, in diesem Fall die Informationen der zu Entschuldigung. Anschließend wird die Payload in einen JSON-String umgewandelt, damit die Daten immer in derselben Reihenfolge verarbeitet werden. Danach erzeugt der private Schlüssel des Users eine digitale Signatur über diese Daten. Das Ergebnis besteht aus der Payload und der dazugehörigen Signatur.
+Beim Aufruf von signJson wird zunächst eine Payload erstellt. Diese enthält die Benutzer-ID des signierenden Users sowie die zugehörigen Daten, in diesem Fall die Informationen der Entschuldigung. Anschließend wird die Payload in einen JSON-String umgewandelt, damit die Daten immer in derselben Reihenfolge verarbeitet werden. Danach erzeugt der private Schlüssel des Users eine digitale Signatur über diese Daten. Das Ergebnis besteht aus der Payload und der dazugehörigen Signatur.
 
 ```python
 def verifyJson(self, signed_str: str) -> dict:
@@ -339,14 +339,14 @@ def verifyJson(self, signed_str: str) -> dict:
     publicKey.verify(signature, message)
     return payload
 ```
-Die Funktion verifyJson dient zur Überprüfung der Signatur. Dazu wird der gespeicherte String in zuerst Payload und Signatur getrennt. Anschließend wird die Benutzer-ID aus der Payload ausgelesen und der dazugehörige Schlüssel aus der Datenbank geladen. Mit dem daraus resultierenden öffentlichen Schlüssel wird geprüft, ob die Signatur zur Payload passt. Falls Daten oder Signatur verändert wurden, schlägt die Verifikation fehl.
+Die Funktion verifyJson dient zur Überprüfung der Signatur. Dazu wird der gespeicherte String zuerst in Payload und Signatur getrennt. Anschließend wird die Benutzer-ID aus der Payload ausgelesen und der dazugehörige Schlüssel aus der Datenbank geladen. Mit dem daraus resultierenden öffentlichen Schlüssel wird geprüft, ob die Signatur zur Payload passt. Falls Daten oder Signatur verändert wurden, schlägt die Verifikation fehl.
 
 #pagebreak()
 #set_footer_name("Jan Schubert")
 == Implementierung des Frontends // J
 
 === Entrypoint
-In `main.dart` startet die Ausführung der ExcuseMe App. Hier befindet sich an erster Stelle der Entrypoint, der für die Initialisierung der App auf allen Plattfomen zuständig ist. 
+In `main.dart` startet die Ausführung der ExcuseMe App. Hier befindet sich an erster Stelle der Entrypoint, der für die Initialisierung der App auf allen Plattformen zuständig ist. 
 
 ```dart
 void main() {
@@ -354,7 +354,7 @@ void main() {
 }
 ```
 
-Darunter befindet sich das Stateless Widget `MyApp`, was die root, also das unterste Widget der Applikation ist. Mit dem Key `title` legt `MyApp` den Namen der App bzw. die Benennung des Fensters fest. Auch das grundlegende Design, die `theme` und `darkTheme`, sowie die Weiterleitung zur Homepage, `home`, wird hier festgelegt. Da der Zugriff auf die Daten aber nur mit gültigen Zugangsdaten gestattet ist, finden sich Nutzer beim Start der App auf der Login Page wieder.
+Darunter befindet sich das Stateless Widget `MyApp`, das die Root, also das unterste Widget der Applikation ist. Mit dem Key `title` legt `MyApp` den Namen der App bzw. die Benennung des Fensters fest. Auch das grundlegende Design, die `theme` und `darkTheme`, sowie die Weiterleitung zur Homepage, `home`, wird hier festgelegt. Da der Zugriff auf die Daten aber nur mit gültigen Zugangsdaten gestattet ist, finden sich Nutzer beim Start der App auf der Login Page wieder.
 
 ```dart
 class MyApp extends StatelessWidget {
@@ -417,7 +417,7 @@ Future<bool> authenticate(String username, String password) async {
 }
 ```
 
-Anderenfalls wird die Login Page angezeigt, bis sich der Nutzer erfolgreich angemeldet hat, was in folgendem Code sichtbar ist. 
+Andernfalls wird die Login Page angezeigt, bis sich der Nutzer erfolgreich angemeldet hat, was in folgendem Code sichtbar ist. 
 
 ```dart
 @override
@@ -455,7 +455,7 @@ if (_stayAuthenticated) {
 ```
 
 === Responsive Layer
-Um die Nutzung der App auf unterschiedlichsten Plattformen und Bildschirmgrößen zu erleichtern, steuert eine responsive Schicht die Anzeige der Seite und die Position der Navigationsleiste bestimmen (siehe @Responsive-Design Responsive Design).
+Um die Nutzung der App auf unterschiedlichsten Plattformen und Bildschirmgrößen zu erleichtern, steuert eine responsive Schicht die Anzeige der Seite und bestimmt die Position der Navigationsleiste (siehe @Responsive-Design Responsive Design).
 
 Der nachstehende, gekürzte Code-Block zeigt, wie der Responsive Layer, im folgenden als Skelett bezeichnet, die Grundlage der Home-Seite bildet. \
 Ein LayoutBuilder baut die vom Nutzer ausgewählte Seite. Dabei wird auf die aktuelle Breite der Applikation geschaut. Unterschreitet sie dabei einen bestimmten Wert, wird die Navigationsleiste unterhalb der Seite dargestellt, andernfalls auf der rechten Seite. 
@@ -492,7 +492,7 @@ class _SkeletonState extends State<Skeleton> {
 
 
 === Homepage
-Während der Nutzer auf die `Home` Seite weitergeleitet wird, wird im Hintergrund eine Authentifizierunganfrage an die Webuntis-Server gesendet, um aktuelle Tokens und die `studentId` des Nutzers zu erhalten. Die ID wird in der nachfolgenden Abfrage für den Abruf der Fehlstunden benötigt, wie der folgende, vereinfachte Code zeigt.
+Während der Nutzer auf die `Home` Seite weitergeleitet wird, wird im Hintergrund eine Authentifizierungsanfrage an die Webuntis-Server gesendet, um aktuelle Tokens und die `studentId` des Nutzers zu erhalten. Die ID wird in der nachfolgenden Abfrage für den Abruf der Fehlstunden benötigt, wie der folgende, vereinfachte Code zeigt.
 
 ```dart
 Future<List<dynamic>> getAbsences() async {
@@ -544,9 +544,9 @@ Future<List<dynamic>> getAbsences() async {
 #pagebreak()
 #set_footer_name("Fabian Trummer")
 == Systemintegration //F
-Systemintegration von ExcuseMe verbindet Flutter-Frontend, Django REST Backend und die PostgreSQL-Datenbank zu einem Datenfluss. Eingehende HTTP-Requests werden über den URL-Router (`urls.py`) an die API weitergeleitet. Dort werden JWT-Token-Validierung, eine rollenbasierte Berechtigungsprüfung und Datenserialisierung durchlaufen. Erst danach wird ein Datensatz mit Django ORM in der Datenbank gespeichert. Die Authentifizierung erfolgt über die Endpunkte `/api/token` und `/api/token/refresh` mit SimpleJWT. Damit wird zustandslose Kommunikation von Client und Server ermöglicht. 
+Systemintegration von ExcuseMe verbindet Flutter-Frontend, Django REST Backend und die PostgreSQL-Datenbank zu einem Datenfluss. Eingehende HTTP-Requests werden über den URL-Router (`urls.py`) an die API weitergeleitet. Dort werden JWT-Token-Validierung, eine rollenbasierte Berechtigungsprüfung und Datenserialisierung durchlaufen. Erst danach wird ein Datensatz mit Django ORM in der Datenbank gespeichert. Die Authentifizierung erfolgt über die Endpunkte `/api/token` und `/api/token/refresh` mit SimpleJWT. Damit wird eine zustandslose Kommunikation von Client und Server ermöglicht. 
 \
-Das in der folgenden Abbildung xy ersichtliche Flowchart visualisiert diesen Ablauf:
+Das folgende Flowchart visualisiert diesen Ablauf:
 
 #figure(
   image("../resources/datenfluss-chart.png", width: 85%),
@@ -555,7 +555,7 @@ Das in der folgenden Abbildung xy ersichtliche Flowchart visualisiert diesen Abl
 //vlt noch einer erklärung zum Chart?
 == Testverfahren //F
 === Unit Tests
-Die Unit-Tests von `ExcuseMe` validieren alle Datenbankmodelle unabhängig von der Anwendungslogik. Dabei werden Objekterstellung, Fremdschlüssel und Manty-to-Many-Beziehungen geprüft. Mittels `django_autotest.yaml` werden die Tests implementiert, die bei jedem Push oder Pull Request auf `main` oder `dev` über GitHub Actions ausgeführt werden.
+Die Unit-Tests von `ExcuseMe` validieren alle Datenbankmodelle unabhängig von der Anwendungslogik. Dabei werden Objekterstellung, Fremdschlüssel und Many-to-Many-Beziehungen geprüft. Mittels `django_autotest.yaml` werden die Tests implementiert, die bei jedem Push oder Pull Request auf `main` oder `dev` über GitHub Actions ausgeführt werden.
 
 #figure(
   image("../resources/Unit-Test.png", height: 75%),

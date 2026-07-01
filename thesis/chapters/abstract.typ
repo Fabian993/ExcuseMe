@@ -6,5 +6,5 @@ Zu Beginn wurde eine Analyse der bestehenden Abläufe durchgeführt, um die Anfo
 
 Die entwickelte Lösung ermöglicht die Einsicht in die Fehlstunden von Schülern sowie das Hochladen von Entschuldigungen, die direkt für Klassenvorstände einsehbar sind. 
 
-Die Arbeit zeigt, dass die entwickelte Anwendung die wesentlichen Anforderungen erfüllt und im schulischen Umfeld sinnvoll eingesezt werden kann.
+Die Arbeit zeigt, dass die entwickelte Anwendung die wesentlichen Anforderungen erfüllt und im schulischen Umfeld sinnvoll eingesetzt werden kann.
 Zudem bildet sie eine Grundlage für zukünftige Erweiterungen, wie die Bestätigung von Entschuldigungen durch Erziehungsberechtigte bei Minderjährigen.

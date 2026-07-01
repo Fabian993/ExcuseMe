@@ -18,7 +18,7 @@
 )
 
 Häufig wird bei der Entwicklung von Software die Client-Server-Architektur angewandt.
-Diese unterteilt - wie der Name schon sagt - zwei miteinander kommunizierende Systeme in Client und Server. Der Server dabei stellt die zentrale Logik der Anwendung dar und wertet dabei die Anfragen des Clients aus. Dafür einigen sich beide auf ein bestimmtes Protokoll, das definiert, wie die Kommunikation stattfindet.
+Diese unterteilt - wie der Name schon sagt - zwei miteinander kommunizierende Systeme in Client und Server. Der Server stellt die zentrale Logik der Anwendung dar und wertet die Anfragen des Clients aus. Dafür einigen sich beide auf ein bestimmtes Protokoll, das definiert, wie die Kommunikation stattfindet.
 @client_server
 
 Hierzu gehören beispielsweise das @HTTP für Web oder @DNS für die Namensauflösung von einem @URL. Beide spielen eine fundamentale Rolle in der Welt des Internets und sind internationale Standards.
@@ -45,10 +45,10 @@ Models verwalten die eigentlichen Daten und die zugehörige Logik. Zusammen mit 
 
 === Überblick über geeignete Entwicklungsmodelle
 Die Entwicklung von Software startet üblicherweise mit der Planung.
-Dabei gibt es verschiedene Vorgehensweisen, um sein Ziele zu erreichen. Viele von diesen Entwicklungsmodellen kommen dabei aus der Projektplanung. Ihre Aufgabe ist es, die verschiedenen Tätigkeiten der Entwickelnden im Lebenszyklus der Software zu strukturieren. Die Modelle werden in mehrere Gruppen unterteilt: Von formell bis informell, was von geschäftlichen Bezug zum Kunden abhängt, sowie linear bis iterativ, was wiederum von der konkreten Vorgehensweise des Modells selbst abhängt. 
+Dabei gibt es verschiedene Vorgehensweisen, um seine Ziele zu erreichen. Viele von diesen Entwicklungsmodellen kommen dabei aus der Projektplanung. Ihre Aufgabe ist es, die verschiedenen Tätigkeiten der Entwickelnden im Lebenszyklus der Software zu strukturieren. Die Modelle werden in mehrere Gruppen unterteilt: Von formell bis informell, was vom geschäftlichen Bezug zum Kunden abhängt, sowie linear bis iterativ, was wiederum von der konkreten Vorgehensweise des Modells selbst abhängt. 
 @modelle_swe
 
-Während der ursprünglichen Planung dieser Arbeit, kamen das lineare Wasserfallmodell, aber auch flexiblere Modelle wie Scrum oder @XP:s in Frage.
+Während der ursprünglichen Planung dieser Arbeit kamen das lineare Wasserfallmodell, aber auch flexiblere Modelle wie Scrum oder @XP:s in Frage.
 
 Das Wasserfallmodell ordnet die Tätigkeiten in Analyse, Design, Programmierung, Test, Installation, Instandhaltung. Die einzelnen Schritte werden hierbei genau mitgeschrieben und festgehalten. Der große Nachteil dabei jedoch ist, dass jede Stufe vom Abschluss der vorherigen abhängt. Fehler wirken sich also auf die jeweils nächste Phase aus. Auch die Anforderungen sollten bereits beim ersten Schritt, der Analyse, möglichst genau bekannt sein, weil nur so ein genauer, schrittweiser Plan erstellt werden kann.
 @modelle_swe
@@ -57,18 +57,18 @@ Scrum hingegen ist da als Agile Entwicklungsmethode fundamental anders: \
 Alle zwei bis vier Wochen findet ein Sprint-Meeting statt, in dem Aufträge, die bis zum nächsten Meeting umgesetzt werden sollten, geplant werden. Dazu kommt noch die Sprint-Retrospektive, wo der neue Fortschritt kontrolliert und gegebenenfalls eine Korrektur aufgetragen wird. Kommt es zur Änderung der Anforderungen, können diese bereits in der nächsten Planung berücksichtigt werden, weshalb man hier von "Agiler Entwicklung" spricht.
 @modelle_swe
 
-Recht ähnlich ist hier auch @XP:l, welches die Dauer der Iterationen auf meist ein bis zwei Wochen reduziert, da hier Kundenzufriedenheit und daher auch Flexibilität oberste Priorität haben. @XP setzt hier gezielt auf Taktiken der Software Entwicklung wie beispielsweise kleinere, regelmäßigere Veröffentlichung, Pair-Programming, also das abwechselnde arbeiten zu zweit an einem End-Gerät oder automatisierte Tests, welche bei Änderungen die Funktionalität der Software überprüfen.
+Recht ähnlich ist hier auch @XP:l, welches die Dauer der Iterationen auf meist ein bis zwei Wochen reduziert, da hier Kundenzufriedenheit und daher auch Flexibilität oberste Priorität haben. @XP setzt hier gezielt auf Taktiken der Softwareentwicklung wie beispielsweise kleinere, regelmäßigere Veröffentlichung, Pair-Programming, also das abwechselnde Arbeiten zu zweit an einem Endgerät oder automatisierte Tests, welche bei Änderungen die Funktionalität der Software überprüfen.
 @modelle_swe
 
-In einer frühen Besprechung mit unserem Betreuungslehrer wurde letztendlich festgelegt, dass bis zum Abschluss der Arbeit, alle zwei Wochen ein Meeting zur Besprechung des Fortschritts stattfindet. Da sich die gegebenen Anforderungen und eingeplanten Zeiten leicht verändern können, beispielsweise durch neue, gewünschte Funktionalität oder andere schulische Aktivitäten, fiel die Wahl auf das flexible "Scrum" Modell. Da hier jedoch einzelne Aspekte wie automatische Test oder kontinuierliche Integration aus dem @XP fehlten, wurde der Beschluss gefasst, diese dennoch in unserer Planung zu berücksichtigen.
+In einer frühen Besprechung mit unserem Betreuungslehrer wurde letztendlich festgelegt, dass bis zum Abschluss der Arbeit alle zwei Wochen ein Meeting zur Besprechung des Fortschritts stattfindet. Da sich die gegebenen Anforderungen und eingeplanten Zeiten leicht verändern können, beispielsweise durch neue, gewünschte Funktionalität oder andere schulische Aktivitäten, fiel die Wahl auf das flexible "Scrum" Modell. Da hier jedoch einzelne Aspekte wie automatische Tests oder kontinuierliche Integration aus dem @XP fehlten, wurde der Beschluss gefasst, diese dennoch in unserer Planung zu berücksichtigen.
 
 // #pagebreak() 
 #set_footer_name("Fabian Trummer")
 == Theoretische Basis des Backend-Stacks //F
 
 === Object-Relational Mapping
-Das @ORM im Hintergrund nennt sich Django, das es ermöglicht Datenbankzugriffe über Python-Modelle umzusetzen, statt direkt SQL-Abfragen schreiben zu müssen. Dabei beschreibt ein Django-Modell die Struktur der gespeicherten Daten und entspricht in der Regel einer Datenbanktabelle. Auf dieser Grundlage stellt Django automatisch eine Datenbank-@API:s bereit, mit der Objekte  erstellt, abgerufen, verändert und gelöscht werden können. Dadurch bleibt der Code übersichtlicher und stark Python orientiert, während viele Datenbankzugriffe über das Framework laufen.
-@django_models,  @django_queries 
+Das @ORM im Hintergrund nennt sich Django, das es ermöglicht Datenbankzugriffe über Python-Modelle umzusetzen, statt direkt SQL-Abfragen schreiben zu müssen. Dabei beschreibt ein Django-Modell die Struktur der gespeicherten Daten und entspricht in der Regel einer Datenbanktabelle. Auf dieser Grundlage stellt Django automatisch eine Datenbank-@API:s bereit, mit der Objekte erstellt, abgerufen, verändert und gelöscht werden können. Dadurch bleibt der Code übersichtlicher und stark Python orientiert, während viele Datenbankzugriffe über das Framework laufen.
+@django_models, @django_queries 
 
 === Prinzipien von RESTful Services
 
@@ -95,23 +95,23 @@ Digitale Signaturen beruhen auf kryptografischen Verfahren und dienen dazu, die 
 == Theoretische Basis des Frontend-Stacks // J
 
 === Vorteile von Cross-Platform-Frameworks
-Cross-Platform-Frameworks können mit einem einzigen Quellcode eine Applikation für gleich mehrere Plattformen bauen. Dabei wird der Code analysiert und direkt in Maschinencode übersetzt, der für die gewünschte Plattform geeignet ist. Eine einzige Codebase dabei hat die Vorteile, dass die Entwicklung der Software schneller voran geht und dabei der gewaltige Aufwand, mehrere Codebases warten zu müssen, eingespart wird. Dies wiederum reduziert die erforderte Zeit und somit verbundene Kosten.
+Cross-Platform-Frameworks können mit einem einzigen Quellcode eine Applikation für gleich mehrere Plattformen bauen. Dabei wird der Code analysiert und direkt in Maschinencode übersetzt, der für die gewünschte Plattform geeignet ist. Eine einzige Codebase hat dabei den Vorteil, dass die Entwicklung der Software schneller voran geht und dabei der gewaltige Aufwand, mehrere Codebases warten zu müssen, eingespart wird. Dies wiederum reduziert die erforderliche Zeit und somit verbundene Kosten.
 @kotlin_native_vs_cross-platform
 
 Die beliebtesten und performantesten Frameworks, mit den größten Ökosystemen und Communitys sind seit einigen Jahren Flutter und React Native. Jedoch gibt es viele beliebte Alternativen wie Ionic, Kotlin Multiplatform, Uno Platform und viele mehr. Alle weisen ihre eigenen Stärken und Schwächen auf.
 @native_vs_cross-platform
 @popular_cross-platform-Frameworks
 
-Welche Technologie nun die richtige Wahl ist, hängt am Ende von den gegebenen Anforderungen ab. Also wie gut die Anforderungen von der Technologie abgedeckt wird, wie viel Zeit für das Projekt zur Verfügung steht, sowie welches Wissen und Können das Team bereits besitzt. 
+Welche Technologie nun die richtige Wahl ist, hängt am Ende von den gegebenen Anforderungen ab. Also wie gut die Anforderungen von der Technologie abgedeckt werden, wie viel Zeit für das Projekt zur Verfügung steht, sowie welches Wissen und Können das Team bereits besitzt. 
 @kotlin_native_vs_cross-platform
 
 === React Native vs Flutter <React-Native-Vs-Flutter>
 React Native basiert auf React, einem Web-Framework, das Entwicklern ein Komponenten-Modell in @JS bzw. @TS zur Verfügung stellt. Der Fokus liegt hier bei mobilen Geräten und Web-Anwendungen.
-Dabei nutzt das Framework native Elemente zur Darstellung, also sieht jede verwendete Komponente so aus, wie sie auf der jeweiligen Plattform natürlich aussehen sollte. Zusätzlich profitieren Entwickler von dem  riesigen React- bzw. @JS:lo Ökosystem, was die Integration von weiterer Software ermöglicht.
+Dabei nutzt das Framework native Elemente zur Darstellung, also sieht jede verwendete Komponente so aus, wie sie auf der jeweiligen Plattform natürlich aussehen sollte. Zusätzlich profitieren Entwickler von dem riesigen React- bzw. @JS:lo Ökosystem, was die Integration von weiterer Software ermöglicht.
 @native_vs_cross-platform
 @react_native_components
 
-Flutter geht hier einen anderen Weg. Statt auf die Darstellung nativer Elemente, setzt Flutter auf die eigene Rendering-Engine "Impeller", was mehr Kontrolle über das Aussehen und Verhalten der App auf jeder Plattform erzielt. Das bedeutet auch, dass die App auf jeder Plattform identisch aussehen kann, was ein konsistentes, Plattform unabhängiges Design ermöglicht. Außerdem bietet Impeller eine starke Performance, die nativen Applikationen meist sehr nahe kommt.
+Flutter geht hier einen anderen Weg. Statt auf die Darstellung nativer Elemente, setzt Flutter auf die eigene Rendering-Engine "Impeller", was mehr Kontrolle über das Aussehen und Verhalten der App auf jeder Plattform erzielt. Das bedeutet auch, dass die App auf jeder Plattform identisch aussehen kann, was ein konsistentes, plattformunabhängiges Design ermöglicht. Außerdem bietet Impeller eine starke Performance, die nativen Applikationen meist sehr nahe kommt.
 @native_vs_cross-platform 
 @impeller
 
@@ -123,11 +123,11 @@ Damit ein Button zum Beispiel angezeigt werden kann, könnte er sich in einem Ce
 @flutter_widget 
 
 === State Management <State-Management>
-In Flutter gibt es zwei fundamentale Arten von Widgets: "Stateless Widgets" und "Stateful Widgets". Wie der Name schon sagt, speichern Stateful Widgets ihren aktuellen State. Änderungen des States führen dazu, dass alle betroffenen Widgets im Widget Tree neu gezeichnet bzw. aktualisiert werden. Drückt der Nutzer also beispielsweise auf den "anmelden" Knopf auf einer Login Seite, könnte sich der State der Seite von "idle" zu "loading" ändern. Diese Änderung würde das Widget neu zeichnen und könnte anhand des States stattdessen mit einem animierten Symbol den Lade-Zustand anzeigen.
+In Flutter gibt es zwei fundamentale Arten von Widgets: "Stateless Widgets" und "Stateful Widgets". Wie der Name schon sagt, speichern Stateful Widgets ihren aktuellen State. Änderungen des States führen dazu, dass alle betroffenen Widgets im Widget Tree neu gezeichnet bzw. aktualisiert werden. Drückt der Nutzer also beispielsweise auf den "anmelden" Knopf auf einer Login-Seite, könnte sich der State der Seite von "idle" zu "loading" ändern. Diese Änderung würde das Widget neu zeichnen und könnte anhand des States stattdessen mit einem animierten Symbol den Ladezustand anzeigen.
 @flutter_widget @flutter_state
 
 === Responsive Design <Responsive-Design>
-Responsive Design beschreibt den Designansatz, die Software mit allen möglichen Bildschirmgrößen und Auflösungen kompatibel zu machen und Konsistenz zu schaffen. Dabei wird auch während der Laufzeit auf Änderungen dieser Eigenschaften geachtet. Die Navigationsleiste einer Desktopanwendung befindet sich durch das Querformat in der Regel am linken oder rechten äußeren Rand der Seite. Dieselbe App würde im Hochformat am Smartphone aber viel Platz wegnehmen, weshalb sie sich in diesem Fall besser unterhalb statt seitlich befinden sollte. Folgt man Responsive Designpatterns, würde die Anwendung die Navigationsleiste also dynamisch, je nach Bildschirmgröße, verschieben.
+Responsive Design beschreibt den Designansatz, die Software mit allen möglichen Bildschirmgrößen und Auflösungen kompatibel zu machen und Konsistenz zu schaffen. Dabei wird auch während der Laufzeit auf Änderungen dieser Eigenschaften geachtet. Die Navigationsleiste einer Desktopanwendung befindet sich durch das Querformat in der Regel am linken oder rechten äußeren Rand der Seite. Dieselbe App würde im Hochformat am Smartphone aber viel Platz wegnehmen, weshalb sie sich in diesem Fall besser unterhalb statt seitlich befinden sollte. Folgt man Responsive Design-Patterns, würde die Anwendung die Navigationsleiste also dynamisch, je nach Bildschirmgröße, verschieben.
 @responsive_design
 
 Stateful Widgets ermöglichen das. Der State eines Widgets kann hier mit der Bildschirmgröße verknüpft und bei dessen Änderung neu dargestellt werden.
