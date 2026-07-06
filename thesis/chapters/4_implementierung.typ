@@ -92,7 +92,7 @@ Die folgende Abbildung zeigt alle Tabellen der aktuellen Datenbank des Projekts:
 )
 Für Informationen zum Datenbank-Schema siehe @Datenbank-Schema
 
-
+#pagebreak()
 === CRUD
 CRUD ist ein einfaches Akronym und beschreibt die vier Grundoperationen zur Verwaltung von Daten in Softwaresystemen: `Create`, `Read`, `Update`, `Delete`. Diese gelten als Basis nahezu jeder datenbankgestützten Anwendung. Das @DRF stellt diese Operationen in Form von Methoden innerhalb eines ModelViewSet dar. Dadurch entsteht eine klare Zuordnung zwischen Datenbankoperation, HTTP-Schnittstelle und serverseitiger Implementierung. Dadurch erhält man eine saubere Trennung zwischen Datenhaltung, API-Kommunikation und Anwendungslogik und vereinfacht somit die Entwicklung der Anwendung.
 
@@ -133,7 +133,7 @@ class ExcuseOutputSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'created_at']
 ```
 \
-Anhand des `ViewSet` der Entschuldigung wird nun nicht nur Code, sondern auch die Logik der ViewSets näher gebracht. Ein `ModelViewSet` fasst die Standardoperationen für CRUD in einer einzigen Klasse zusammen. Mit `get_queryset()` wird eine rollenbasierte Zugriffskontrolle implementiert, die dafür sorgt, dass jeder Benutzer nur die für ihn vorgesehenen Entschuldigungen sehen kann. Nicht authentifizierte Benutzer haben keinen Zugriff auf Daten und Administratoren dürfen alles einsehen. Währenddessen erhalten Lehrer, Eltern und Schüler nur ihre eigenen bzw. ihnen zugeordneten Entschuldigungen. Die Methode `get_serializer_class()` wählt anhand der aktuellen Aktion, den richtigen Serializer aus. Für schreibende Operationen wird der `ExcuseInputSerializer` genutzt, während für lesende Operationen der `ExcuseOutputSerializer` genutzt wird. Mit `perform_create()` wird der Benutzer, der die Entschuldigung hochlädt, serverseitig gesetzt, wodurch die Manipulation durch den Client verhindert wird. Weiters sieht man die benutzerdefinierte Aktion `sign()`, die eine Entschuldigung genehmigt und digital signiert. Diese wurde per `@action`-Decorator als zusätzlicher API-Endpoint definiert. Weitere Informationen zur Signatur im Abschnitt 4.1.5. Durch die Methode `get_permissions()` wird schließlich noch sichergestellt, dass nur authentifizierte und berechtigte Benutzer auf die Funktionen zugreifen können. Somit verbindet das `ViewSet` die zentrale Geschäftslogik und Security mit der CRUD-*Funktionalität.*
+Anhand des `ViewSet` der Entschuldigung wird nun nicht nur Code, sondern auch die Logik der ViewSets näher gebracht. Ein `ModelViewSet` fasst die Standardoperationen für CRUD in einer einzigen Klasse zusammen. Mit `get_queryset()` wird eine rollenbasierte Zugriffskontrolle implementiert, die dafür sorgt, dass jeder Benutzer nur die für ihn vorgesehenen Entschuldigungen sehen kann. Nicht authentifizierte Benutzer haben keinen Zugriff auf Daten und Administratoren dürfen alles einsehen. Währenddessen erhalten Lehrer, Eltern und Schüler nur ihre eigenen bzw. ihnen zugeordneten Entschuldigungen. Die Methode `get_serializer_class()` wählt anhand der aktuellen Aktion, den richtigen Serializer aus. Für schreibende Operationen wird der `ExcuseInputSerializer` genutzt, während für lesende Operationen der `ExcuseOutputSerializer` genutzt wird. Mit `perform_create()` wird der Benutzer, der die Entschuldigung hochlädt, serverseitig gesetzt, wodurch die Manipulation durch den Client verhindert wird. Weiters sieht man die benutzerdefinierte Aktion `sign()`, die eine Entschuldigung genehmigt und digital signiert. Diese wurde per `@action`-Decorator als zusätzlicher API-Endpoint definiert. Weitere Informationen zur Signatur im Abschnitt @Digitale-Signatur Digitale-Signatur. Durch die Methode `get_permissions()` wird schließlich noch sichergestellt, dass nur authentifizierte und berechtigte Benutzer auf die Funktionen zugreifen können. Somit verbindet das `ViewSet` die zentrale Geschäftslogik und Security mit der CRUD-*Funktionalität.*
 
 *Views.py*:
 ```python
@@ -301,8 +301,8 @@ class ExcusePermission(permissions.BasePermission):
               request.user).filter(pk=obj.student.klasse_id).exists()
         return False
 ```
-
-=== Digitale Signatur
+#pagebreak()
+=== Digitale Signatur <Digitale-Signatur>
 Die Klasse SigningStrategy enthält zwei Funktionen, *signJson* und *verifyJson*. 
 ```python
 def signJson(self, data: dict) -> str:
@@ -342,6 +342,34 @@ def verifyJson(self, signed_str: str) -> dict:
 Die Funktion verifyJson dient zur Überprüfung der Signatur. Dazu wird der gespeicherte String zuerst in Payload und Signatur getrennt. Anschließend wird die Benutzer-ID aus der Payload ausgelesen und der dazugehörige Schlüssel aus der Datenbank geladen. Mit dem daraus resultierenden öffentlichen Schlüssel wird geprüft, ob die Signatur zur Payload passt. Falls Daten oder Signatur verändert wurden, schlägt die Verifikation fehl.
 
 #pagebreak()
+
+=== Statistik
+*views.py*
+```python
+def get(self, request):
+    user = request.user
+    if hasattr(user, 'student'):
+        students = [user.student]
+    elif hasattr(user, 'parent'):
+        students = user.parent.students.all()
+    elif hasattr(user, 'teacher'):
+        students = Student.objects.filter(klasse__in=user.teacher.klassen.all())
+
+    result = []
+    for s in students:
+        total = CachedAbsence.objects.filter(student=s).count()
+        excused = Excuse.objects.filter(student=s, status__name='approved').count()
+        result.append({
+            'student': s.user.username,
+            'total': total,
+            'excused': excused,
+            'unexcused': max(0, total - excused),
+        })
+    return Response(result)
+```
+Die Statistik wurde im Backend als eigener API-Endpoint umgesetzt. Beim Aufruf der "get()"-Methode wird anhand der Rolle des authentifizierten Users bestimmt, welche Schülerdaten berücksichtigt werden. Im Anschluss werden aus den gespeicherten Abwesenheiten und Entschuldigungen die Werte für die Gesamtzahl der Fehlstunden sowie für genehmigte, abgelehnte und ausstehende Entschuldigungen berechnet. Abschließend werden die Ergebnisse als JSON-Response an das Frontend zurückgegeben.
+
+
 #set_footer_name("Jan Schubert")
 == Implementierung des Frontends // J
 
@@ -390,7 +418,7 @@ class MyApp extends StatelessWidget {
 }
 
 ```
-
+#pagebreak()
 === Authentifizierung
 Die folgenden Code-Blocks dienen der vereinfachten Darstellung der Authentifizierungslogik und zeigen ausschließlich die für das Verständnis relevanten Kernschritte.
 
@@ -490,7 +518,7 @@ class _SkeletonState extends State<Skeleton> {
         }
 ```
 
-
+#pagebreak()
 === Homepage
 Während der Nutzer auf die `Home` Seite weitergeleitet wird, wird im Hintergrund eine Authentifizierungsanfrage an die Webuntis-Server gesendet, um aktuelle Tokens und die `studentId` des Nutzers zu erhalten. Die ID wird in der nachfolgenden Abfrage für den Abruf der Fehlstunden benötigt, wie der folgende, vereinfachte Code zeigt.
 
@@ -541,6 +569,29 @@ Future<List<dynamic>> getAbsences() async {
 }
 ```
 
+=== Statistik
+```dart
+Future<Map<String, double>> getStatistics() async {
+  await dotenv.load(fileName: ".env");
+  String? backendAddress = dotenv.env['BACKEND_SERVER'];
+
+  final response = await dio.get(
+    'https://$backendAddress/api/statistics/',
+    options: Options(headers: {'Content-Type': 'application/json'}),
+  );
+
+  final stats = response.data[0];
+
+  return {
+    "Entschuldigt": (stats["excused"] as num).toDouble(),
+    "Abgelehnt": (stats["rejected"] as num).toDouble(),
+    "Ausstehend": (stats["pending"] as num).toDouble(),
+  };
+}
+```
+
+Der gezeigte Code-Block lädt die Statistikdaten vom Backend-Endpoint "/api/statistics/" und liest die JSON-Response aus. Dabei werden relevante Felder wie, "excuses", "rejected", "pending" in eine "Map\<String, double>" umgewandelt. Das Format eignet sich direkt für die Übergabe an das Pie-Chart-Widget, da die Kategorien mit ihren Werten gespeichert werden. Dadurch wird die vom Backend berechnete Statistik ohne weitere Umrechnungen im Frontend visualisiert. 
+
 #pagebreak()
 #set_footer_name("Fabian Trummer")
 == Systemintegration //F
@@ -553,6 +604,8 @@ Das folgende Flowchart visualisiert diesen Ablauf:
   caption: [Datenfluss-Flowchart]
 )
 //vlt noch einer erklärung zum Chart?
+
+
 == Testverfahren //F
 === Unit Tests
 Die Unit-Tests von `ExcuseMe` validieren alle Datenbankmodelle unabhängig von der Anwendungslogik. Dabei werden Objekterstellung, Fremdschlüssel und Many-to-Many-Beziehungen geprüft. Mittels `django_autotest.yaml` werden die Tests implementiert, die bei jedem Push oder Pull Request auf `main` oder `dev` über GitHub Actions ausgeführt werden.

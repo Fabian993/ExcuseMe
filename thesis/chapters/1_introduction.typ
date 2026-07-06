@@ -17,12 +17,15 @@ Viele Schulen nutzen für Fehlzeiten noch handschriftliche Entschuldigungen, wod
 die Erstellung einer Statistik, welche zeigt, zu welchen Zeiten oder Tagen 
 im Durchschnitt besonders viele Schüler fehlen. Zudem stellt es einen weiteren Schritt in Richtung Digitalisierung im Bildungswesen dar.
 
-=== Grenzen bestehender Lösungen: Was funktioniert momentan nicht gut? // F
-// Was kann die Konkurrenz nicht so gut, was machen wir besser?
+=== Grenzen bestehender Lösungen // F
+Bestehende Schulverwaltungssysteme wie Sokrates oder vergleichbare Portale bieten zwar digitale Kommunikation, jedoch keinen strukturierten Workflow speziell für Entschuldigungen.
+
+ExcuseMe löst diese Probleme durch eine JWT-basierte Authentifizierung mit rollenbasiertem Berechtigungssystem und einer automatischen Statistik über Fehlzeiten. Jeder Benutzer sieht nur die für ihn relevanten Daten. Schüler sehen  ihre eigenen Entschuldigungen, Lehrer die ihrer Klasse, Eltern die ihrer Kinder. Zusätzlich werden Fehlstunden direkt aus WebUntis abgerufen und in der App übersichtlich dargestellt. 
+
 #pagebreak()
 
 == Zielsetzung der Arbeit //J&F
-Ziel unserer Arbeit ist, dass Schüler ihre Entschuldigungen bei Krankheit oder anderen Gründen einfach online hochladen. Diese Entschuldigungen werden von den Eltern/Erziehungsberechtigten digital unterschrieben und automatisch an den zuständigen Lehrer oder Klassenvorstand gesendet. So bekommt die Schule die Infos sicher und ohne Umwege. Alle Beteiligten haben dadurch immer den aktuellen Stand. 
+Ziel unserer Arbeit ist, dass Schüler ihre Entschuldigungen bei Krankheit oder anderen Gründen einfach online hochladen. Diese Entschuldigungen werden von den Eltern/Erziehungsberechtigten digital unterschrieben und automatisch an den zuständigen Lehrer oder Klassenvorstand gesendet. So bekommt die Schule die Infos sicher und ohne Umwege. Alle Beteiligten haben dadurch immer den aktuellen Stand.
 
 === Was soll das finale System erreichen?
 Ein Schüler soll per App oder Website Entschuldigungen hochladen können. Optional dazu wird jeweils eine Bestätigung zugestellt, sobald diese von den Eltern/Erziehungsberechtigten signiert wurde und beim Lehrer ankommt. Lehrer bekommen automatisch Bescheid und müssen nichts mehr händisch eintragen. Alles ist gespeichert, transparent und jederzeit nachvollziehbar. So ist jederzeit ersichtlich, welche Fehlstunden noch unentschuldigt sind und keiner muss sich sorgen, ob die Entschuldigungen auch wirklich ankommen.

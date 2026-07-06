@@ -30,7 +30,7 @@ Hierzu gehören beispielsweise das @HTTP für Web oder @DNS für die Namensaufl�
   // author = {Jan Schubert},
   // date = {19.05.2026},
 )
-
+#pagebreak()
 Die Abbildung stellt das @MVC:l Design Pattern dar. Dieses Architekturprinzip trennt Datenhaltung (Model), Nutzeroberfläche (View) und Steuerlogik (Controller) voneinander, um eine bessere Arbeitsteilung im Team zu erzielen und die Wartbarkeit des Gesamtsystems zu verbessern.
 @mvc_pattern
 
@@ -59,7 +59,7 @@ Alle zwei bis vier Wochen findet ein Sprint-Meeting statt, in dem Aufträge, die
 
 Recht ähnlich ist hier auch @XP:l, welches die Dauer der Iterationen auf meist ein bis zwei Wochen reduziert, da hier Kundenzufriedenheit und daher auch Flexibilität oberste Priorität haben. @XP setzt hier gezielt auf Taktiken der Softwareentwicklung wie beispielsweise kleinere, regelmäßigere Veröffentlichung, Pair-Programming, also das abwechselnde Arbeiten zu zweit an einem Endgerät oder automatisierte Tests, welche bei Änderungen die Funktionalität der Software überprüfen.
 @modelle_swe
-
+#pagebreak()
 In einer frühen Besprechung mit unserem Betreuungslehrer wurde letztendlich festgelegt, dass bis zum Abschluss der Arbeit alle zwei Wochen ein Meeting zur Besprechung des Fortschritts stattfindet. Da sich die gegebenen Anforderungen und eingeplanten Zeiten leicht verändern können, beispielsweise durch neue, gewünschte Funktionalität oder andere schulische Aktivitäten, fiel die Wahl auf das flexible "Scrum" Modell. Da hier jedoch einzelne Aspekte wie automatische Tests oder kontinuierliche Integration aus dem @XP fehlten, wurde der Beschluss gefasst, diese dennoch in unserer Planung zu berücksichtigen.
 
 // #pagebreak() 
@@ -90,7 +90,6 @@ Ein Ansatz zum Datenschutz besteht in der gezielten Absicherung des Backends ein
 Digitale Signaturen beruhen auf kryptografischen Verfahren und dienen dazu, die Identität des Absenders sowie die Unverändertheit elektronischer Daten zu prüfen. In diesem Projekt wird dieses Prinzip für die Entschuldigung durch ein asymmetrisches Schlüsselpaar umgesetzt. Dabei wird der private Schlüssel zum Signieren und der öffentliche Schlüssel zur Verifikation verwendet. Der Einsatz ist sinnvoll, da die Signatur nicht nur die Authentizität der Daten unterstützt, sondern auch nachträgliche Änderungen erkennbar macht und damit die Integrität der Entschuldigungen absichert.
 @digitale_signatur @bsi_signaturanwendung
 
-#pagebreak()
 #set_footer_name("Jan Schubert")
 == Theoretische Basis des Frontend-Stacks // J
 
@@ -104,7 +103,7 @@ Die beliebtesten und performantesten Frameworks, mit den größten Ökosystemen 
 
 Welche Technologie nun die richtige Wahl ist, hängt am Ende von den gegebenen Anforderungen ab. Also wie gut die Anforderungen von der Technologie abgedeckt werden, wie viel Zeit für das Projekt zur Verfügung steht, sowie welches Wissen und Können das Team bereits besitzt. 
 @kotlin_native_vs_cross-platform
-
+#pagebreak()
 === React Native vs Flutter <React-Native-Vs-Flutter>
 React Native basiert auf React, einem Web-Framework, das Entwicklern ein Komponenten-Modell in @JS bzw. @TS zur Verfügung stellt. Der Fokus liegt hier bei mobilen Geräten und Web-Anwendungen.
 Dabei nutzt das Framework native Elemente zur Darstellung, also sieht jede verwendete Komponente so aus, wie sie auf der jeweiligen Plattform natürlich aussehen sollte. Zusätzlich profitieren Entwickler von dem riesigen React- bzw. @JS:lo Ökosystem, was die Integration von weiterer Software ermöglicht.
@@ -125,7 +124,7 @@ Damit ein Button zum Beispiel angezeigt werden kann, könnte er sich in einem Ce
 === State Management <State-Management>
 In Flutter gibt es zwei fundamentale Arten von Widgets: "Stateless Widgets" und "Stateful Widgets". Wie der Name schon sagt, speichern Stateful Widgets ihren aktuellen State. Änderungen des States führen dazu, dass alle betroffenen Widgets im Widget Tree neu gezeichnet bzw. aktualisiert werden. Drückt der Nutzer also beispielsweise auf den "anmelden" Knopf auf einer Login-Seite, könnte sich der State der Seite von "idle" zu "loading" ändern. Diese Änderung würde das Widget neu zeichnen und könnte anhand des States stattdessen mit einem animierten Symbol den Ladezustand anzeigen.
 @flutter_widget @flutter_state
-
+#pagebreak()
 === Responsive Design <Responsive-Design>
 Responsive Design beschreibt den Designansatz, die Software mit allen möglichen Bildschirmgrößen und Auflösungen kompatibel zu machen und Konsistenz zu schaffen. Dabei wird auch während der Laufzeit auf Änderungen dieser Eigenschaften geachtet. Die Navigationsleiste einer Desktopanwendung befindet sich durch das Querformat in der Regel am linken oder rechten äußeren Rand der Seite. Dieselbe App würde im Hochformat am Smartphone aber viel Platz wegnehmen, weshalb sie sich in diesem Fall besser unterhalb statt seitlich befinden sollte. Folgt man Responsive Design-Patterns, würde die Anwendung die Navigationsleiste also dynamisch, je nach Bildschirmgröße, verschieben.
 @responsive_design

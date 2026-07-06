@@ -69,7 +69,7 @@ Nun können Entschuldigungen aller Art erstellt und ihnen ein Lehrer in der Tabe
     [Excuse], [excuses/], [ExcuseViewSet],
     [ExcuseTeacher], [excuseteacher/], [ExcuseTeacherViewSet],
   ),
-  caption: [Django @MVC:s Übersicht]
+  caption: [Django MVC Übersicht]
   // author = {Jan Schubert},
   // date = {16.05.2026}
 )
@@ -82,6 +82,7 @@ Eigentlich orientiert sich Django selbst an einer Variation des @MVC Modells, di
 === Applikation
 
 Da der Zugriff auf die @API über eine eigene Cross‑Platform‑App erfolgt, sind serverseitige Templates hier jedoch überflüssig. Die App stellt die Benutzeroberfläche zum Anmelden, zum Anzeigen von Fehlstunden und zum Hochladen von Entschuldigungen bereit und übernimmt damit im MVC‑Design-Pattern die Rolle der View (siehe @Model-View-Controller Model‑View‑Controller).
+#pagebreak()
 
 === JSON-Response-Struktur
 Flutter und Django kommunizieren über eine REST‑API, bei der alle Daten im JSON‑Format ausgetauscht werden. \
@@ -138,93 +139,96 @@ Um ein spezifisches Element als Antwort zu erhalten, kann der @URL die ID des ge
 
 Die nachstehende Tabelle gibt eine Übersicht über die zentralen API-Endpunkte und deren typische JSON-Responses. Für Listenendpunkte wird dabei die von @DRF:lo verwendete Wrapper-Struktur mit `count`, `next`, `previous` und `results` verwendet. \
 Zur besseren Lesbarkeit werden in der Tabelle nur die wesentlichen Felder der jeweiligen Responses dargestellt.
-
-#figure(
-  table(
-    columns: (4cm, auto),
-    inset: 12pt,
-    align: left,
-    table.header(
-      [*Route*], [*Response*]
-    ),
-    [schools/], [
-        ```json
-        {
-            "id": 1,
-            "name": "Beispielschule",
-            "address": "Musterstraße 1"
-        }
-        ```
-    ],
-    [users/], [
-        ```json
-        {
-            "username": "max.mustermann",
-            "email": "max.mustermann@email.com",
-            "first_name": "Max",
-            "last_name": "Mustermann",
-            "school": {},
-            "role": "student"
-        }
-        ```
-    ],
-    [klasses/], [
-        ```json
-        {
-            "id": 1,
-            "name": "4AKIFT",
-            "school": {},
-            "teachers": []
-        }
-        ```
-    ],
-    [
-        teachers/, \
-        students/, \
-        parents/
-    ], [        
-        ```json
-        {
-            "id": 1,
-            "user": {}
-        }
-        ```
-    ],
-    [status/], [
-        ```json
-        {
-            "id": 1,
-            "name": "Accepted"
-        }
-        ```
-    ],
-    [excuses/], [        
-        ```json
-        {
+#align(center,
+  scale(87%, reflow: true,
+    figure(
+      table(
+        columns: (4cm, auto),
+        inset: 12pt,
+        align: left,
+        table.header(
+          [*Route*], [*Response*]
+        ),
+        [schools/], [
+            ```json
+            {
                 "id": 1,
-                "title": "Abwesenheit",
-                "content": "Krankheit",
-                "created_at": "2000-01-01T00:00:00Z",
-                "uploaded_by_user": {},
-                "student": {}
-        }
-        ```
-    ],
-    [excuseteacher/], [
-        ```json
-        {
-            "id": 1,
-            "excuse": {},
-            "teacher": {},
-            "status": {},
-            "read_at": "2000-01-01T00:00:00Z"
-        }
-        ```
-    ]
-  ),
-  caption: [Übersicht API Responses]
-  // author = {Jan Schubert},
-  // date = {19.05.2026}
+                "name": "Beispielschule",
+                "address": "Musterstraße 1"
+            }
+            ```
+        ],
+        [users/], [
+            ```json
+            {
+                "username": "max.mustermann",
+                "email": "max.mustermann@email.com",
+                "first_name": "Max",
+                "last_name": "Mustermann",
+                "school": {},
+                "role": "student"
+            }
+            ```
+        ],
+        [klasses/], [
+            ```json
+            {
+                "id": 1,
+                "name": "4AKIFT",
+                "school": {},
+                "teachers": []
+            }
+            ```
+        ],
+        [
+            teachers/, \
+            students/, \
+            parents/
+        ], [        
+            ```json
+            {
+                "id": 1,
+                "user": {}
+            }
+            ```
+        ],
+        [status/], [
+            ```json
+            {
+                "id": 1,
+                "name": "Accepted"
+            }
+            ```
+        ],
+        [excuses/], [        
+            ```json
+            {
+                    "id": 1,
+                    "title": "Abwesenheit",
+                    "content": "Krankheit",
+                    "created_at": "2000-01-01T00:00:00Z",
+                    "uploaded_by_user": {},
+                    "student": {}
+            }
+            ```
+        ],
+        [excuseteacher/], [
+            ```json
+            {
+                "id": 1,
+                "excuse": {},
+                "teacher": {},
+                "status": {},
+                "read_at": "2000-01-01T00:00:00Z"
+            }
+            ```
+        ]
+      ),
+      caption: [Übersicht API Responses]
+      // author = {Jan Schubert},
+      // date = {19.05.2026}
+    )
+  )
 )
 
 #pagebreak()
@@ -305,7 +309,7 @@ Die Absicherung der Entschuldigungen erfolgt durch eine digitale Signaturlösung
 === Datenbank
 PostgreSQL ist skalierbar durch `Read Replicas` zur Lastverteilung bei leseintensiven Workloads und `Load Balancing`. Für große Datenmengen steht `Partitionierung` zur Verfügung, bei der große Tabellen in kleinere Partitionen unterteilt werden, was die Abfrage-Performance verbessert. Zusätzlich ermöglicht `Vertical Scaling` (Erweiterung von RAM, CPU, Storage) die Anpassung an wachsende Anforderungen.
 @postgresql_availability, @postgresql_partitioning
-
+#pagebreak()
 === Backend
 @DRF skaliert durch `Horizontal Scaling`, bei dem mehrere Instanzen der Anwendung hinter einem sogenannten `Load Balancer` betrieben werden. Jeder Request wird auf eine der verfügbaren Instanzen verteilt, wodurch die Last auf mehrere Server aufgeteilt wird.
 \
@@ -338,7 +342,7 @@ Durch die compilierte Native Performance (AOT-Compilation) bleibt die Performanc
     ),
     caption: [Aufteilung der Themen]
 )
-
+#pagebreak()
 === Kommunikation
 Die Kommunikation läuft hauptsächlich über tägliche bis wöchentliche Gespräche, in denen folgende Themen behandelt werden: aktuelle Features, derzeit auftretende Probleme, Schwierigkeiten sowie Zeitbedarf und die geplante Dauer für Features. 
 \
