@@ -1,6 +1,23 @@
 // --- 1. GLOBALE EINSTELLUNGEN ---
 #import "@preview/abbr:0.3.0"
 #show: abbr.show-rule
+#abbr.config(style: it => text(black, it)) // gray -> black
+
+// REFERENZEN MIT TITEL
+#show ref: it => {
+  if it.element == none {
+    it
+  } else {
+    let el = it.element
+    if el.func() == heading { // keine abb & tab
+      let h = el.fields()
+      let num = counter(heading).display(at: el.location())
+      link(el.location())[Abschnitt #num: #h.body]
+    } else {
+      it
+    }
+  }
+}
 
 #set page(
   paper: "a4",
@@ -136,3 +153,4 @@
 // --- 7. LITERATURVERZEICHNIS ---
 #heading(level: 2, outlined: true)[Literaturverzeichnis]
 #bibliography("references.bib", title: none, style: "ieee")
+

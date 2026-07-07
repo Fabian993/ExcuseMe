@@ -10,7 +10,7 @@
 == Software-Entwicklungszyklus // J
 
 === Beschreibung des angewandten Zyklus
-Die Planung und Umsetzung von ExcuseMe wurde anhand des Scrum-Modells durchgeführt. Scrum ist ein agiles Vorgehensmodell, das das Projekt in kurze Sprints von zwei bis vier Wochen unterteilt. Jeder Sprint beginnt mit der Planung und endet mit einer Retrospektive, in der der vorherige Sprint bewertet und der nächste angepasst wird. Die Planung, Testing, *Refactoring*, Strategie und Abarbeitung verschiedener @AP orientieren sich am V-Modell, weil dort jeder Entwicklungs- und Analysephase eine passende Testaktivität zugeordnet ist. Dadurch werden die Softwarequalität erhöht und Projektrisiken reduziert. 
+Die Planung und Umsetzung von ExcuseMe wurde anhand des Scrum-Modells durchgeführt. Scrum ist ein agiles Vorgehensmodell, das das Projekt in kurze Sprints von zwei bis vier Wochen unterteilt. Jeder Sprint beginnt mit der Planung und endet mit einer Retrospektive, in der der vorherige Sprint bewertet und der nächste angepasst wird. Die Planung, Testing, Refactoring, Strategie und Abarbeitung verschiedener @AP orientieren sich am V-Modell, weil dort jeder Entwicklungs- und Analysephase eine passende Testaktivität zugeordnet ist. Dadurch werden die Softwarequalität erhöht und Projektrisiken reduziert. 
 
 Im Falle von ExcuseMe nahm der Betreuer der Arbeit die Rolle des Scrum-Masters ein, indem er für die Kontrolle bzw. Besprechung des Fortschritts und die Einhaltung von gegebenen Zeiten sorgte, sowie die Priorisierung der einzelnen Arbeitspakete überprüfte.  
 @scrum_master
@@ -27,9 +27,9 @@ Nachdem ein Sprint geplant wurde, erfolgte die Zerlegung in kleinere, umsetzbare
   caption: [Architektur Übersicht]
   // author = {Jan Schubert},
   // date = {16.05.2026}
-)
+)<abb:Architektur_Übersicht>
 
-Die Abbildung zeigt die zentrale Systemarchitektur der Anwendung mit Client, REST-API und relationaler Datenbank (siehe @Client-Server-Architekturprinzip Definition und Bedeutung des Client-Server-Architekturprinzips).
+@abb:Architektur_Übersicht stellt die zentrale Systemarchitektur der Anwendung mit Client, REST-API und relationaler Datenbank dar (siehe @Client-Server-Architekturprinzip)
 
 Der End-Nutzer verwendet die in Flutter geschriebene ExcuseMe App, welche das Frontend bzw. den Client darstellt.
 Bereits bei der Anmeldung schickt die App über das Internet eine Anfrage, Request genannt, an das Backend bzw. den Server, der wiederum für dessen Auswertung zuständig ist. Hierzu gehören die Authentisierung des Nutzers und Autorisierung der Anfrage, sowie die Weiterleitung an die Datenbank. Im Falle dieser Arbeit läuft sie auf demselben Server. Die Query, also die Datenbank-spezifische Suchanfrage, wird von der Datenbank verarbeitet. Das Ergebnis wird ans Backend zurückgereicht und von dort als Antwort, Response genannt, über das Internet an den Client zurückgeschickt.
@@ -41,12 +41,12 @@ Bereits bei der Anmeldung schickt die App über das Internet eine Anfrage, Reque
   caption: [Datenbank-Schema]
   // author = {Jan Schubert},
   // date = {16.05.2026}
-)
+)<abb:Datenbank-Schema>
 
-Die Abbildung zeigt das ursprünglich geplante relationale Datenbank-Schema von ExcuseMe.
+@abb:Datenbank-Schema zeigt das ursprünglich geplante relationale Datenbank-Schema von ExcuseMe.
 
-Zuerst werden Schulen und Klassen eingetragen, welche die Datengrundlage bilden. Daraufhin werden Nutzer und deren Daten hinzugefügt und mit einer der Rollen "Student", "Teacher" oder "Parent" verknüpft. Um die Signatur durch Erziehungsberechtigte zu ermöglichen, werden Students und Parents ebenso miteinander verknüpft und in der Tabelle StudentParent gespeichert. Zuletzt muss den Klassen noch ein Klassenvorstand hinzugefügt werden. \
-Nun können Entschuldigungen aller Art erstellt und ihnen ein Lehrer in der Tabelle DokumentTeacher zugeordnet werden.
+Zuerst werden Schulen und Klassen eingetragen, welche die Datengrundlage bilden. Daraufhin werden Nutzer und deren Daten hinzugefügt und mit einer der Rollen "Student", "Teacher" oder "Parent" verknüpft. Um die Signatur durch Erziehungsberechtigte zu ermöglichen, werden Students und Parents ebenso miteinander verknüpft und in der Tabelle `StudentParent` gespeichert. Zuletzt muss den Klassen noch ein Klassenvorstand hinzugefügt werden. \
+Nun können Entschuldigungen aller Art erstellt und ihnen ein Lehrer in der Tabelle `DokumentTeacher` zugeordnet werden.
 
 // Während der frühen Planungsphase dieser Arbeit fiel aufgrund der Art der Daten die Wahl auf eine relationale Datenbank. 
 
@@ -72,21 +72,21 @@ Nun können Entschuldigungen aller Art erstellt und ihnen ein Lehrer in der Tabe
   caption: [Django MVC Übersicht]
   // author = {Jan Schubert},
   // date = {16.05.2026}
-)
+)<tab:mvc>
 
-Die Tabelle zeigt eine Übersicht über die Namen aller Datenbank-Modelle (links), deren mit "/api/" beginnenden verknüpfte Routen bzw. den Ort der Ressource (mittig), sowie den zugehörigen Controller (rechts).
+@tab:mvc erzeugt eine Übersicht über die Namen aller Datenbank-Modelle (links), deren mit `/api/` beginnenden verknüpften Routen bzw. den Ort der Ressource (mittig), sowie den zugehörigen Controller (rechts).
 
-Eigentlich orientiert sich Django selbst an einer Variation des @MVC Modells, die sich @MVT Modell nennt. Der Unterschied beider Design-Architekturen ist, dass Django's Views Aufgaben des Controllers übernehmen und durch Templates ersetzt werden. Diese machen das Erstellen von Websites mithilfe von @DTL Django möglich.
+Eigentlich orientiert sich Django selbst an einer Variation des @MVC Modells, die sich @MVT Modell nennt. Der Unterschied beider Design-Architekturen ist, dass Django's Views Aufgaben des Controllers übernehmen und durch Templates ersetzt werden. Diese machen das Erstellen von Websites mithilfe von @DTL möglich.
 @mvt_structure
 
 === Applikation
 
-Da der Zugriff auf die @API über eine eigene Cross‑Platform‑App erfolgt, sind serverseitige Templates hier jedoch überflüssig. Die App stellt die Benutzeroberfläche zum Anmelden, zum Anzeigen von Fehlstunden und zum Hochladen von Entschuldigungen bereit und übernimmt damit im MVC‑Design-Pattern die Rolle der View (siehe @Model-View-Controller Model‑View‑Controller).
+Da der Zugriff auf die @API über eine eigene Cross‑Platform‑App erfolgt, sind serverseitige Templates hier jedoch überflüssig. Die App stellt die Benutzeroberfläche zum Anmelden, zum Anzeigen von Fehlstunden und zum Hochladen von Entschuldigungen bereit und übernimmt damit im MVC‑Design-Pattern die Rolle der View (siehe @Model-View-Controller).
 #pagebreak()
 
 === JSON-Response-Struktur
 Flutter und Django kommunizieren über eine REST‑API, bei der alle Daten im JSON‑Format ausgetauscht werden. \
-Django liefert über das @DRF strukturierte @JSON``-Responses. Dabei wird jeder Endpunkt der @API mit einem JSON-Schema versehen (siehe @API_Kapitel API). Optional können Daten mit Django‑Serializers direkt in JSON‑Schema umgewandelt werden.
+Django liefert über das @DRF strukturierte @JSON``-Responses. Dabei wird jeder Endpunkt der @API mit einem JSON-Schema versehen (siehe @API_Kapitel). Optional können Daten mit Django‑Serializers direkt in JSON‑Schema umgewandelt werden.
 
 Die Flutter App sollte erhaltene Antworten nutzen, um die JSON-Daten in typsichere Dart-Objekte umzuwandeln und umgekehrt.
 
@@ -115,7 +115,7 @@ Folgendes JSON-Schema definiert zum Beispiel die Struktur der Response für den 
 }
 ```
 
-Alle Ergebnisse werden dabei zusammen mit der Gesamtanzahl an Elementen und nächstem bzw. vorherigem Objekt in einem @DRF``-Wrapper zurückgesandt. 
+Alle Ergebnisse werden dabei zusammen mit der Gesamtanzahl an Elementen und nächstem bzw. vorherigem Objekt in einem DRF-Wrapper zurückgesandt. 
 
 ```json
 // DRF-Wrapper
@@ -136,12 +136,14 @@ Um ein spezifisches Element als Antwort zu erhalten, kann der @URL die ID des ge
     "name": "Waiting"
 }
 ```
+#pagebreak()
 
-Die nachstehende Tabelle gibt eine Übersicht über die zentralen API-Endpunkte und deren typische JSON-Responses. Für Listenendpunkte wird dabei die von @DRF:lo verwendete Wrapper-Struktur mit `count`, `next`, `previous` und `results` verwendet. \
-Zur besseren Lesbarkeit werden in der Tabelle nur die wesentlichen Felder der jeweiligen Responses dargestellt.
-#align(center,
-  scale(87%, reflow: true,
-    figure(
+@tab:endpoints gibt eine Übersicht über die zentralen API-Endpunkte und deren typische JSON-Responses. Für Listenendpunkte wird dabei die von @DRF:lo verwendete Wrapper-Struktur mit `count`, `next`, `previous` und `results` verwendet. \
+Zur besseren Lesbarkeit werden nur die wesentlichen Felder der jeweiligen Responses dargestellt.
+
+#align(center)[
+  #scale(87%, reflow: true)[
+    #figure(
       table(
         columns: (4cm, auto),
         inset: 12pt,
@@ -224,14 +226,15 @@ Zur besseren Lesbarkeit werden in der Tabelle nur die wesentlichen Felder der je
             ```
         ]
       ),
-      caption: [Übersicht API Responses]
+      caption: [Übersicht API Responses],
       // author = {Jan Schubert},
       // date = {19.05.2026}
-    )
-  )
-)
-
+      
+    )<tab:endpoints>
+  ]
+]
 #pagebreak()
+
 #set_footer_name("Fabian Trummer")
 == Technologien //F
 
@@ -245,24 +248,16 @@ Wichtig ist, dass Entwicklungsgeschwindigkeit und klare Struktur gegenüber eine
 @django_doc, @django_getting_started, @django_models, @django_security
 
 
-=== Django Rest Framework (DRF) <DRF_Kapitel>
-// Warum Django REST?
+=== Django Rest Framework <DRF_Kapitel>
 @DRF ist ein Framework zur Erstellung von Rest-APIs auf Basis von Django. Es erweitert Django um Funktionen, die speziell für die Bereitstellung von Schnittstellen zwischen Backend und Frontend wichtig sind, zum Beispiel Serialisierung, Authentifizierung, Berechtigungen und ViewSets. \
-Für das Projekt war @DRF eine sinnvolle Ergänzung, da damit die @API strukturiert und mit deutlich weniger Aufwand umgesetzt werden konnte. Zusätzlich bietet @DRF eine Browsable API, welche die direkte Ansicht und Testung von Endpunkten im Browser ermöglicht. Dadurch wurde die Entwicklung vereinfacht und die Wartbarkeit des Backends verbessert.
+Für das Projekt war @DRF eine sinnvolle Ergänzung, da damit die @API strukturiert und mit deutlich weniger Aufwand umgesetzt werden konnte. Zusätzlich bietet @DRF eine "Browsable API", welche die direkte Ansicht und Testung von Endpunkten im Browser ermöglicht. Dadurch wurde die Entwicklung vereinfacht und die Wartbarkeit des Backends verbessert.
 @drf_doc, @drf_browsable_api, @drf_serialization, @drf_auth_permissions
 
 
 === Flutter  
-Flutter wurde für ExcuseMe gewählt, da bereits Vorkenntnisse vorhanden sind und das Framework eine effiziente Cross-Platform-Entwicklung ermöglicht. Zudem bietet Flutter durch seine eigene Rendering-Engine eine hohe Performance sowie ein konsistentes Erscheinungsbild über verschiedene Plattformen hinweg. Weitere Informationen sind von @React-Native-Vs-Flutter React Native vs Flutter bis @State-Management State-Management zu finden.
-
-// Warum Flutter?
-// - Bereits Erfahrung damit
-// - Riesiges Ökosystem
-// - Fast native Performance
-// - Cross-Platform-Entwicklung
+Flutter wurde für ExcuseMe gewählt, da bereits Vorkenntnisse vorhanden sind und das Framework eine effiziente Cross-Platform-Entwicklung ermöglicht. Zudem bietet Flutter durch seine eigene Rendering-Engine eine hohe Performance sowie ein konsistentes Erscheinungsbild über verschiedene Plattformen hinweg. Weitere Informationen sind von @React-Native-Vs-Flutter bis @State-Management zu finden.
 
 === PostgreSQL
-//Warum PostgreSQL
 Für das Projekt wurde PostgreSQL als Datenbank gewählt, da es sich um ein leistungsfähiges und zuverlässiges relationales Datenbanksystem handelt, das sich gut in Django integrieren lässt. Besonders bei Anwendungen mit strukturierten Daten und klaren Beziehungen zwischen Entitäten bietet eine relationale Datenbank große Vorteile.
 
 In ExcuseMe müssen Benutzer, Rollen, Abwesenheiten und weitere zugehörige Informationen konsistent gespeichert und miteinander verknüpft werden. Dafür sind relationale Datenbanken besonders geeignet, da sie mit Tabellen, Schlüsseln und Transaktionen eine hohe Datenintegrität gewährleisten.
@@ -272,9 +267,8 @@ Als Alternative wäre auch SQLite möglich gewesen, das jedoch in diesem Projekt
 
 
 === JSON Web Token
-//Warum JWT?
-@JWT ist ein Standard zur sicheren Übertragung von Informationen zwischen Client und Server und wird in Webanwendungen zur Authentifizierung eingesetzt. Nach dem Login erhält der Client einen *Token*, der bei weiteren Anfragen mitgesendet wird, wodurch sich User nicht bei jedem Request erneut anmelden müssen. Das macht die Kommunikation zwischen Frontend und Backend effizienter.\
-Für das Projekt war @JWT besonders sinnvoll, da eine getrennte Architektur aus Flutter-Frontend und Django-Backend verwendet wird. Dabei wird der Token vom Client gespeichert und bei geschützten Anfragen verwendet, wodurch sich der Login einfach verwalten lässt.\
+@JWT ist ein Standard zur sicheren Übertragung von Informationen zwischen Client und Server und wird in Webanwendungen zur Authentifizierung eingesetzt. Nach dem Login erhält der Client einen Token, der bei weiteren Anfragen mitgesendet wird, wodurch sich User nicht bei jedem Request erneut anmelden müssen. Das macht die Kommunikation zwischen Frontend und Backend effizienter. Der Aufbau eines JWT ist in @abb:JWT-Struktur ersichtlich. \
+Für das Projekt war @JWT besonders sinnvoll, da eine getrennte Architektur aus Flutter-Frontend und Django-Backend verwendet wird. Dabei wird der Token vom Client gespeichert und bei geschützten Anfragen verwendet, wodurch sich der Login einfach verwalten lässt. Den kompletten Workflow eines JWT findet man in @abb:JWT-Workflow.\
 Alternativ wäre auch Authentifizierung per Web-Cookie möglich gewesen, bei der der Server die Sitzung verwaltet. Diese Lösung ist auch weit verbreitet, jedoch passt diese nicht gut zu klar getrennten API-Architekturen.
 @auth0_jwt_intro, @jwtapp_jwt_vs_sessions
 
@@ -283,17 +277,16 @@ Alternativ wäre auch Authentifizierung per Web-Cookie möglich gewesen, bei der
   caption: [JWT-Struktur]
   // author = {Fabian Trummer},
   // date = {29.05.2026}
-)
+)<abb:JWT-Struktur>
 
 #figure(
   image("../resources/jwt_workflow.png"),
   caption: [JWT-Workflow]
   // author = {Fabian Trummer},
   // date = {29.05.2026}
-)
+)<abb:JWT-Workflow>
 
 === Railway (Cloud Service) <Railway_Kapitel>
-//Warum Railway?
 Railway ist eine @PaaS Cloud-Plattform, die es Entwicklern ermöglicht, Web-Anwendungen, Server, Datenbanken und Background Services durch automatisierte Deployment-Workflows ohne Server-Management bereitzustellen.\
 In der Arbeit wird Railway für die automatisierte CI/CD-Pipeline einer WebApp eingesetzt. Durch die Integration mit GitHub, wird ein Workflow realisiert, der das deployte System bei jedem Push auf den main-Branch automatisch aktualisiert, neu kompiliert und baut. Dadurch erhält man Continuous Deployment, das heißt, dass jede Code-Änderung, die Tests besteht, direkt in Produktion geht, wodurch man ein nahtloses Updaten der API erhält.\
 Alternativ zu Railway gibt es auch @PaaS Anbieter wie Render oder Fly.io, wobei Railway durch Usage-based Billing und einer breiteren Datenbank-Unterstützung (PostgreSQL, MySQL, MongoDB, Redis) überzeugt. VPS-Lösungen wie Hetzner oder Self-Hosting kamen aufgrund des fehlenden automatisierten CI/CD und des höheren Wartungsaufwandes nicht in Betracht.
@@ -303,26 +296,24 @@ Alternativ zu Railway gibt es auch @PaaS Anbieter wie Render oder Fly.io, wobei 
 Die Absicherung der Entschuldigungen erfolgt durch eine digitale Signaturlösung, die sich an der @QES orientiert. Für jeden Elternteil wird beim ersten Signiervorgang automatisch ein asymmetrisches Schlüsselpaar erzeugt. Dabei wird der private Schlüssel verschlüsselt in der Datenbank gespeichert. Mit dem privaten Schlüssel wird die Entschuldigung signiert und zusammen mit den Nutzerdaten übertragen, sodass anschließend mithilfe des zugehörigen öffentlichen Schlüssels verifiziert werden kann, ob die Daten unverändert sind und tatsächlich vom jeweiligen Benutzer stammen. Eine Zertifizierung durch einen offiziellen Anbieter gibt es dabei nicht, da die Lösung ausschließlich für den internen Gebrauch vorgesehen ist.
 
 == Skalierbarkeit 
-// Programmier-Paradigmen wie @OOP bzw. Sprachen, die @OOP ermöglichen, wie Python, Dart, ...
-// Technologien wie Redis, Traefik(?), 
 
 === Datenbank
-PostgreSQL ist skalierbar durch `Read Replicas` zur Lastverteilung bei leseintensiven Workloads und `Load Balancing`. Für große Datenmengen steht `Partitionierung` zur Verfügung, bei der große Tabellen in kleinere Partitionen unterteilt werden, was die Abfrage-Performance verbessert. Zusätzlich ermöglicht `Vertical Scaling` (Erweiterung von RAM, CPU, Storage) die Anpassung an wachsende Anforderungen.
+PostgreSQL ist skalierbar durch "Read Replicas" zur Lastverteilung bei leseintensiven Workloads und "Load Balancing". Für große Datenmengen steht "Partitionierung" zur Verfügung, bei der große Tabellen in kleinere Partitionen unterteilt werden, was die Abfrage-Performance verbessert. Zusätzlich ermöglicht "Vertical Scaling" (Erweiterung von RAM, CPU, Storage) die Anpassung an wachsende Anforderungen.
 @postgresql_availability, @postgresql_partitioning
 #pagebreak()
+
 === Backend
-@DRF skaliert durch `Horizontal Scaling`, bei dem mehrere Instanzen der Anwendung hinter einem sogenannten `Load Balancer` betrieben werden. Jeder Request wird auf eine der verfügbaren Instanzen verteilt, wodurch die Last auf mehrere Server aufgeteilt wird.
+@DRF skaliert durch "Horizontal Scaling", bei dem mehrere Instanzen der Anwendung hinter einem sogenannten "Load Balancer" betrieben werden. Jeder Request wird auf eine der verfügbaren Instanzen verteilt, wodurch die Last auf mehrere Server aufgeteilt wird.
 \
-Zur Skalierung wird `Caching` mit Redis eingesetzt, um häufig abgerufene Daten (z.B. API-Antworten) im Memory zu speichern und somit die Datenbanklast zu reduzieren. Damit Sessions beim `Horizontal Scaling` erhalten bleiben, werden auch diese im Redis gespeichert. 
+Zur Skalierung wird "Caching" mit Redis eingesetzt, um häufig abgerufene Daten (z.B. API-Antworten) im Memory zu speichern und somit die Datenbanklast zu reduzieren. Damit Sessions beim "Horizontal Scaling" erhalten bleiben, werden auch diese im Redis gespeichert. 
 \
-`Asynchrone Tasks` werden mit Celery und Redis als Message Broker verarbeitet. Dadurch werden langsame Tasks wie E-Mails oder Benachrichtigungen aus dem Request-Response-Zyklus ausgelagert. 
+Asynchrone Tasks werden mit Celery und Redis als Message Broker verarbeitet. Dadurch werden langsame Tasks wie E-Mails oder Benachrichtigungen aus dem Request-Response-Zyklus ausgelagert. 
 @drf_doc
 
 === Frontend
-Flutter skaliert automatisch mit steigenden Nutzerzahlen, da es eine client-seitige Anwendung ist. Jede Instanz der App läuft lokal auf dem Gerät des Nutzers, wodurch für mehr Nutzer keine zusätzlichen Server-Ressourcen benötigt werden. 
-\
+Flutter skaliert automatisch mit steigenden Nutzerzahlen, da es eine client-seitige Anwendung ist. Jede Instanz der App läuft lokal auf dem Gerät des Nutzers, wodurch für mehr Nutzer keine zusätzlichen Server-Ressourcen benötigt werden. \
 Die Trennung von UI und Business-Logik ermöglicht die Wiederverwendung von Code und erleichtert die Erweiterung der App.
-Durch die compilierte Native Performance (AOT-Compilation) bleibt die Performance auch bei größeren Apps konstant hochwertig. Dazu ermöglicht Flutter eine Cross-Platform-Entwicklung (iOS, Android, Web und Desktop) mit einer einzigen Codebase, was die Skalierung auf weiteren Plattformen vereinfacht.
+Durch die kompilierte native Performance (AOT-Compilation) bleibt die Leistung auch bei größeren Apps konstant hochwertig. Dazu ermöglicht Flutter eine Cross-Platform-Entwicklung (iOS, Android, Web und Desktop) mit einer einzigen Codebase, was die Skalierung auf weiteren Plattformen vereinfacht.
 @flutter_app_guide
 
 == Rollenverteilung und Zusammenarbeit //F
@@ -341,12 +332,13 @@ Durch die compilierte Native Performance (AOT-Compilation) bleibt die Performanc
       [Statistik], [Digitale Signatur],
     ),
     caption: [Aufteilung der Themen]
-)
+)<tab:aufteilung>
 #pagebreak()
+
 === Kommunikation
 Die Kommunikation läuft hauptsächlich über tägliche bis wöchentliche Gespräche, in denen folgende Themen behandelt werden: aktuelle Features, derzeit auftretende Probleme, Schwierigkeiten sowie Zeitbedarf und die geplante Dauer für Features. 
 \
-Kommunikationsbasis ist die Plattform Discord. Dort werden wichtige Details, Links, Vorgehensweisen, Fragen an den Betreuer sowie Arbeitszeiten geteilt, diskutiert und dokumentiert. Zudem wurde auch eine Pipeline zwischen GitHub und Discord eingerichtet, die uns über jeden Push auf GitHub informiert. 
+Kommunikationsbasis ist die Plattform Discord. Dort werden wichtige Details, Links, Vorgehensweisen, Fragen an den Betreuer sowie Arbeitszeiten geteilt, diskutiert und dokumentiert. Zudem wurde auch eine Pipeline zwischen GitHub und Discord eingerichtet, die uns über jeden Push auf GitHub informiert (siehe @abb:kommunikation).
 \
 Darüber hinaus findet alle zwei Wochen eine Besprechung mit dem Betreuungslehrer statt. Dort wird der aktuelle Stand besprochen und die weiteren Features und Issues für den folgenden Sprint festgelegt.
 
@@ -355,5 +347,4 @@ Darüber hinaus findet alle zwei Wochen eine Besprechung mit dem Betreuungslehre
   caption: [Kommunikation auf Discord]
   // author = {Fabian Trummer},
   // date = {30.05.2026}
-)
-
+)<abb:kommunikation>

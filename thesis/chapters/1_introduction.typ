@@ -25,19 +25,21 @@ ExcuseMe löst diese Probleme durch eine JWT-basierte Authentifizierung mit roll
 #pagebreak()
 
 == Zielsetzung der Arbeit //J&F
-Ziel unserer Arbeit ist, dass Schüler ihre Entschuldigungen bei Krankheit oder anderen Gründen einfach online hochladen. Diese Entschuldigungen werden von den Eltern/Erziehungsberechtigten digital unterschrieben und automatisch an den zuständigen Lehrer oder Klassenvorstand gesendet. So bekommt die Schule die Infos sicher und ohne Umwege. Alle Beteiligten haben dadurch immer den aktuellen Stand.
+Ziel unserer Arbeit ist, dass Schüler ihre Entschuldigungen bei Krankheit oder anderen Gründen einfach online hochladen. Diese Entschuldigungen werden von den Erziehungsberechtigten digital unterschrieben und automatisch an den zuständigen Lehrer oder Klassenvorstand gesendet. So bekommt die Schule die Infos sicher und ohne Umwege. Alle Beteiligten haben dadurch immer den aktuellen Stand.
 
 === Was soll das finale System erreichen?
-Ein Schüler soll per App oder Website Entschuldigungen hochladen können. Optional dazu wird jeweils eine Bestätigung zugestellt, sobald diese von den Eltern/Erziehungsberechtigten signiert wurde und beim Lehrer ankommt. Lehrer bekommen automatisch Bescheid und müssen nichts mehr händisch eintragen. Alles ist gespeichert, transparent und jederzeit nachvollziehbar. So ist jederzeit ersichtlich, welche Fehlstunden noch unentschuldigt sind und keiner muss sich sorgen, ob die Entschuldigungen auch wirklich ankommen.
+Ein Schüler soll per App oder Website Entschuldigungen hochladen können. Optional dazu wird jeweils eine Bestätigung zugestellt, sobald diese von den Erziehungsberechtigten signiert wurde und beim Lehrer ankommt. Lehrer bekommen automatisch Bescheid und müssen nichts mehr händisch eintragen. Alles ist gespeichert, transparent und jederzeit nachvollziehbar. So ist jederzeit ersichtlich, welche Fehlstunden noch unentschuldigt sind und keiner muss sich sorgen, ob die Entschuldigungen auch wirklich ankommen.
 
 === Spezifische, messbare Teilziele
+
 Zu den spezifischen, messbaren Teilzielen gehören 
-- die Entwicklung eines Backends mit API-Schnittstelle,
-- eine direkte, sichere Weiterleitung an Lehrkräfte oder Klassenvorstand,
-- einen Überblick über den Status der Entschuldigungen,
-- eine benutzerfreundliche App, die das Hochladen und Signieren in wenigen Schritten ermöglicht,
-- eine digitale Signatur der Eltern und
-- eine automatische Erstellung von Statistiken über Fehlzeiten (z.B. durchschnittliche Fehlrate an bestimmten Tagen oder Zeiten)
+
+- Entwicklung eines Backends mit API-Schnittstelle.
+- Sichere Weiterleitung der Entschuldigung an Lehrkräfte oder Klassenvorstände.
+- Übersicht über den Status aller eingereichten Entschuldigungen.
+- Benutzerfreundliche App zum Hochladen und Signieren in wenigen Schritten.
+- Erfassung und Speicherung einer digitalen Unterschrift der Eltern.
+- Automatische Erstellung von Statistiken über Fehlzeiten, etwa nach Tagen, Zeiten oder Häufigkeiten.
 
 == Aufbau der Arbeit //J&F
 
