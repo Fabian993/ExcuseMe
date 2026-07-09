@@ -388,8 +388,7 @@ void main() {
 }
 ```
 
-Darunter befindet sich das Stateless Widget `MyApp`, das die Root, also das unterste Widget der Applikation ist. Mit dem Key `title` legt `MyApp` den Namen der App bzw. die Benennung des Fensters fest. Auch das grundlegende Design, die `theme` und `darkTheme`, sowie die Weiterleitung zur Homepage, `home`, wird hier festgelegt. Da der Zugriff auf die Daten aber nur mit gültigen Zugangsdaten gestattet ist, finden sich Nutzer beim Start der App auf der Login Page wieder.
-
+Darunter befindet sich das Stateless Widget `MyApp`, das die Root, also das unterste Widget der Applikation ist. Mit dem Key `title` legt `MyApp` den Namen der App bzw. die Benennung des Fensters fest. Auch das grundlegende Design, die `theme` und `darkTheme`, sowie die Weiterleitung zur Homepage, `home`, wird hier festgelegt. Da der Zugriff auf die Daten aber nur mit gültigen Zugangsdaten gestattet ist, finden sich Nutzer beim Start der App auf der Login Page wieder. #pagebreak()
 ```dart
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
