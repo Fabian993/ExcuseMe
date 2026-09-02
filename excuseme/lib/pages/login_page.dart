@@ -1,15 +1,10 @@
-import 'dart:html' show window;
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:dio/dio.dart';
 import 'package:excuseme/pages/skeleton.dart';
 import 'package:excuseme/models/storage.dart';
-
-String _protocol() {
-  if (kIsWeb) return window.location.protocol == 'https:' ? 'https' : 'http';
-  return dotenv.env['APP_ENV'] == 'prod' ? 'https' : 'http';
-}
+import 'package:excuseme/utils/protocol.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -25,6 +20,7 @@ class _LoginPageState extends State<LoginPage> {
 
   // vars (ui)
   bool _isAuthenticated = false; // load main app
+  String _role = 'student';
   bool _stayAuthenticated = false; // checkbox
   bool _stayAuthenticatedStorage = false;
   bool _isObscured = true; // obscure formfield
@@ -35,15 +31,18 @@ class _LoginPageState extends State<LoginPage> {
     try {
       await dotenv.load(fileName: ".env");
       String? backendAddress = dotenv.env['BACKEND_SERVER'];
-      String protocol = _protocol();
+      String proto = protocol();
 
       final response = await dio.post(
-        '$protocol://$backendAddress/api/token/',
+        '$proto://$backendAddress/api/token/',
         data: {"username": username, "password": password},
         options: Options(headers: {'Content-Type': 'application/json'}),
       );
       if (response.statusCode == 200) {
-        // print(response.data);
+        final parts = response.data["access"].split('.');
+        final payload = utf8.decode(base64Url.decode(base64Url.normalize(parts[1])));
+        _role = jsonDecode(payload)['role'] ?? 'student';
+        await sm.storage.write(key: "role", value: _role);
         await sm.storage.write(key: "username", value: username);
         await sm.storage.write(key: "password", value: password);
         await sm.storage.write(key: "access", value: response.data["access"]);
@@ -81,9 +80,8 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     updateTokens();
-    if (_stayAuthenticatedStorage) Skeleton();
     if (_isAuthenticated) {
-      return Skeleton();
+      return Skeleton(role: _role);
     } else {
       return Scaffold(
         resizeToAvoidBottomInset: false,

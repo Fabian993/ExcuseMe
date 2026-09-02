@@ -7,6 +7,7 @@ from rest_framework import viewsets, views, filters, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
+from django.utils import timezone
 import time
 
 from .serializer import *
@@ -161,6 +162,8 @@ class ExcuseViewSet(viewsets.ModelViewSet):
             return Excuse.objects.filter(student__klasse__in = user.teacher.klassen.all())
         elif hasattr(user, 'parent'):
             return Excuse.objects.filter(student__parents = user.parent)
+        elif user.role == 'student':
+            return Excuse.objects.none()
         return Excuse.objects.none()
     
     def get_serializer_class(self):
@@ -170,8 +173,12 @@ class ExcuseViewSet(viewsets.ModelViewSet):
     
     def perform_create(self, serializer):
         user = User.objects.get(pk=self.request.user.pk)
+        status_pending = Status.objects.get_or_create(name='Pending')[0]
         if hasattr(user, 'student'):
-            serializer.save(uploaded_by_user=user, student=user.student)
+            excuse = serializer.save(uploaded_by_user=user, student=user.student, status=status_pending)
+        elif user.role == 'student':
+            student, _ = Student.objects.get_or_create(user=user, defaults={'klasse': user.klasse})
+            excuse = serializer.save(uploaded_by_user=user, student=student, status=status_pending)
         elif hasattr(user, 'parent'):
             student = serializer.validated_data.get('student')
             if not student:
@@ -179,36 +186,53 @@ class ExcuseViewSet(viewsets.ModelViewSet):
                 raise ValidationError(
                     {"student": "Provide Student ID."}
                 )
-            serializer.save(uploaded_by_user=user)
+            excuse = serializer.save(uploaded_by_user=user, status=status_pending)
         else:
             from rest_framework.exceptions import ValidationError
             raise ValidationError(
                     {"student": "Only students or parents can create excuses."}
             )
+        if excuse.student and excuse.student.klasse:
+            for teacher in excuse.student.klasse.teachers.all():
+                ExcuseTeacher.objects.get_or_create(
+                    excuse=excuse,
+                    teacher=teacher,
+                    defaults={'status': status_pending},
+                )
 
     @action(detail=True, methods=['patch'], permission_classes=[permissions.IsAuthenticated, ExcusePermission])
     def sign(self, request, pk=None):
         excuse = self.get_object()
-        excuse.status = Status.objects.get(name='approved')
-        excuse.approved_by = request.user
-        excuse.approval_timestamp = int(time.time())
-        excuse.save()
+        now = int(time.time())
 
-        strategy_name = request.data.get('strategy', 'django') #django = default
+        strategy_name = request.data.get('strategy', 'django')
         strategy = changeStrategy(strategy_name, user=request.user)
         confirmation = {
             'excuse_id': excuse.id,
-            'status': 'approved',
+            'status': 'signed',
             'parent_id': request.user.id,
-            'timestamp': excuse.approval_timestamp,
+            'timestamp': now,
         }
-        
+
         signed_json = strategy.signJson(confirmation)
+        excuse.parent_signed = True
+        excuse.approval_timestamp = now
+        excuse.save()
         serializer = ExcuseOutputSerializer(excuse)
         return Response({
             **serializer.data,
             'signed_confirmation': signed_json
         })
+
+    @action(detail=True, methods=['patch'], permission_classes=[permissions.IsAuthenticated, ExcusePermission])
+    def reject(self, request, pk=None):
+        excuse = self.get_object()
+        excuse.status = Status.objects.get_or_create(name='rejected')[0]
+        excuse.approved_by = request.user
+        excuse.approval_timestamp = int(time.time())
+        excuse.save()
+        serializer = ExcuseOutputSerializer(excuse)
+        return Response(serializer.data)
 
     def get_permissions(self):
         return [permissions.IsAuthenticated(), ExcusePermission()]
@@ -250,7 +274,74 @@ class ExcuseTeacherViewSet(viewsets.ModelViewSet): #vlt entfernen und nur intern
         if self.action in ['destroy']:
             return [permissions.IsAdminUser()]
         return [permissions.IsAuthenticated()]
-    
+
+    @action(detail=True, methods=['post'])
+    def confirm(self, request, pk=None):
+        et = self.get_object()
+        et.status = Status.objects.get_or_create(name='approved')[0]
+        et.read_at = timezone.now()
+        et.save()
+        et.excuse.status = et.status
+        et.excuse.approved_by = request.user
+        et.excuse.approval_timestamp = int(time.time())
+        et.excuse.save()
+        serializer = ExcuseTeacherOutputSerializer(et)
+        return Response(serializer.data)
+
+    @action(detail=True, methods=['post'])
+    def reject(self, request, pk=None):
+        et = self.get_object()
+        et.status = Status.objects.get_or_create(name='rejected')[0]
+        et.read_at = timezone.now()
+        et.save()
+        et.excuse.status = et.status
+        et.excuse.approved_by = request.user
+        et.excuse.approval_timestamp = int(time.time())
+        et.excuse.save()
+        serializer = ExcuseTeacherOutputSerializer(et)
+        return Response(serializer.data)
+
+class StatisticsView(views.APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        if hasattr(user, 'student'):
+            students = [user.student]
+        elif hasattr(user, 'parent'):
+            students = user.parent.students.all()
+        elif hasattr(user, 'teacher'):
+            students = Student.objects.filter(klasse__in=user.teacher.klassen.all())
+        elif user.role == 'student':
+            student, _ = Student.objects.get_or_create(user=user, defaults={'klasse': user.klasse})
+            students = [student]
+        elif user.role == 'teacher':
+            Teacher.objects.create(user=user)
+            students = Student.objects.filter(klasse__in=user.teacher.klassen.all())
+        elif user.role == 'parent':
+            Parent.objects.create(user=user)
+            students = user.parent.students.all()
+        else:
+            return Response({'error': 'User has no role or profile.'}, status=403)
+
+        result = []
+        for s in students:
+            total = CachedAbsence.objects.filter(student=s).count()
+            excused = Excuse.objects.filter(student=s, status__name='approved').count()
+            rejected = Excuse.objects.filter(student=s, status__name='rejected').count()
+            pending = Excuse.objects.filter(student=s, status__name='Pending').count()
+            result.append({
+                'id': s.pk,
+                'student': s.user.username,
+                'klasse': s.klasse.name if s.klasse else None,
+                'total': total,
+                'excused': excused,
+                'rejected': rejected,
+                'pending': pending,
+                'unexcused': max(0, total - excused),
+            })
+        return Response(result)
+
 class WebUntisAbsencesView(views.APIView):
     permission_classes = [permissions.IsAuthenticated]
 
@@ -264,4 +355,20 @@ class WebUntisAbsencesView(views.APIView):
             serializer.validated_data["username"],
             serializer.validated_data["password"],
         )
+
+        if hasattr(request.user, 'student'):
+            student = request.user.student
+        elif request.user.role == 'student':
+            student, _ = Student.objects.get_or_create(user=request.user, defaults={'klasse': request.user.klasse})
+        else:
+            student = None
+
+        if student:
+            for a in absences:
+                CachedAbsence.objects.update_or_create(
+                    student=student,
+                    absence_id=str(a['id']),
+                    defaults={'data': a},
+                )
+
         return Response({"absences": absences})

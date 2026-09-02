@@ -4,7 +4,18 @@ class Meta - eine art Konfigurationsbox
 Objects <--> JSON
 """
 from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import *
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        if hasattr(user, 'student'): token['role'] = 'student'
+        elif hasattr(user, 'teacher'): token['role'] = 'teacher'
+        elif hasattr(user, 'parent'): token['role'] = 'parent'
+        else: token['role'] = user.role
+        return token
 
 class SchoolInputSerializer(serializers.ModelSerializer):
     class Meta:
@@ -136,14 +147,14 @@ class ExcuseOutputSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'absence_id', 'title', 'content', 'created_at',
             'uploaded_by_user', 'student', 'status', 'approved_by',
-            'approval_timestamp',
+            'approval_timestamp', 'parent_signed',
         ]
-        read_only_fields = ['id', 'created_at', 'approval_timestamp']
+        read_only_fields = ['id', 'created_at', 'approval_timestamp', 'parent_signed']
 class ExcuseInputSerializer(serializers.ModelSerializer):
     class Meta:
         model = Excuse
-        fields = ['id', 'absence_id', 'title', 'content', 'student']
-        read_only_fields = ['id']
+        fields = ['id', 'absence_id', 'title', 'content', 'student', 'parent_signed']
+        read_only_fields = ['id', 'parent_signed']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
