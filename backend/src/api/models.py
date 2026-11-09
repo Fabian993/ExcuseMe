@@ -75,8 +75,9 @@ class Student(models.Model):
     klasse = models.ForeignKey(
         Klasse,
         related_name="students",
-        on_delete=models.CASCADE
-
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
     )
     
     def __str__(self):
@@ -107,11 +108,20 @@ class Excuse(models.Model):
     title = models.CharField(max_length=255)
     content = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
+    approval_timestamp = models.IntegerField(null=True, blank=True)
 
     uploaded_by_user = models.ForeignKey(
         User,
         related_name="uploaded_excuses",
         on_delete=models.CASCADE,
+    )
+
+    approved_by = models.ForeignKey(
+        User,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="approved_excuses",
     )
 
     teachers = models.ManyToManyField(
@@ -124,6 +134,15 @@ class Excuse(models.Model):
         Student,
         related_name="excuses",
         on_delete=models.CASCADE,
+    )
+
+    parent_signed = models.BooleanField(default=False)
+
+    status = models.ForeignKey(
+        Status,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
     )
 
     def __str__(self):
@@ -145,6 +164,18 @@ class ExcuseTeacher(models.Model):
     def __str__(self):
         return f"{self.excuse} - {self.teacher} ({self.pk})"
     
+class CachedAbsence(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="cached_absences")
+    absence_id = models.CharField(max_length=16)
+    data = models.JSONField()
+    cached_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = [['student', 'absence_id']]
+
+    def __str__(self):
+        return f"{self.student} - {self.absence_id}"
+
 class ParentKey(models.Model):
     user = models.OneToOneField(
         User, 

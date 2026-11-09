@@ -1,13 +1,13 @@
 from rest_framework import permissions
 
 def isTeacher(user):
-    return hasattr(user, "teacher")
+    return hasattr(user, "teacher") or user.role == 'teacher'
 
 def isStudent(user):
-    return hasattr(user, "student")
+    return hasattr(user, "student") or user.role == 'student'
 
 def isParent(user):
-    return hasattr(user, "parent")
+    return hasattr(user, "parent") or user.role == 'parent'
 
 def teacherClasses(user): 
     """
